@@ -1,0 +1,16 @@
+slot,rarity,rarity_mult,refine,approx_str_on_item,note,source
+weapon_approx,common,1,0,8,aproximação ilustrativa; templates reais variam por tier/classe,estimated
+weapon_approx,common,1,5,33,aproximação ilustrativa; templates reais variam por tier/classe,estimated
+weapon_approx,common,1,10,58,aproximação ilustrativa; templates reais variam por tier/classe,estimated
+weapon_approx,uncommon,1.25,0,10,aproximação ilustrativa; templates reais variam por tier/classe,estimated
+weapon_approx,uncommon,1.25,5,35,aproximação ilustrativa; templates reais variam por tier/classe,estimated
+weapon_approx,uncommon,1.25,10,60,aproximação ilustrativa; templates reais variam por tier/classe,estimated
+weapon_approx,rare,1.6,0,13,aproximação ilustrativa; templates reais variam por tier/classe,estimated
+weapon_approx,rare,1.6,5,38,aproximação ilustrativa; templates reais variam por tier/classe,estimated
+weapon_approx,rare,1.6,10,63,aproximação ilustrativa; templates reais variam por tier/classe,estimated
+weapon_approx,epic,2.1,0,17,aproximação ilustrativa; templates reais variam por tier/classe,estimated
+weapon_approx,epic,2.1,5,42,aproximação ilustrativa; templates reais variam por tier/classe,estimated
+weapon_approx,epic,2.1,10,67,aproximação ilustrativa; templates reais variam por tier/classe,estimated
+weapon_approx,legendary,2.8,0,22,aproximação ilustrativa; templates reais variam por tier/classe,estimated
+weapon_approx,legendary,2.8,5,47,aproximação ilustrativa; templates reais variam por tier/classe,estimated
+weapon_approx,legendary,2.8,10,72,aproximação ilustrativa; templates reais variam por tier/classe,estimated

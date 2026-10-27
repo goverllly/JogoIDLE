@@ -1,0 +1,88 @@
+{
+  "source": "code",
+  "formula": "L<50: floor(100*L^1.4); L<150: floor(120*L^1.32); L<350: floor(160*L^1.28); else floor(220*L^1.22)",
+  "rows": [
+    {
+      "level": 1,
+      "xpToNext": 100,
+      "totalXpToReach": 0
+    },
+    {
+      "level": 5,
+      "xpToNext": 951,
+      "totalXpToReach": 1524
+    },
+    {
+      "level": 10,
+      "xpToNext": 2511,
+      "totalXpToReach": 9231
+    },
+    {
+      "level": 20,
+      "xpToNext": 6628,
+      "totalXpToReach": 51951
+    },
+    {
+      "level": 30,
+      "xpToNext": 11694,
+      "totalXpToReach": 140357
+    },
+    {
+      "level": 50,
+      "xpToNext": 20980,
+      "totalXpToReach": 486170
+    },
+    {
+      "level": 75,
+      "xpToNext": 35831,
+      "totalXpToReach": 1184904
+    },
+    {
+      "level": 100,
+      "xpToNext": 52381,
+      "totalXpToReach": 2276123
+    },
+    {
+      "level": 150,
+      "xpToNext": 97615,
+      "totalXpToReach": 5783685
+    },
+    {
+      "level": 200,
+      "xpToNext": 141071,
+      "totalXpToReach": 11714562
+    },
+    {
+      "level": 250,
+      "xpToNext": 187708,
+      "totalXpToReach": 19898596
+    },
+    {
+      "level": 300,
+      "xpToNext": 237047,
+      "totalXpToReach": 30482314
+    },
+    {
+      "level": 400,
+      "xpToNext": 328803,
+      "totalXpToReach": 58765807
+    },
+    {
+      "level": 500,
+      "xpToNext": 431684,
+      "totalXpToReach": 96696680
+    },
+    {
+      "level": 600,
+      "xpToNext": 539221,
+      "totalXpToReach": 145152254
+    },
+    {
+      "level": 700,
+      "xpToNext": 650792,
+      "totalXpToReach": 204565604
+    }
+  ],
+  "totalXpTo500": 96696680,
+  "totalXpTo700": 204565604
+}

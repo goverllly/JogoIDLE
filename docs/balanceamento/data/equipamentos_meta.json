@@ -1,0 +1,24 @@
+{
+  "templateCount": 1157,
+  "byKind": {
+    "boots": 64,
+    "chest": 64,
+    "consumable": 5,
+    "gloves": 64,
+    "head": 64,
+    "legs": 64,
+    "necklace": 16,
+    "offhand": 112,
+    "ring": 64,
+    "weapon": 640
+  },
+  "merchantDefaults": {
+    "bagUpgrade": 150000,
+    "refiner": 25000,
+    "attributeReset": 1000000
+  },
+  "maxRefine": 10,
+  "refineStatBonus": 5,
+  "refineAlwaysSucceeds": true,
+  "source": "code"
+}

@@ -1,0 +1,4 @@
+scenario,label,totalXpTo500,guerreiro_opt_p50_h,guerreiro_casual_p50_h,arqueiro_opt_p50_h,mago_opt_p50_h,barbaro_opt_p50_h,target_opt,target_casual,in_target_opt
+A,Atual (motor),96696680,12,19,44,18,12,25-40,45-70,too_fast
+B,Progressão 2.0 Equilibrada,103435183,26,54,25,40,25,25-40,45-70,yes
+Bplus,Progressão 2.0 +exigente,127993893,49,99,41,65,49,25-40,45-70,too_slow_or_border

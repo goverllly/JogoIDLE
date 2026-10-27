@@ -1,0 +1,14 @@
+{
+  "farmTreePerClass": 3,
+  "farmTreeTotal": 12,
+  "farmMults": [
+    1.15,
+    1.2,
+    1.25
+  ],
+  "combatSkillsPerClass": 9,
+  "combatSkillsTotal": 36,
+  "mageBasicMult": 0.55,
+  "warriorBlockChance": 0.12,
+  "source": "code"
+}

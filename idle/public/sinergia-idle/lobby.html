@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sinergia IDLE — Lobby</title>
+    <link rel="stylesheet" href="/sinergia-idle/styles.css" />
+    <link rel="stylesheet" href="/sinergia-idle/hud.css" />
+    <link rel="stylesheet" href="/sinergia-idle/theme-ref.css" />
+    <style>
+      .lobby {
+        max-width: 720px;
+        margin: 40px auto;
+        padding: 24px;
+      }
+      .lobby h1 {
+        margin: 0 0 8px;
+        font-family: Georgia, serif;
+      }
+      .lobby .lede {
+        color: #a89884;
+        margin-bottom: 24px;
+      }
+      .char-list {
+        display: grid;
+        gap: 10px;
+        margin: 16px 0 24px;
+      }
+      .char-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+        padding: 12px 14px;
+        border: 1px solid #3c3228;
+        background: #1b1714;
+      }
+      .char-row.active {
+        border-color: #e0b15c;
+      }
+      .char-actions {
+        display: flex;
+        gap: 8px;
+      }
+      .create-box {
+        border: 1px solid #3c3228;
+        padding: 16px;
+        background: #241c17;
+      }
+      .create-box label {
+        display: block;
+        margin-bottom: 10px;
+      }
+      .create-box input,
+      .create-box select {
+        width: 100%;
+        margin-top: 4px;
+        padding: 8px;
+        background: #100e0c;
+        border: 1px solid #3c3228;
+        color: #efe4d2;
+      }
+      .err {
+        color: #c4553a;
+        margin-top: 10px;
+      }
+      .btn {
+        cursor: pointer;
+        border: 1px solid #3c3228;
+        background: #2a211c;
+        color: #efe4d2;
+        padding: 8px 12px;
+      }
+      .btn--gold {
+        border-color: #e0b15c;
+        color: #e0b15c;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="lobby">
+      <p class="eyebrow" style="color: #e0b15c; letter-spacing: 0.12em; text-transform: uppercase; font-size: 0.8rem">
+        Standalone · sem missões SinergIA
+      </p>
+      <h1>Sinergia IDLE</h1>
+      <p class="lede">
+        Crie ou escolha um personagem e entre no mundo. Progresso salvo em
+        <code>idle/data/save.json</code>.
+      </p>
+      <p style="margin: -8px 0 24px; display: flex; flex-wrap: wrap; gap: 8px">
+        <a class="btn btn--gold" href="/sinergia-idle/galeria.html">Galeria da Fama</a>
+        <a class="btn" href="/sinergia-idle/admin/">Abrir Admin Studio</a>
+      </p>
+
+      <section>
+        <h2>Personagens</h2>
+        <div id="list" class="char-list"></div>
+      </section>
+
+      <section class="create-box">
+        <h2>Novo herói</h2>
+        <form id="create">
+          <label>
+            Nome
+            <input name="name" maxlength="16" minlength="2" required placeholder="Seu herói" />
+          </label>
+          <label>
+            Classe
+            <select name="classId" id="classId" required></select>
+          </label>
+          <button class="btn btn--gold" type="submit">Criar e jogar</button>
+        </form>
+        <p id="err" class="err" hidden></p>
+      </section>
+    </main>
+    <script type="module">
+      import { openCelestialLegacy } from "/sinergia-idle/celestial-legacy.js";
+
+      const listEl = document.getElementById("list");
+      const errEl = document.getElementById("err");
+      const classSelect = document.getElementById("classId");
+      /** @type {Map<string, object>} */
+      const legacyById = new Map();
+
+      async function api(path, options = {}) {
+        const res = await fetch(path, {
+          credentials: "same-origin",
+          headers: { "Content-Type": "application/json", ...(options.headers || {}) },
+          ...options,
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || `Erro ${res.status}`);
+        return data;
+      }
+
+      function showError(msg) {
+        errEl.hidden = !msg;
+        errEl.textContent = msg || "";
+      }
+
+      async function enter(id) {
+        await api(`/api/sinergia-idle/characters/${id}/select`, { method: "POST", body: "{}" });
+        location.assign("/sinergia-idle/play.html");
+      }
+
+      async function refresh() {
+        const meta = await api("/api/sinergia-idle/meta");
+        classSelect.innerHTML = "";
+        for (const cls of meta.classes || []) {
+          const opt = document.createElement("option");
+          opt.value = cls.id;
+          opt.textContent = `${cls.name} — ${cls.description || ""}`;
+          classSelect.appendChild(opt);
+        }
+        const { characters } = await api("/api/sinergia-idle/characters");
+        listEl.innerHTML = "";
+        legacyById.clear();
+        if (!characters?.length) {
+          listEl.innerHTML = "<p class='lede'>Nenhum personagem ainda.</p>";
+          return;
+        }
+        for (const c of characters) {
+          if (c.ascensionLegacy) legacyById.set(c.id, c.ascensionLegacy);
+          const celestialBadge =
+            c.ascension === "CELESTIAL" ? " · Celestial" : "";
+          const sucoBtn =
+            c.ascension === "CELESTIAL" && c.ascensionLegacy
+              ? `<button class="btn btn--gold" type="button" data-suco="${c.id}">Suco Divino</button>`
+              : "";
+          const row = document.createElement("div");
+          row.className = c.isActive ? "char-row active" : "char-row";
+          row.innerHTML = `
+            <div>
+              <strong>${c.name}</strong>
+              <div class="lede" style="margin:0">Lv. ${c.level} · ${c.className || c.classId}${celestialBadge}${c.isActive ? " · ativo" : ""}</div>
+            </div>
+            <div class="char-actions">
+              ${sucoBtn}
+              <button class="btn btn--gold" type="button" data-play="${c.id}">Jogar</button>
+              <button class="btn" type="button" data-del="${c.id}">Excluir</button>
+            </div>`;
+          listEl.appendChild(row);
+        }
+      }
+
+      listEl.addEventListener("click", async (ev) => {
+        const play = ev.target.closest("[data-play]");
+        const del = ev.target.closest("[data-del]");
+        const suco = ev.target.closest("[data-suco]");
+        try {
+          showError("");
+          if (suco) {
+            const legacy = legacyById.get(suco.dataset.suco);
+            if (legacy) openCelestialLegacy(legacy, { celebrate: false });
+            return;
+          }
+          if (play) await enter(play.dataset.play);
+          if (del && confirm("Excluir este personagem?")) {
+            await api(`/api/sinergia-idle/characters/${del.dataset.del}`, { method: "DELETE" });
+            await refresh();
+          }
+        } catch (e) {
+          showError(e.message);
+        }
+      });
+
+      document.getElementById("create").addEventListener("submit", async (ev) => {
+        ev.preventDefault();
+        const fd = new FormData(ev.target);
+        try {
+          showError("");
+          const data = await api("/api/sinergia-idle/characters", {
+            method: "POST",
+            body: JSON.stringify({
+              name: fd.get("name"),
+              classId: fd.get("classId"),
+            }),
+          });
+          await enter(data.character.id);
+        } catch (e) {
+          showError(e.message);
+        }
+      });
+
+      refresh().catch((e) => showError(e.message));
+    </script>
+  </body>
+</html>

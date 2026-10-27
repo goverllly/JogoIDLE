@@ -1,0 +1,36 @@
+[
+  {
+    "scenario": "A_online_24h_continuous",
+    "rewardedHours": 24,
+    "xp": 13885600,
+    "gold": 3833701,
+    "kills": 11544,
+    "faints": 686,
+    "note": "simulação contínua sem cap 2h"
+  },
+  {
+    "scenario": "B_offline_one_sync_after_24h_wall",
+    "wallHours": 24,
+    "rewardedHours": 2,
+    "xp": 883775,
+    "gold": 243979,
+    "kills": 729,
+    "note": "maxCatchUpMs=2h — 22h wall-clock perdidos"
+  },
+  {
+    "scenario": "C_offline_12_syncs_every_2h",
+    "wallHours": 24,
+    "rewardedHours": 24,
+    "xp": 10605300,
+    "gold": 2927748,
+    "kills": 8748,
+    "note": "12× catch-up de 2h; cada request ainda limitado a 5000 ticks"
+  },
+  {
+    "scenario": "D_offline_2h_chunk_tick_cap",
+    "rewardedMs": 5433258,
+    "fightMs": 5433258,
+    "kills": 733,
+    "note": "interação 2h vs 5000 ticks: se TTK baixo, 5000 ticks << 2h; se TTK alto, 2h limita primeiro"
+  }
+]

@@ -1,0 +1,7 @@
+level,zone,xp_per_hour,kills_per_hour,faints_per_hour,gold_per_hour,source
+10,cemiterio,67000,304.0,38,18762,simulated
+50,hidra,450450,425.0,50,124401,simulated
+100,abismo,1815175,770.0,0,500189,simulated
+200,vulcao,8425360,1793.0,0,2318798,simulated
+350,nevoa,15006200,1808.0,0,4128523,simulated
+480,trono,19955625,1780.0,0,5490190,simulated

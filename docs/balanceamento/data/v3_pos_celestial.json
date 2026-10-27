@@ -1,0 +1,728 @@
+{
+  "disclaimer": "Proposta. Cap de nível permanece 700. Sem soft-reset de poder no ritual.",
+  "recommendation": "maestria_mais_dominio",
+  "alternativesCompared": [
+    {
+      "id": "maestria",
+      "fit": "alto",
+      "note": "Ranks com custos crescentes; identidade nova pós-700."
+    },
+    {
+      "id": "constelacoes",
+      "fit": "medio",
+      "note": "Árvore visual; sobrepõe Maestria — fundir UX se desejado."
+    },
+    {
+      "id": "despertar_divino",
+      "fit": "baixo_medio",
+      "note": "Parece segunda ascensão; risco de diluir ritual."
+    },
+    {
+      "id": "poder_ancestral",
+      "fit": "medio",
+      "note": "Bom como recurso/artefato, não como única barra."
+    },
+    {
+      "id": "prestigio_nivel",
+      "fit": "baixo",
+      "note": "Segunda barra XP — rejeitado pelo briefing."
+    },
+    {
+      "id": "dominio_regioes",
+      "fit": "alto",
+      "note": "Estrelas por zona; modifiers; ideal com idle prep."
+    }
+  ],
+  "mastery": {
+    "scenarioC_ranks": 40,
+    "scenarioD_ranks": 60,
+    "ranks": [
+      {
+        "rank": 1,
+        "chapterHint": 3,
+        "costMat": 10,
+        "costGold": 500000,
+        "bonusAtkPct": 1.15,
+        "bonusHpPct": 0.85,
+        "unlock": "celestial_L700_or_nexus_clear",
+        "scenarioC": true,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 2,
+        "chapterHint": 3,
+        "costMat": 12,
+        "costGold": 610000,
+        "bonusAtkPct": 1.5,
+        "bonusHpPct": 1.1,
+        "unlock": "maestria_1",
+        "scenarioC": true,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 3,
+        "chapterHint": 3,
+        "costMat": 14,
+        "costGold": 744200,
+        "bonusAtkPct": 1.85,
+        "bonusHpPct": 1.35,
+        "unlock": "maestria_2",
+        "scenarioC": true,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 4,
+        "chapterHint": 3,
+        "costMat": 16,
+        "costGold": 907924,
+        "bonusAtkPct": 2.2,
+        "bonusHpPct": 1.6,
+        "unlock": "maestria_3",
+        "scenarioC": true,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 5,
+        "chapterHint": 3,
+        "costMat": 19,
+        "costGold": 1107667,
+        "bonusAtkPct": 2.55,
+        "bonusHpPct": 1.85,
+        "unlock": "maestria_4",
+        "scenarioC": true,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 6,
+        "chapterHint": 3,
+        "costMat": 23,
+        "costGold": 1351354,
+        "bonusAtkPct": 2.9,
+        "bonusHpPct": 2.1,
+        "unlock": "maestria_5",
+        "scenarioC": true,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 7,
+        "chapterHint": 3,
+        "costMat": 27,
+        "costGold": 1648652,
+        "bonusAtkPct": 3.25,
+        "bonusHpPct": 2.35,
+        "unlock": "maestria_6",
+        "scenarioC": true,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 8,
+        "chapterHint": 3,
+        "costMat": 32,
+        "costGold": 2011355,
+        "bonusAtkPct": 3.6,
+        "bonusHpPct": 2.6,
+        "unlock": "maestria_7",
+        "scenarioC": true,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 9,
+        "chapterHint": 3,
+        "costMat": 38,
+        "costGold": 2453854,
+        "bonusAtkPct": 3.95,
+        "bonusHpPct": 2.85,
+        "unlock": "maestria_8",
+        "scenarioC": true,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 10,
+        "chapterHint": 3,
+        "costMat": 44,
+        "costGold": 2993701,
+        "bonusAtkPct": 4.3,
+        "bonusHpPct": 3.1,
+        "unlock": "maestria_9",
+        "scenarioC": true,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 11,
+        "chapterHint": 3,
+        "costMat": 52,
+        "costGold": 3652316,
+        "bonusAtkPct": 4.65,
+        "bonusHpPct": 3.35,
+        "unlock": "maestria_10",
+        "scenarioC": true,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 12,
+        "chapterHint": 3,
+        "costMat": 62,
+        "costGold": 4455825,
+        "bonusAtkPct": 5,
+        "bonusHpPct": 3.6,
+        "unlock": "maestria_11",
+        "scenarioC": true,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 13,
+        "chapterHint": 3,
+        "costMat": 73,
+        "costGold": 5436107,
+        "bonusAtkPct": 5.35,
+        "bonusHpPct": 3.85,
+        "unlock": "maestria_12",
+        "scenarioC": true,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 14,
+        "chapterHint": 3,
+        "costMat": 86,
+        "costGold": 6632050,
+        "bonusAtkPct": 5.7,
+        "bonusHpPct": 4.1,
+        "unlock": "maestria_13",
+        "scenarioC": true,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 15,
+        "chapterHint": 3,
+        "costMat": 101,
+        "costGold": 8091101,
+        "bonusAtkPct": 6.05,
+        "bonusHpPct": 4.35,
+        "unlock": "maestria_14",
+        "scenarioC": true,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 16,
+        "chapterHint": 3,
+        "costMat": 120,
+        "costGold": 9871143,
+        "bonusAtkPct": 6.4,
+        "bonusHpPct": 4.6,
+        "unlock": "maestria_15",
+        "scenarioC": true,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 17,
+        "chapterHint": 3,
+        "costMat": 141,
+        "costGold": 12042795,
+        "bonusAtkPct": 6.75,
+        "bonusHpPct": 4.85,
+        "unlock": "maestria_16",
+        "scenarioC": true,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 18,
+        "chapterHint": 3,
+        "costMat": 167,
+        "costGold": 14692210,
+        "bonusAtkPct": 7.1,
+        "bonusHpPct": 5.1,
+        "unlock": "maestria_17",
+        "scenarioC": true,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 19,
+        "chapterHint": 3,
+        "costMat": 197,
+        "costGold": 17924496,
+        "bonusAtkPct": 7.45,
+        "bonusHpPct": 5.35,
+        "unlock": "maestria_18",
+        "scenarioC": true,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 20,
+        "chapterHint": 3,
+        "costMat": 232,
+        "costGold": 21867885,
+        "bonusAtkPct": 7.8,
+        "bonusHpPct": 5.6,
+        "unlock": "maestria_19",
+        "scenarioC": true,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 21,
+        "chapterHint": 3,
+        "costMat": 274,
+        "costGold": 26678820,
+        "bonusAtkPct": 8.15,
+        "bonusHpPct": 5.85,
+        "unlock": "maestria_20",
+        "scenarioC": true,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 22,
+        "chapterHint": 3,
+        "costMat": 323,
+        "costGold": 32548160,
+        "bonusAtkPct": 8.5,
+        "bonusHpPct": 6.1,
+        "unlock": "maestria_21",
+        "scenarioC": true,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 23,
+        "chapterHint": 3,
+        "costMat": 381,
+        "costGold": 39708756,
+        "bonusAtkPct": 8.85,
+        "bonusHpPct": 6.35,
+        "unlock": "maestria_22",
+        "scenarioC": true,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 24,
+        "chapterHint": 3,
+        "costMat": 450,
+        "costGold": 48444682,
+        "bonusAtkPct": 9.2,
+        "bonusHpPct": 6.6,
+        "unlock": "maestria_23",
+        "scenarioC": true,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 25,
+        "chapterHint": 3,
+        "costMat": 531,
+        "costGold": 59102512,
+        "bonusAtkPct": 9.55,
+        "bonusHpPct": 6.85,
+        "unlock": "maestria_24",
+        "scenarioC": true,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 26,
+        "chapterHint": 4,
+        "costMat": 627,
+        "costGold": 72105065,
+        "bonusAtkPct": 9.9,
+        "bonusHpPct": 7.1,
+        "unlock": "maestria_25",
+        "scenarioC": true,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 27,
+        "chapterHint": 4,
+        "costMat": 739,
+        "costGold": 87968179,
+        "bonusAtkPct": 10.25,
+        "bonusHpPct": 7.35,
+        "unlock": "maestria_26",
+        "scenarioC": true,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 28,
+        "chapterHint": 4,
+        "costMat": 873,
+        "costGold": 107321178,
+        "bonusAtkPct": 10.6,
+        "bonusHpPct": 7.6,
+        "unlock": "maestria_27",
+        "scenarioC": true,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 29,
+        "chapterHint": 4,
+        "costMat": 1030,
+        "costGold": 130931838,
+        "bonusAtkPct": 10.95,
+        "bonusHpPct": 7.85,
+        "unlock": "maestria_28",
+        "scenarioC": true,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 30,
+        "chapterHint": 4,
+        "costMat": 1215,
+        "costGold": 159736842,
+        "bonusAtkPct": 11.3,
+        "bonusHpPct": 8.1,
+        "unlock": "maestria_29",
+        "scenarioC": true,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 31,
+        "chapterHint": 4,
+        "costMat": 1434,
+        "costGold": 194878947,
+        "bonusAtkPct": 11.65,
+        "bonusHpPct": 8.35,
+        "unlock": "maestria_30",
+        "scenarioC": true,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 32,
+        "chapterHint": 4,
+        "costMat": 1692,
+        "costGold": 237752315,
+        "bonusAtkPct": 12,
+        "bonusHpPct": 8.6,
+        "unlock": "maestria_31",
+        "scenarioC": true,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 33,
+        "chapterHint": 4,
+        "costMat": 1996,
+        "costGold": 290057825,
+        "bonusAtkPct": 12.35,
+        "bonusHpPct": 8.85,
+        "unlock": "maestria_32",
+        "scenarioC": true,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 34,
+        "chapterHint": 4,
+        "costMat": 2356,
+        "costGold": 353870546,
+        "bonusAtkPct": 12.7,
+        "bonusHpPct": 9.1,
+        "unlock": "maestria_33",
+        "scenarioC": true,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 35,
+        "chapterHint": 4,
+        "costMat": 2780,
+        "costGold": 431722067,
+        "bonusAtkPct": 13.05,
+        "bonusHpPct": 9.35,
+        "unlock": "maestria_34",
+        "scenarioC": true,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 36,
+        "chapterHint": 4,
+        "costMat": 3280,
+        "costGold": 526700921,
+        "bonusAtkPct": 13.4,
+        "bonusHpPct": 9.6,
+        "unlock": "maestria_35",
+        "scenarioC": true,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 37,
+        "chapterHint": 4,
+        "costMat": 3870,
+        "costGold": 642575124,
+        "bonusAtkPct": 13.75,
+        "bonusHpPct": 9.85,
+        "unlock": "maestria_36",
+        "scenarioC": true,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 38,
+        "chapterHint": 4,
+        "costMat": 4567,
+        "costGold": 783941651,
+        "bonusAtkPct": 14.1,
+        "bonusHpPct": 10.1,
+        "unlock": "maestria_37",
+        "scenarioC": true,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 39,
+        "chapterHint": 4,
+        "costMat": 5389,
+        "costGold": 956408814,
+        "bonusAtkPct": 14.45,
+        "bonusHpPct": 10.35,
+        "unlock": "maestria_38",
+        "scenarioC": true,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 40,
+        "chapterHint": 4,
+        "costMat": 6359,
+        "costGold": 1166818754,
+        "bonusAtkPct": 14.8,
+        "bonusHpPct": 10.6,
+        "unlock": "maestria_39",
+        "scenarioC": true,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 41,
+        "chapterHint": 4,
+        "costMat": 7504,
+        "costGold": 1423518879,
+        "bonusAtkPct": 15.15,
+        "bonusHpPct": 10.85,
+        "unlock": "maestria_40",
+        "scenarioC": false,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 42,
+        "chapterHint": 4,
+        "costMat": 8854,
+        "costGold": 1736693033,
+        "bonusAtkPct": 15.5,
+        "bonusHpPct": 11.1,
+        "unlock": "maestria_41",
+        "scenarioC": false,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 43,
+        "chapterHint": 4,
+        "costMat": 10448,
+        "costGold": 2118765500,
+        "bonusAtkPct": 15.85,
+        "bonusHpPct": 11.35,
+        "unlock": "maestria_42",
+        "scenarioC": false,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 44,
+        "chapterHint": 4,
+        "costMat": 12329,
+        "costGold": 2584893910,
+        "bonusAtkPct": 16.2,
+        "bonusHpPct": 11.6,
+        "unlock": "maestria_43",
+        "scenarioC": false,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 45,
+        "chapterHint": 4,
+        "costMat": 14548,
+        "costGold": 3153570570,
+        "bonusAtkPct": 16.55,
+        "bonusHpPct": 11.85,
+        "unlock": "maestria_44",
+        "scenarioC": false,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 46,
+        "chapterHint": 4,
+        "costMat": 17167,
+        "costGold": 3847356096,
+        "bonusAtkPct": 16.9,
+        "bonusHpPct": 12.1,
+        "unlock": "maestria_45",
+        "scenarioC": false,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 47,
+        "chapterHint": 4,
+        "costMat": 20257,
+        "costGold": 4693774437,
+        "bonusAtkPct": 17.25,
+        "bonusHpPct": 12.35,
+        "unlock": "maestria_46",
+        "scenarioC": false,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 48,
+        "chapterHint": 4,
+        "costMat": 23903,
+        "costGold": 5726404813,
+        "bonusAtkPct": 17.6,
+        "bonusHpPct": 12.6,
+        "unlock": "maestria_47",
+        "scenarioC": false,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 49,
+        "chapterHint": 4,
+        "costMat": 28206,
+        "costGold": 6986213872,
+        "bonusAtkPct": 17.95,
+        "bonusHpPct": 12.85,
+        "unlock": "maestria_48",
+        "scenarioC": false,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 50,
+        "chapterHint": 4,
+        "costMat": 33283,
+        "costGold": 8523180923,
+        "bonusAtkPct": 18.3,
+        "bonusHpPct": 13.1,
+        "unlock": "maestria_49",
+        "scenarioC": false,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 51,
+        "chapterHint": 4,
+        "costMat": 39274,
+        "costGold": 10398280726,
+        "bonusAtkPct": 18.65,
+        "bonusHpPct": 13.35,
+        "unlock": "maestria_50",
+        "scenarioC": false,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 52,
+        "chapterHint": 4,
+        "costMat": 46343,
+        "costGold": 12685902486,
+        "bonusAtkPct": 19,
+        "bonusHpPct": 13.6,
+        "unlock": "maestria_51",
+        "scenarioC": false,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 53,
+        "chapterHint": 4,
+        "costMat": 54685,
+        "costGold": 15476801033,
+        "bonusAtkPct": 19.35,
+        "bonusHpPct": 13.85,
+        "unlock": "maestria_52",
+        "scenarioC": false,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 54,
+        "chapterHint": 4,
+        "costMat": 64528,
+        "costGold": 18881697261,
+        "bonusAtkPct": 19.7,
+        "bonusHpPct": 14.1,
+        "unlock": "maestria_53",
+        "scenarioC": false,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 55,
+        "chapterHint": 4,
+        "costMat": 76143,
+        "costGold": 23035670658,
+        "bonusAtkPct": 20.05,
+        "bonusHpPct": 14.35,
+        "unlock": "maestria_54",
+        "scenarioC": false,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 56,
+        "chapterHint": 4,
+        "costMat": 89848,
+        "costGold": 28103518203,
+        "bonusAtkPct": 20.4,
+        "bonusHpPct": 14.6,
+        "unlock": "maestria_55",
+        "scenarioC": false,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 57,
+        "chapterHint": 4,
+        "costMat": 106021,
+        "costGold": 34286292207,
+        "bonusAtkPct": 20.75,
+        "bonusHpPct": 14.85,
+        "unlock": "maestria_56",
+        "scenarioC": false,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 58,
+        "chapterHint": 4,
+        "costMat": 125105,
+        "costGold": 41829276493,
+        "bonusAtkPct": 21.1,
+        "bonusHpPct": 15.1,
+        "unlock": "maestria_57",
+        "scenarioC": false,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 59,
+        "chapterHint": 4,
+        "costMat": 147624,
+        "costGold": 51031717321,
+        "bonusAtkPct": 21.45,
+        "bonusHpPct": 15.35,
+        "unlock": "maestria_58",
+        "scenarioC": false,
+        "scenarioD_extra": true
+      },
+      {
+        "rank": 60,
+        "chapterHint": 4,
+        "costMat": 174196,
+        "costGold": 62258695132,
+        "bonusAtkPct": 21.8,
+        "bonusHpPct": 15.6,
+        "unlock": "maestria_59",
+        "scenarioC": false,
+        "scenarioD_extra": true
+      }
+    ]
+  },
+  "dominion": {
+    "starsMax_C": 5,
+    "starsMax_D": 7,
+    "perStar": {
+      "mobHpMult": 1.35,
+      "mobAtkMult": 1.22,
+      "rewardMult": 1.18,
+      "masteryMatMult": 1.15
+    },
+    "note": "Subir estrela exige clear de chefe sob modifier; combate automático — prep via gear/attrs/pots."
+  },
+  "celestialGapCurrent": {
+    "eter_minLevel": 500,
+    "firmamento_minLevel": 560,
+    "nexus_minLevel": 620,
+    "afterRitualLevel": 1,
+    "accessibleCelestialAtL1": false
+  },
+  "celestialTier1Proposal": [
+    "alvorada",
+    "jardins_lunares",
+    "arquipelago_nuvens",
+    "biblioteca_estrelas",
+    "cascata_aurora",
+    "eter"
+  ]
+}

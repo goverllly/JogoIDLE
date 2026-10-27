@@ -1,0 +1,25 @@
+{
+  "name": "sinergia-idle-standalone",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "start": "tsx src/server.ts",
+    "test": "tsx --test lib/sinergia-idle/game/__tests__/**/*.test.ts",
+    "audit:balance": "tsx scripts/balance-audit/run-all.mjs && tsx scripts/balance-audit/write-docs.mjs",
+    "admin:install": "npm install --prefix admin-ui",
+    "admin:dev": "npm run dev --prefix admin-ui",
+    "admin:build": "npm run build --prefix admin-ui",
+    "postinstall": "npm run admin:install"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.19.2",
+    "tsx": "^4.20.5",
+    "typescript": "~6.0.3"
+  }
+}

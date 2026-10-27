@@ -1,0 +1,359 @@
+{
+  "disclaimer": "Proposta. Motor atual: maxCatchUpMs=2h, maxTicks=5000.",
+  "currentMotor": {
+    "maxCatchUpHours": 2,
+    "maxTicks": 5000
+  },
+  "recommended": "proposta_C_8h_decay",
+  "alternatives": [
+    {
+      "id": "atual_2h",
+      "capH": 2,
+      "bands": [
+        {
+          "hoursFrom": 0,
+          "hoursTo": 2,
+          "efficiency": 1
+        }
+      ],
+      "ticks": 5000,
+      "samples": [
+        {
+          "wallHours": 2,
+          "rewardedHours": 2,
+          "ratioVsWall": 1
+        },
+        {
+          "wallHours": 4,
+          "rewardedHours": 2,
+          "ratioVsWall": 0.5
+        },
+        {
+          "wallHours": 8,
+          "rewardedHours": 2,
+          "ratioVsWall": 0.25
+        },
+        {
+          "wallHours": 12,
+          "rewardedHours": 2,
+          "ratioVsWall": 0.167
+        },
+        {
+          "wallHours": 16,
+          "rewardedHours": 2,
+          "ratioVsWall": 0.125
+        },
+        {
+          "wallHours": 24,
+          "rewardedHours": 2,
+          "ratioVsWall": 0.083
+        }
+      ]
+    },
+    {
+      "id": "flat_8h",
+      "capH": 8,
+      "bands": [
+        {
+          "hoursFrom": 0,
+          "hoursTo": 8,
+          "efficiency": 1
+        }
+      ],
+      "ticks": 12000,
+      "samples": [
+        {
+          "wallHours": 2,
+          "rewardedHours": 2,
+          "ratioVsWall": 1
+        },
+        {
+          "wallHours": 4,
+          "rewardedHours": 4,
+          "ratioVsWall": 1
+        },
+        {
+          "wallHours": 8,
+          "rewardedHours": 8,
+          "ratioVsWall": 1
+        },
+        {
+          "wallHours": 12,
+          "rewardedHours": 8,
+          "ratioVsWall": 0.667
+        },
+        {
+          "wallHours": 16,
+          "rewardedHours": 8,
+          "ratioVsWall": 0.5
+        },
+        {
+          "wallHours": 24,
+          "rewardedHours": 8,
+          "ratioVsWall": 0.333
+        }
+      ]
+    },
+    {
+      "id": "proposta_C_8h_decay",
+      "capH": 8,
+      "bands": [
+        {
+          "hoursFrom": 0,
+          "hoursTo": 2,
+          "efficiency": 1
+        },
+        {
+          "hoursFrom": 2,
+          "hoursTo": 5,
+          "efficiency": 0.7
+        },
+        {
+          "hoursFrom": 5,
+          "hoursTo": 8,
+          "efficiency": 0.4
+        }
+      ],
+      "ticks": 12000,
+      "samples": [
+        {
+          "wallHours": 2,
+          "rewardedHours": 2,
+          "ratioVsWall": 1
+        },
+        {
+          "wallHours": 4,
+          "rewardedHours": 3.4,
+          "ratioVsWall": 0.85
+        },
+        {
+          "wallHours": 8,
+          "rewardedHours": 5.3,
+          "ratioVsWall": 0.663
+        },
+        {
+          "wallHours": 12,
+          "rewardedHours": 5.3,
+          "ratioVsWall": 0.442
+        },
+        {
+          "wallHours": 16,
+          "rewardedHours": 5.3,
+          "ratioVsWall": 0.331
+        },
+        {
+          "wallHours": 24,
+          "rewardedHours": 5.3,
+          "ratioVsWall": 0.221
+        }
+      ]
+    },
+    {
+      "id": "flat_12h",
+      "capH": 12,
+      "bands": [
+        {
+          "hoursFrom": 0,
+          "hoursTo": 12,
+          "efficiency": 1
+        }
+      ],
+      "ticks": 18000,
+      "samples": [
+        {
+          "wallHours": 2,
+          "rewardedHours": 2,
+          "ratioVsWall": 1
+        },
+        {
+          "wallHours": 4,
+          "rewardedHours": 4,
+          "ratioVsWall": 1
+        },
+        {
+          "wallHours": 8,
+          "rewardedHours": 8,
+          "ratioVsWall": 1
+        },
+        {
+          "wallHours": 12,
+          "rewardedHours": 12,
+          "ratioVsWall": 1
+        },
+        {
+          "wallHours": 16,
+          "rewardedHours": 12,
+          "ratioVsWall": 0.75
+        },
+        {
+          "wallHours": 24,
+          "rewardedHours": 12,
+          "ratioVsWall": 0.5
+        }
+      ]
+    },
+    {
+      "id": "decay_12h",
+      "capH": 12,
+      "bands": [
+        {
+          "hoursFrom": 0,
+          "hoursTo": 2,
+          "efficiency": 1
+        },
+        {
+          "hoursFrom": 2,
+          "hoursTo": 6,
+          "efficiency": 0.65
+        },
+        {
+          "hoursFrom": 6,
+          "hoursTo": 12,
+          "efficiency": 0.35
+        }
+      ],
+      "ticks": 18000,
+      "samples": [
+        {
+          "wallHours": 2,
+          "rewardedHours": 2,
+          "ratioVsWall": 1
+        },
+        {
+          "wallHours": 4,
+          "rewardedHours": 3.3,
+          "ratioVsWall": 0.825
+        },
+        {
+          "wallHours": 8,
+          "rewardedHours": 5.3,
+          "ratioVsWall": 0.663
+        },
+        {
+          "wallHours": 12,
+          "rewardedHours": 6.7,
+          "ratioVsWall": 0.558
+        },
+        {
+          "wallHours": 16,
+          "rewardedHours": 6.7,
+          "ratioVsWall": 0.419
+        },
+        {
+          "wallHours": 24,
+          "rewardedHours": 6.7,
+          "ratioVsWall": 0.279
+        }
+      ]
+    },
+    {
+      "id": "flat_24h",
+      "capH": 24,
+      "bands": [
+        {
+          "hoursFrom": 0,
+          "hoursTo": 24,
+          "efficiency": 1
+        }
+      ],
+      "ticks": 36000,
+      "samples": [
+        {
+          "wallHours": 2,
+          "rewardedHours": 2,
+          "ratioVsWall": 1
+        },
+        {
+          "wallHours": 4,
+          "rewardedHours": 4,
+          "ratioVsWall": 1
+        },
+        {
+          "wallHours": 8,
+          "rewardedHours": 8,
+          "ratioVsWall": 1
+        },
+        {
+          "wallHours": 12,
+          "rewardedHours": 12,
+          "ratioVsWall": 1
+        },
+        {
+          "wallHours": 16,
+          "rewardedHours": 16,
+          "ratioVsWall": 1
+        },
+        {
+          "wallHours": 24,
+          "rewardedHours": 24,
+          "ratioVsWall": 1
+        }
+      ]
+    },
+    {
+      "id": "decay_24h",
+      "capH": 24,
+      "bands": [
+        {
+          "hoursFrom": 0,
+          "hoursTo": 2,
+          "efficiency": 1
+        },
+        {
+          "hoursFrom": 2,
+          "hoursTo": 8,
+          "efficiency": 0.6
+        },
+        {
+          "hoursFrom": 8,
+          "hoursTo": 16,
+          "efficiency": 0.35
+        },
+        {
+          "hoursFrom": 16,
+          "hoursTo": 24,
+          "efficiency": 0.2
+        }
+      ],
+      "ticks": 36000,
+      "samples": [
+        {
+          "wallHours": 2,
+          "rewardedHours": 2,
+          "ratioVsWall": 1
+        },
+        {
+          "wallHours": 4,
+          "rewardedHours": 3.2,
+          "ratioVsWall": 0.8
+        },
+        {
+          "wallHours": 8,
+          "rewardedHours": 5.6,
+          "ratioVsWall": 0.7
+        },
+        {
+          "wallHours": 12,
+          "rewardedHours": 7,
+          "ratioVsWall": 0.583
+        },
+        {
+          "wallHours": 16,
+          "rewardedHours": 8.4,
+          "ratioVsWall": 0.525
+        },
+        {
+          "wallHours": 24,
+          "rewardedHours": 10,
+          "ratioVsWall": 0.417
+        }
+      ]
+    }
+  ],
+  "impactNotes": {
+    "atual_2h": "Casual dorme 8h → só 2h recompensadas; favorece sync frequente.",
+    "proposta_C_8h_decay": "Casual captura ~4.3h de 8h wall; competitivo ainda ganha por otimização online.",
+    "flat_24h": "Quase remove diferencial online; risco de temporada 'dormindo'.",
+    "decay_24h": "Permite recuperação sem igualar ativo; bom fallback se 8h for curto."
+  }
+}

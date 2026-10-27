@@ -1,0 +1,134 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "id": "xp_L100",
+      "pass": true,
+      "detail": "got 52381"
+    },
+    {
+      "id": "xp_L1",
+      "pass": true,
+      "detail": "got 100"
+    },
+    {
+      "id": "total_to_500",
+      "pass": true,
+      "detail": "got 96696680"
+    },
+    {
+      "id": "caps",
+      "pass": true,
+      "detail": "caps"
+    },
+    {
+      "id": "kAtk",
+      "pass": true,
+      "detail": "2.2"
+    },
+    {
+      "id": "drop_default",
+      "pass": true,
+      "detail": "0.11"
+    },
+    {
+      "id": "rarities_5",
+      "pass": true,
+      "detail": "5"
+    },
+    {
+      "id": "zones_17",
+      "pass": true,
+      "detail": "17"
+    },
+    {
+      "id": "classes_4",
+      "pass": true,
+      "detail": "4"
+    },
+    {
+      "id": "scale_monster_hp_positive",
+      "pass": true,
+      "detail": "{\"hp\":1860,\"xp\":1000}"
+    },
+    {
+      "id": "stats_mirror_hp",
+      "pass": true,
+      "detail": "{\"maxHp\":236,\"maxMp\":84,\"attack\":32,\"physical\":32,\"magical\":13,\"defense\":18,\"attackIntervalMs\":1408,\"critChance\":0.015,\"str\":12,\"int\":3,\"dex\":6,\"con\":10}"
+    },
+    {
+      "id": "dex_speed_softcap",
+      "pass": true,
+      "detail": "dex≈148"
+    },
+    {
+      "id": "dex_crit_softcap",
+      "pass": true,
+      "detail": "dex=180"
+    },
+    {
+      "id": "celestial_gate",
+      "pass": true,
+      "detail": "eter=500/CELESTIAL firm=560"
+    }
+  ],
+  "failed": [],
+  "motorConstants": {
+    "DEFAULT_BALANCE": {
+      "kAtk": 2.2,
+      "kMagicAtk": 2.4,
+      "kHp": 14,
+      "kMp": 12,
+      "kDefCon": 1.2,
+      "kDefStr": 0.25,
+      "baseAttack": 6,
+      "baseHp": 90,
+      "baseMp": 45,
+      "baseDefense": 3,
+      "baseIntervalMs": 1450,
+      "minIntervalMs": 420,
+      "kSpeed": 7,
+      "levelHp": 6,
+      "levelMp": 3,
+      "critPerDex": 0.0025,
+      "maxCrit": 0.45,
+      "mobHitsToKill": 10,
+      "bossHitsToKill": 28,
+      "mobAtkHpPct": 0.11,
+      "bossAtkHpPct": 0.13,
+      "bossHpMult": 1,
+      "bossAtkMult": 1,
+      "bossDropMult": 2.5,
+      "refineDropChance": 0.012,
+      "sucoCelestialDropChance": 0.007,
+      "divindadeGoldCost": 10000000,
+      "pointsPerLevel": 5,
+      "celestialPointsPerLevel": 10,
+      "mobXpPerLevel": 20,
+      "mobGoldPerLevel": 5.5,
+      "defaultBossWaveMin": 8
+    },
+    "DROP_CHANCE": 0.11,
+    "MAGE_BASIC": 0.55,
+    "CRIT_MULT": 1.8,
+    "WARRIOR_BLOCK": 0.12,
+    "MAX_CATCH_UP_MS": 7200000,
+    "MAX_TICKS": 5000,
+    "dexSoftSpeed": 148,
+    "dexSoftCrit": 180,
+    "expectedPlayerPowerL50": {
+      "attack": 235,
+      "maxHp": 1370,
+      "defense": 87
+    }
+  },
+  "approximations": [
+    "Skills de barra: usa 1 skill rotativa com damageMult médio da classe (não todos os 9 efeitos especiais).",
+    "Loot: modelo probabilístico por raridade; templates exatos de tier não são sorteados um a um.",
+    "Gear gradual: attrs flat derivados de raridade/refine esperados, não inventário real UID.",
+    "Farm tree XP mult: aplicado como xpMult externo (1 / 1.15 / 1.25), não árvore unlock step-by-step.",
+    "Poções/auto-heal: não modeladas (faint = restart imediato com HP cheio).",
+    "Produção Prisma/catalog_state: não acessível — só defaults + save.json standalone.",
+    "Engagement xpMult servidor: assumido 1.0."
+  ]
+}

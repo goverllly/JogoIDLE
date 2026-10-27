@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Jogo - WYD Idle</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/hud.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "/vendor/three/three.module.js",
+          "three/addons/": "/vendor/three/addons/"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div class="frame">
+      <header class="topbar">
+        <div class="topbar__left">
+          <span class="logo">WYD Idle</span>
+          <span id="evo-badge" class="badge badge--evo hidden">Mortal</span>
+          <nav class="nav">
+            <a id="nav-char" class="nav__item"><span class="nav__ico">◈</span><span id="nav-char-name">Personagem</span></a>
+            <a class="nav__item active"><span class="nav__ico">⚔</span>Jogo</a>
+            <a href="/editor" class="nav__item"><span class="nav__ico">✎</span>Itens</a>
+            <a class="nav__item soon" title="Em breve"><span class="nav__ico">▣</span>Baú</a>
+            <a class="nav__item soon" title="Em breve"><span class="nav__ico">✦</span>Utilidades ▾</a>
+            <a class="nav__item soon" title="Em breve"><span class="nav__ico">◆</span>Loja ▾</a>
+            <a class="nav__item soon" title="Em breve"><span class="nav__ico">✷</span>Eventos ▾</a>
+            <a class="nav__item soon" title="Em breve"><span class="nav__ico">⚑</span>Arena ▾</a>
+            <a class="nav__item soon" title="Em breve"><span class="nav__ico">✕</span>Guerra ▾</a>
+          </nav>
+        </div>
+        <div class="topbar__right">
+          <span class="top-gold" title="Ouro"><span class="coin-ico"></span><b id="top-gold">0</b></span>
+          <span class="online"><span class="online__dot"></span><span id="online-count">0</span> online</span>
+          <div class="audio-controls">
+            <button id="mute-btn" class="icon-btn" type="button" aria-label="Som">🔊</button>
+            <label title="Efeitos">SFX <input id="sfx-vol" type="range" min="0" max="1" step="0.05" /></label>
+            <label title="Música">BGM <input id="music-vol" type="range" min="0" max="1" step="0.05" /></label>
+          </div>
+          <button id="logout-btn" class="nav__item nav__item--profile" type="button">Sair</button>
+        </div>
+      </header>
+
+      <section id="create-panel" class="create hidden">
+        <div class="card create__card">
+          <p class="eyebrow">Novo herói</p>
+          <h1>Criar personagem</h1>
+          <p class="lede">Escolha a classe do personagem. Depois você personaliza elmo, capa, cores e porte no jogo.</p>
+          <form id="create-form" class="create-form">
+            <label class="field">
+              <span>Nome</span>
+              <input id="name" name="name" maxlength="16" minlength="2" required placeholder="Seu herói" />
+            </label>
+            <fieldset>
+              <legend>Classe</legend>
+              <div id="class-list" class="class-list"></div>
+            </fieldset>
+            <button type="submit" class="btn btn--gold">Entrar no mundo</button>
+          </form>
+        </div>
+      </section>
+
+      <main id="game-panel" class="layout hidden">
+        <!-- Coluna esquerda -->
+        <aside class="col col--left">
+          <section class="card">
+            <p class="eyebrow">Personagem</p>
+            <div class="tabs" role="tablist">
+              <button class="tab active" data-tab="equip" type="button">Equipar</button>
+              <button class="tab" data-tab="look" type="button">Aparência</button>
+              <button class="tab" data-tab="zone" type="button"><span id="zone-tab-label">Área</span></button>
+            </div>
+
+            <div class="tab-panel" data-panel="equip">
+              <div class="char-head">
+                <div>
+                  <h2 id="hero-name">—</h2>
+                  <p id="hero-class" class="muted"></p>
+                </div>
+                <span class="lv-pill">Lv. <strong id="stat-level">1</strong></span>
+              </div>
+              <div class="equip-panel">
+                <p class="panel-label">Equipamento</p>
+                <div class="equip-doll equip-doll--grid" aria-label="Slots de equipamento">
+                  <button class="slot slot--head" type="button" data-label="Elmo" data-slot="head"></button>
+                  <button class="slot slot--chest" type="button" data-label="Peito" data-slot="chest"></button>
+                  <button class="slot slot--necklace" type="button" data-label="Colar" data-slot="necklace"></button>
+                  <button class="slot slot--weapon" type="button" data-label="Arma" data-slot="weapon"></button>
+                  <button class="slot slot--offhand" type="button" data-label="2ª mão" data-slot="offhand"></button>
+                  <button class="slot slot--ring" type="button" data-label="Anel" data-slot="ring"></button>
+                  <button class="slot slot--gloves" type="button" data-label="Luva" data-slot="gloves"></button>
+                  <button class="slot slot--legs" type="button" data-label="Calça" data-slot="legs"></button>
+                  <button class="slot slot--boots" type="button" data-label="Bota" data-slot="boots"></button>
+                </div>
+              </div>
+              <div class="attr-panel">
+                <div class="attr-panel__head">
+                  <p class="panel-label">Atributos</p>
+                  <p id="unspent-points" class="unspent-points hidden">
+                    <span class="unspent-points__chip">Pontos livres <b id="unspent-value">0</b></span>
+                  </p>
+                </div>
+                <dl class="attr-list" id="attr-list">
+                  <div class="attr-row" data-stat="str">
+                    <dt>
+                      <span class="attr-code">FOR</span>
+                      <span class="attr-name">Força</span>
+                    </dt>
+                    <dd class="attr-row__val"><span id="attr-str" class="attr-val">0</span></dd>
+                    <dd class="attr-row__actions">
+                      <button type="button" class="attr-plus hidden" data-attr="str" data-amount="1" title="Investir 1 ponto">+1</button>
+                      <button type="button" class="attr-plus attr-plus--bulk hidden" data-attr="str" data-amount="5" title="Investir 5 pontos">+5</button>
+                    </dd>
+                  </div>
+                  <div class="attr-row" data-stat="int">
+                    <dt>
+                      <span class="attr-code">INT</span>
+                      <span class="attr-name">Intelecto</span>
+                    </dt>
+                    <dd class="attr-row__val"><span id="attr-int" class="attr-val">0</span></dd>
+                    <dd class="attr-row__actions">
+                      <button type="button" class="attr-plus hidden" data-attr="int" data-amount="1" title="Investir 1 ponto">+1</button>
+                      <button type="button" class="attr-plus attr-plus--bulk hidden" data-attr="int" data-amount="5" title="Investir 5 pontos">+5</button>
+                    </dd>
+                  </div>
+                  <div class="attr-row" data-stat="dex">
+                    <dt>
+                      <span class="attr-code">DES</span>
+                      <span class="attr-name">Destreza</span>
+                    </dt>
+                    <dd class="attr-row__val"><span id="attr-dex" class="attr-val">0</span></dd>
+                    <dd class="attr-row__actions">
+                      <button type="button" class="attr-plus hidden" data-attr="dex" data-amount="1" title="Investir 1 ponto">+1</button>
+                      <button type="button" class="attr-plus attr-plus--bulk hidden" data-attr="dex" data-amount="5" title="Investir 5 pontos">+5</button>
+                    </dd>
+                  </div>
+                  <div class="attr-row" data-stat="con">
+                    <dt>
+                      <span class="attr-code">CON</span>
+                      <span class="attr-name">Constituição</span>
+                    </dt>
+                    <dd class="attr-row__val"><span id="attr-con" class="attr-val">0</span></dd>
+                    <dd class="attr-row__actions">
+                      <button type="button" class="attr-plus hidden" data-attr="con" data-amount="1" title="Investir 1 ponto">+1</button>
+                      <button type="button" class="attr-plus attr-plus--bulk hidden" data-attr="con" data-amount="5" title="Investir 5 pontos">+5</button>
+                    </dd>
+                  </div>
+                </dl>
+                <p class="attr-hint muted">Base → com equipamento. Use +1 ou +5 enquanto houver pontos livres.</p>
+              </div>
+              <div class="xp-line">
+                <span>XP</span>
+                <span id="stat-xp">0 / 0</span>
+              </div>
+              <div class="xp-bar"><span id="xp-fill"></span></div>
+            </div>
+
+            <div class="tab-panel hidden" data-panel="look">
+              <p class="look-hint">O personagem na arena muda na hora. Elmo, capa, pele, armadura, metal e porte.</p>
+              <div id="look-parts" class="look-toggles"></div>
+              <div class="look-group">
+                <span>Pele</span>
+                <div id="look-skin" class="swatches"></div>
+              </div>
+              <div class="look-group">
+                <span>Armadura / roupa</span>
+                <div id="look-armor" class="swatches"></div>
+              </div>
+              <div class="look-group">
+                <span>Metal / adorno</span>
+                <div id="look-metal" class="swatches"></div>
+              </div>
+              <div class="look-group">
+                <span>Capa</span>
+                <div id="look-cape" class="swatches"></div>
+              </div>
+              <label class="look-scale">
+                <span>Porte <em id="look-scale-label">100%</em></span>
+                <input id="look-scale" type="range" min="0.9" max="1.12" step="0.01" value="1" />
+              </label>
+              <div class="look-group">
+                <span>Postura</span>
+                <div id="look-stance" class="chips"></div>
+              </div>
+              <button id="look-reset" class="btn btn--small" type="button">Aparência original</button>
+            </div>
+
+            <div class="tab-panel hidden" data-panel="zone">
+              <div class="zone-meta">
+                <span id="zone-meta-name">Nenhuma área</span>
+                <span id="zone-meta-count">0 na área</span>
+              </div>
+              <ul id="zone-players" class="player-list"></ul>
+            </div>
+          </section>
+
+          <section class="card card--log">
+            <p class="eyebrow">⚑ Acontecimentos</p>
+            <ul id="combat-log" class="log"></ul>
+          </section>
+        </aside>
+
+        <!-- Coluna central -->
+        <section class="col col--center">
+          <div class="card card--combat">
+            <div class="combat-head">
+              <div>
+                <strong id="activity-name">Escolha uma área</strong>
+                <span id="activity-desc" class="muted"></span>
+              </div>
+              <div class="session-stats">
+                <span><b id="sess-kills">0</b> abates</span>
+                <span><b id="sess-xp">0</b> XP</span>
+                <span><b id="sess-gold">0</b> gold</span>
+              </div>
+            </div>
+
+            <div class="combat-actions">
+              <button id="stop-btn" class="btn btn--small hidden" type="button">⚔ Parar combate</button>
+              <select id="zone-select" class="select" aria-label="Área de caça"></select>
+              <button id="start-btn" class="btn btn--small btn--gold" type="button">Iniciar caça</button>
+              <button
+                id="auto-restart-btn"
+                class="btn btn--small btn--toggle"
+                type="button"
+                aria-pressed="false"
+                title="Após desmaio, retoma a mesma área sozinho (com 50% de HP)"
+              >
+                Restart auto: off
+              </button>
+            </div>
+
+            <div id="activity-banner" class="activity hidden">
+              <div class="activity__top">
+                <span id="activity-banner-name"></span>
+              </div>
+              <div class="activity__count"><b id="activity-kills">0</b> abates nesta sessão</div>
+              <div class="activity__bar"><span id="activity-fill"></span></div>
+              <p id="farm-status" class="activity__note">Parado</p>
+            </div>
+
+            <section id="arena" class="arena" data-zone="idle">
+              <div class="arena__far"></div>
+              <div class="arena__particles"></div>
+              <div class="arena__ground"></div>
+              <div class="fighter f-hero">
+                <div class="bar hp"><span></span></div>
+                <div class="fighter__body"></div>
+              </div>
+              <div class="fighter f-monster gone">
+                <div class="target-plate"><strong></strong><span></span></div>
+                <div class="bar"><span></span></div>
+                <div class="fighter__body"></div>
+              </div>
+              <div class="arena__fx"></div>
+              <p class="arena__idle-msg">Escolha uma área para começar a caçar</p>
+              <button class="arena__tag" type="button">Visualização 3D ▾</button>
+              <div class="arena-hud">
+                <div class="arena-hud__chip"><small>Abates</small><b id="hud-kills">0</b></div>
+                <div class="arena-hud__chip"><small>XP</small><b id="hud-xp">0</b></div>
+                <div class="arena-hud__chip"><small>Ouro</small><b id="hud-gold">0</b></div>
+              </div>
+            </section>
+          </div>
+
+          <div class="duel">
+            <div class="card unit unit--hero">
+              <div class="unit__head">
+                <span id="unit-evo" class="badge badge--evo">Mortal</span>
+                <strong id="unit-name">—</strong>
+                <span class="lv-pill">Lv. <b id="unit-level">1</b></span>
+              </div>
+              <div class="meter meter--hp">
+                <span class="meter__label">HP</span>
+                <span id="hp-fill" class="meter__fill"></span>
+                <span id="stat-hp" class="meter__value">0 / 0</span>
+              </div>
+              <div class="meter meter--mp">
+                <span class="meter__label">MP</span>
+                <span id="mp-fill" class="meter__fill"></span>
+                <span id="stat-mp" class="meter__value">0 / 0</span>
+              </div>
+              <div class="unit__stats">
+                <span title="Ataque">⚔ <b id="stat-atk">0</b></span>
+                <span title="Defesa">⛨ <b id="stat-def">0</b></span>
+                <span title="Chance de crítico">✦ <b id="stat-crit">0%</b></span>
+                <span title="Intervalo de ataque">⏱ <b id="stat-speed">0s</b></span>
+              </div>
+            </div>
+
+            <div class="duel__vs">
+              <span>⚔</span>
+              <small id="duel-speed">—</small>
+            </div>
+
+            <div class="card unit unit--target">
+              <div class="unit__head">
+                <strong id="target-name">Sem alvo</strong>
+                <span class="lv-pill">Lv. <b id="target-level">—</b></span>
+              </div>
+              <div class="unit__stats">
+                <span>⚔ Dano <b id="target-atk">—</b></span>
+                <span>⛨ Defesa <b id="target-def">—</b></span>
+              </div>
+              <div class="meter meter--enemy">
+                <span class="meter__label">HP</span>
+                <span id="target-fill" class="meter__fill"></span>
+                <span id="target-hp" class="meter__value">—</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Coluna direita -->
+        <aside class="col col--right">
+          <section class="card">
+            <p class="eyebrow">Drops</p>
+            <h2 class="inv-title">Mochila <span id="inv-count">0/20</span></h2>
+            <div id="inv-pages" class="tabs tabs--pages">
+              <button class="tab active" type="button">Página 1</button>
+              <button class="tab" type="button">Página 2</button>
+              <button class="tab locked" type="button" disabled>Página 3</button>
+              <button class="tab locked" type="button" disabled>Página 4</button>
+            </div>
+            <div id="inv-grid" class="inv-grid"></div>
+            <div class="inv-actions">
+              <button id="inv-sort" class="mini-btn" type="button" disabled title="Ordenar por tipo e raridade">✦<span>Organizar</span></button>
+              <button id="inv-junk" class="mini-btn" type="button" disabled title="Vender comuns e incomuns de outras classes">♲<span>Limpeza</span></button>
+              <button id="inv-sell" class="mini-btn" type="button" disabled title="Modo venda: clique em um item para vender">◈<span>Vender</span></button>
+              <button class="mini-btn" type="button" disabled>▣<span>Baú</span></button>
+              <button class="mini-btn" type="button" disabled>⚖<span>Mercado</span></button>
+            </div>
+            <div class="gold-line">
+              <span>Saldo</span>
+              <span class="gold-value"><span class="coin-ico"></span><b id="stat-gold">0</b> gold</span>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="buff-head">
+              <span class="buff-ico">✧</span>
+              <div>
+                <p class="eyebrow">Sistema</p>
+                <strong>Buffs ativos</strong>
+              </div>
+              <span class="count-pill">0</span>
+            </div>
+            <p class="empty">Nenhum buff ativo.</p>
+          </section>
+        </aside>
+      </main>
+    </div>
+
+    <div id="toast" class="toast hidden" role="status"></div>
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

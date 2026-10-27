@@ -1,0 +1,148 @@
+{
+  "disclaimer": "Faixas propostas de DPS/HP efetivos por capítulo. Regra atual ≈ milhares–centenas de mil (Cap.I early).",
+  "numberLimits": {
+    "MAX_SAFE_INTEGER": 9007199254740991,
+    "safeCombatCeiling": 1000000000000000,
+    "note": "Manter Number até ~1e15. Escape (magnitude layer / string decimal) só se cruzar MAX_SAFE_INTEGER."
+  },
+  "displayPtBr": [
+    {
+      "threshold": 1000,
+      "suffix": "mil"
+    },
+    {
+      "threshold": 1000000,
+      "suffix": "mi"
+    },
+    {
+      "threshold": 1000000000,
+      "suffix": "bi"
+    },
+    {
+      "threshold": 1000000000000,
+      "suffix": "tri"
+    },
+    {
+      "threshold": 1000000000000000,
+      "suffix": "qua"
+    }
+  ],
+  "chapters": [
+    {
+      "id": 1,
+      "name": "Era Mortal",
+      "playerDps": {
+        "min": 1000,
+        "max": 500000
+      },
+      "mobHp": {
+        "min": 300,
+        "max": 80000
+      },
+      "bossHp": {
+        "min": 600,
+        "max": 80000
+      },
+      "ttkTrashSec": {
+        "min": 2,
+        "max": 8
+      },
+      "mechanisms": [
+        "resist_elemental_leve",
+        "refine_gates",
+        "boss_prep"
+      ],
+      "playerDpsLabel": "1.00 mil – 500.00 mil",
+      "mobHpLabel": "300 – 80.00 mil",
+      "bossHpLabel": "600 – 80.00 mil"
+    },
+    {
+      "id": 2,
+      "name": "Despertar Celestial",
+      "playerDps": {
+        "min": 500000,
+        "max": 500000000
+      },
+      "mobHp": {
+        "min": 100000,
+        "max": 200000000
+      },
+      "bossHp": {
+        "min": 500000,
+        "max": 1000000000
+      },
+      "ttkTrashSec": {
+        "min": 3,
+        "max": 12
+      },
+      "mechanisms": [
+        "resist_build",
+        "zone_modifiers",
+        "divine_gear"
+      ],
+      "playerDpsLabel": "500.00 mil – 500.00 mi",
+      "mobHpLabel": "100.00 mil – 200.00 mi",
+      "bossHpLabel": "500.00 mil – 1.00 bi"
+    },
+    {
+      "id": 3,
+      "name": "Ruptura dos Reinos",
+      "playerDps": {
+        "min": 500000000,
+        "max": 500000000000
+      },
+      "mobHp": {
+        "min": 100000000,
+        "max": 200000000000
+      },
+      "bossHp": {
+        "min": 1000000000,
+        "max": 1000000000000
+      },
+      "ttkTrashSec": {
+        "min": 4,
+        "max": 15
+      },
+      "mechanisms": [
+        "mastery_nodes",
+        "dimension_affixes",
+        "survival_pressure"
+      ],
+      "playerDpsLabel": "500.00 mi – 500.00 bi",
+      "mobHpLabel": "100.00 mi – 200.00 bi",
+      "bossHpLabel": "1.00 bi – 1.00 tri"
+    },
+    {
+      "id": 4,
+      "name": "Trono dos Deuses Antigos",
+      "playerDps": {
+        "min": 500000000000,
+        "max": 500000000000000
+      },
+      "mobHp": {
+        "min": 100000000000,
+        "max": 200000000000000
+      },
+      "bossHp": {
+        "min": 1000000000000,
+        "max": 1000000000000000
+      },
+      "ttkTrashSec": {
+        "min": 5,
+        "max": 20
+      },
+      "mechanisms": [
+        "dominion_stars",
+        "legendary_boss_phases",
+        "artifact_evo"
+      ],
+      "playerDpsLabel": "500.00 bi – 500.00 tri",
+      "mobHpLabel": "100.00 bi – 200.00 tri",
+      "bossHpLabel": "1.00 tri – 1.00 qua"
+    }
+  ],
+  "competitiveD": {
+    "chapter4_dps_max": 900000000000000,
+    "note": "Cenário D empurra teto Cap.IV sem cruzar MAX_SAFE_INTEGER (~9e15)."
+  }
+}

@@ -1,0 +1,190 @@
+{
+  "scenarioSummary": [
+    {
+      "scenario": "A",
+      "label": "Atual (motor)",
+      "totalXpTo500": 96696680,
+      "guerreiro_opt_p50_h": 12,
+      "guerreiro_casual_p50_h": 19,
+      "arqueiro_opt_p50_h": 44,
+      "mago_opt_p50_h": 18,
+      "barbaro_opt_p50_h": 12,
+      "target_opt": "25-40",
+      "target_casual": "45-70",
+      "in_target_opt": "too_fast"
+    },
+    {
+      "scenario": "B",
+      "label": "Progressão 2.0 Equilibrada",
+      "totalXpTo500": 103435183,
+      "guerreiro_opt_p50_h": 26,
+      "guerreiro_casual_p50_h": 54,
+      "arqueiro_opt_p50_h": 25,
+      "mago_opt_p50_h": 40,
+      "barbaro_opt_p50_h": 25,
+      "target_opt": "25-40",
+      "target_casual": "45-70",
+      "in_target_opt": "yes"
+    },
+    {
+      "scenario": "Bplus",
+      "label": "Progressão 2.0 +exigente",
+      "totalXpTo500": 127993893,
+      "guerreiro_opt_p50_h": 49,
+      "guerreiro_casual_p50_h": 99,
+      "arqueiro_opt_p50_h": 41,
+      "mago_opt_p50_h": 65,
+      "barbaro_opt_p50_h": 49,
+      "target_opt": "25-40",
+      "target_casual": "45-70",
+      "in_target_opt": "too_slow_or_border"
+    }
+  ],
+  "classRows": [
+    {
+      "scenario": "A",
+      "classId": "GUERREIRO",
+      "n": 200,
+      "hours_p10": 12,
+      "hours_p50": 12,
+      "hours_p90": 13,
+      "casual_hours_p50": 19,
+      "reach_rate": 1,
+      "gold_p50": 30457353,
+      "faints_p50": 23
+    },
+    {
+      "scenario": "A",
+      "classId": "BARBARO",
+      "n": 200,
+      "hours_p10": 11,
+      "hours_p50": 12,
+      "hours_p90": 12,
+      "casual_hours_p50": 18,
+      "reach_rate": 1,
+      "gold_p50": 32086267,
+      "faints_p50": 0
+    },
+    {
+      "scenario": "A",
+      "classId": "MAGO",
+      "n": 200,
+      "hours_p10": 17,
+      "hours_p50": 18,
+      "hours_p90": 19,
+      "casual_hours_p50": 21,
+      "reach_rate": 1,
+      "gold_p50": 29445281,
+      "faints_p50": 618.6000000000008
+    },
+    {
+      "scenario": "A",
+      "classId": "ARQUEIRO",
+      "n": 200,
+      "hours_p10": 44,
+      "hours_p50": 44,
+      "hours_p90": 45,
+      "casual_hours_p50": 72,
+      "reach_rate": 1,
+      "gold_p50": 27196933,
+      "faints_p50": 1267.3999999999996
+    },
+    {
+      "scenario": "B",
+      "classId": "GUERREIRO",
+      "n": 200,
+      "hours_p10": 25,
+      "hours_p50": 26,
+      "hours_p90": 26,
+      "casual_hours_p50": 54,
+      "reach_rate": 1,
+      "gold_p50": 39269694,
+      "faints_p50": 193.19999999999993
+    },
+    {
+      "scenario": "B",
+      "classId": "BARBARO",
+      "n": 200,
+      "hours_p10": 24,
+      "hours_p50": 25,
+      "hours_p90": 25,
+      "casual_hours_p50": 49,
+      "reach_rate": 1,
+      "gold_p50": 39882178,
+      "faints_p50": 225.39999999999986
+    },
+    {
+      "scenario": "B",
+      "classId": "MAGO",
+      "n": 200,
+      "hours_p10": 39,
+      "hours_p50": 40,
+      "hours_p90": 40,
+      "casual_hours_p50": 75,
+      "reach_rate": 1,
+      "gold_p50": 38847919,
+      "faints_p50": 1633.600000000002
+    },
+    {
+      "scenario": "B",
+      "classId": "ARQUEIRO",
+      "n": 200,
+      "hours_p10": 24,
+      "hours_p50": 25,
+      "hours_p90": 26,
+      "casual_hours_p50": 40,
+      "reach_rate": 1,
+      "gold_p50": 38972614,
+      "faints_p50": 1057.6000000000015
+    },
+    {
+      "scenario": "Bplus",
+      "classId": "GUERREIRO",
+      "n": 200,
+      "hours_p10": 48,
+      "hours_p50": 49,
+      "hours_p90": 51,
+      "casual_hours_p50": 99,
+      "reach_rate": 1,
+      "gold_p50": 55501888,
+      "faints_p50": 1322.200000000001
+    },
+    {
+      "scenario": "Bplus",
+      "classId": "BARBARO",
+      "n": 200,
+      "hours_p10": 48,
+      "hours_p50": 49,
+      "hours_p90": 50,
+      "casual_hours_p50": 94,
+      "reach_rate": 1,
+      "gold_p50": 55096678,
+      "faints_p50": 1610.0000000000016
+    },
+    {
+      "scenario": "Bplus",
+      "classId": "MAGO",
+      "n": 200,
+      "hours_p10": 64,
+      "hours_p50": 65,
+      "hours_p90": 66,
+      "casual_hours_p50": 120,
+      "reach_rate": 1,
+      "gold_p50": 54919406,
+      "faints_p50": 2247.000000000001
+    },
+    {
+      "scenario": "Bplus",
+      "classId": "ARQUEIRO",
+      "n": 200,
+      "hours_p10": 40,
+      "hours_p50": 41,
+      "hours_p90": 42,
+      "casual_hours_p50": 68,
+      "reach_rate": 1,
+      "gold_p50": 54980000,
+      "faints_p50": 2070.2000000000025
+    }
+  ],
+  "fidelity": true
+}

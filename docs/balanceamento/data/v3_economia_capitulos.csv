@@ -1,0 +1,5 @@
+chapter,name,gold_in_h_opt,gold_in_total_opt,gold_out_refine,gold_out_ritual,gold_out_other,net_note,sink_primary
+1,Era Mortal,80000,2100000,17000000,10000000,2000000,Sink refine B-det + ritual; surplus controlado no late Cap.I,refine_Bdet+ritual
+2,Despertar Celestial,400000,12000000,25000000,0,8000000,Gear divino + refine cel; sinks de maestria seed,divine_gear+cel_refine
+3,Ruptura dos Reinos,8000000,240000000,150000000,0,120000000,Maestria ranks + domínio + dims,mastery_nodes+dominion
+4,Trono dos Deuses,200000000,6000000000,3000000000,0,4000000000,Artefatos + refine avançado + cosmético craft,artifacts+adv_refine

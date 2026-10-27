@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>IDLE Admin Preview</title>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "/sinergia-idle/vendor/three/three.module.js",
+          "three/addons/": "/sinergia-idle/vendor/three/addons/"
+        }
+      }
+    </script>
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        overflow: hidden;
+        background: #061323;
+        font-family: system-ui, sans-serif;
+      }
+      #view {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+      #label {
+        position: absolute;
+        left: 8px;
+        bottom: 8px;
+        z-index: 2;
+        padding: 4px 8px;
+        border-radius: 6px;
+        background: rgba(6, 19, 35, 0.88);
+        border: 1px solid rgba(244, 181, 43, 0.28);
+        color: #e8f0f8;
+        font-size: 11px;
+        pointer-events: none;
+        max-width: 90%;
+      }
+      #empty {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        color: #8aa4bc;
+        font-size: 13px;
+        pointer-events: none;
+      }
+      #empty.hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="view"></canvas>
+    <div id="empty">Selecione um item ou monstro</div>
+    <div id="label">Preview</div>
+    <script type="module" src="/sinergia-idle/admin-studio/preview-engine.js"></script>
+  </body>
+</html>

@@ -1,0 +1,45 @@
+{
+  "totalXpTo500": 96696680,
+  "rows": [
+    {
+      "zoneId": "floresta",
+      "mobXp": 20,
+      "kills_for_500_if_static_zone": 4834834,
+      "optimistic_hours_if_1s_tick_10hits": 13430.094,
+      "note": "limite inferior analítico — NÃO inclui troca de zona, mortes, gear; zone fixa irrealista",
+      "source": "estimated_analytic"
+    },
+    {
+      "zoneId": "pantano",
+      "mobXp": 700,
+      "kills_for_500_if_static_zone": 138139,
+      "optimistic_hours_if_1s_tick_10hits": 383.719,
+      "note": "limite inferior analítico — NÃO inclui troca de zona, mortes, gear; zone fixa irrealista",
+      "source": "estimated_analytic"
+    },
+    {
+      "zoneId": "trono",
+      "mobXp": 9000,
+      "kills_for_500_if_static_zone": 10745,
+      "optimistic_hours_if_1s_tick_10hits": 29.847,
+      "note": "limite inferior analítico — NÃO inclui troca de zona, mortes, gear; zone fixa irrealista",
+      "source": "estimated_analytic"
+    },
+    {
+      "zoneId": "eter",
+      "mobXp": 10000,
+      "kills_for_500_if_static_zone": 9670,
+      "optimistic_hours_if_1s_tick_10hits": 26.861,
+      "note": "limite inferior analítico — NÃO inclui troca de zona, mortes, gear; zone fixa irrealista",
+      "source": "estimated_analytic"
+    },
+    {
+      "zoneId": "prova_divina",
+      "mobXp": 10000,
+      "kills_for_500_if_static_zone": 9670,
+      "optimistic_hours_if_1s_tick_10hits": 26.861,
+      "note": "limite inferior analítico — NÃO inclui troca de zona, mortes, gear; zone fixa irrealista",
+      "source": "estimated_analytic"
+    }
+  ]
+}

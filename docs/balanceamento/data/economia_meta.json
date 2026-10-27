@@ -1,0 +1,20 @@
+{
+  "goldSources": [
+    "kill_applyRewards",
+    "sell_items",
+    "pet_autosell",
+    "bag_full_autosell"
+  ],
+  "goldSinks": [
+    "merchant_bag",
+    "merchant_refiner",
+    "merchant_pets",
+    "merchant_attr_reset",
+    "divindade_ritual_10M"
+  ],
+  "mobGoldPerLevel": 5.5,
+  "ritualCost": 10000000,
+  "dropChanceDefault": 0.11,
+  "dropChanceLive": 0.016,
+  "source": "code"
+}

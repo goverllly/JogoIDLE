@@ -1,0 +1,48 @@
+{
+  "generatedAt": "2026-10-27T03:16:57.769Z",
+  "seed": 42,
+  "samplesPerFight": 1,
+  "notes": [
+    "Scripts isolados — não gravam save.json nem alteram motor.",
+    "Baseline oficial = DEFAULT_BALANCE + BASE_ZONES + DROP_CHANCE do código.",
+    "Standalone efetivo: dropChance override se presente; balance overrides vazios neste ambiente.",
+    "Produção Prisma: não acessível neste checkout — documentado como N/A."
+  ],
+  "liveCatalog": {
+    "exists": true,
+    "path": "/Users/pedrohochsprung/Projetos/JogoIDLE/idle/data/save.json",
+    "dropChanceDefault": 0.11,
+    "dropChanceLive": 0.016,
+    "dropChanceDiverges": true,
+    "balanceOverrides": {},
+    "zoneOverrideKeys": [],
+    "characterSnapshots": [
+      {
+        "id": "5dc6ede0-49d8-43fd-8667-2baa6a71a2db",
+        "name": "TesteIdle",
+        "classId": "GUERREIRO",
+        "level": 38,
+        "gold": 61341224,
+        "ascension": "CELESTIAL",
+        "careerKills": 207,
+        "careerPlayMs": 86940,
+        "createdAt": "2026-10-26T03:23:54.036Z"
+      },
+      {
+        "id": "476eef6e-664b-4f8f-9550-709ccc21bc0a",
+        "name": "Pedro",
+        "classId": "BARBARO",
+        "level": 89,
+        "gold": 501916,
+        "ascension": "CELESTIAL",
+        "careerKills": 2957,
+        "careerPlayMs": 1597910,
+        "createdAt": "2026-10-27T02:26:10.524Z"
+      }
+    ]
+  },
+  "production": {
+    "accessible": false,
+    "reason": "Schema Prisma / DB da SinergIA não montados neste repo standalone"
+  }
+}

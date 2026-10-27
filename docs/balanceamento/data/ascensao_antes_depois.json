@@ -1,0 +1,74 @@
+{
+  "requirements": {
+    "level": 500,
+    "gold": 10000000,
+    "item": "Suco Celestial",
+    "source": "code"
+  },
+  "before": {
+    "level": 500,
+    "attrs": {
+      "str": 1510,
+      "int": 3,
+      "dex": 380,
+      "con": 633
+    },
+    "stats": {
+      "maxHp": 12712,
+      "maxMp": 1581,
+      "attack": 3544,
+      "physical": 3544,
+      "magical": 53,
+      "defense": 1228,
+      "attackIntervalMs": 420,
+      "critChance": 0.45,
+      "str": 1590,
+      "int": 3,
+      "dex": 410,
+      "con": 673
+    },
+    "gearBonus": {
+      "str": 80,
+      "con": 40,
+      "dex": 30,
+      "attack": 40,
+      "defense": 20,
+      "hp": 200
+    }
+  },
+  "after": {
+    "level": 1,
+    "ascension": "CELESTIAL",
+    "attrs": {
+      "str": 1510,
+      "int": 3,
+      "dex": 380,
+      "con": 633
+    },
+    "unspentPointsPlus": 20,
+    "stats": {
+      "maxHp": 9718,
+      "maxMp": 84,
+      "attack": 3544,
+      "physical": 3544,
+      "magical": 53,
+      "defense": 1228,
+      "attackIntervalMs": 420,
+      "critChance": 0.45,
+      "str": 1590,
+      "int": 3,
+      "dex": 410,
+      "con": 673
+    },
+    "gearPersists": true,
+    "inventoryPersists": true,
+    "skillsPersist": true,
+    "goldMinus": 10000000,
+    "farmCleared": true
+  },
+  "celestialProgression": {
+    "pointsPerLevel": 10,
+    "levelCap": 700,
+    "xpBonusBelow100": 1.15
+  }
+}

@@ -1,0 +1,12 @@
+refine_level,success_chance,fail_chance,can_break,can_downgrade,cost_items,cost_gold,bonus_per_stat_per_level,bonus_accumulated_per_targeted_stat,material,source
+0,1,0,false,false,0,0,5,0,Refinador x1 por nível,code
+1,1,0,false,false,1,0,5,5,Refinador x1 por nível,code
+2,1,0,false,false,1,0,5,10,Refinador x1 por nível,code
+3,1,0,false,false,1,0,5,15,Refinador x1 por nível,code
+4,1,0,false,false,1,0,5,20,Refinador x1 por nível,code
+5,1,0,false,false,1,0,5,25,Refinador x1 por nível,code
+6,1,0,false,false,1,0,5,30,Refinador x1 por nível,code
+7,1,0,false,false,1,0,5,35,Refinador x1 por nível,code
+8,1,0,false,false,1,0,5,40,Refinador x1 por nível,code
+9,1,0,false,false,1,0,5,45,Refinador x1 por nível,code
+10,1,0,false,false,1,0,5,50,Refinador x1 por nível,code

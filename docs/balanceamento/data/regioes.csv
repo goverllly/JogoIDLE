@@ -1,0 +1,18 @@
+id,name,minLevel,tier,requiresAscension,mortalOnly,monsterCount,bossWaveSize,avgMobHp,avgMobAtk,avgMobXp,avgMobGold,bossHp,bossAtk,bossXp,bossGold,dropChance,dropChanceLiveEffective,bossDropMult,refineDropChance,source
+floresta,Floresta Inicial,1,1,,false,2,8,305,36,30,9,671,50,105,30,0.11,0.016,2.5,0.012,code_calculated
+cemiterio,Cemitério,10,2,,false,2,8,615,64,220,61,1353,90,770,212,0.11,0.016,2.5,0.012,code_calculated
+jardim,Jardim Sombrio,25,3,,false,2,8,1115,111,530,146,2453,155,1855,511,0.11,0.016,2.5,0.012,code_calculated
+pantano,Pântano Venenoso,35,4,,false,2,8,1425,141,730,201,3135,196,2555,704,0.11,0.016,2.5,0.012,code_calculated
+hidra,Cripta Ardente,50,5,,false,2,8,1940,189,1050,289,4268,265,3675,1012,0.11,0.016,2.5,0.012,code_calculated
+gelo,Picos Gelados,70,6,,false,2,8,2560,247,1440,396,5632,342,5040,1386,0.11,0.016,2.5,0.012,code_calculated
+abismo,Cidadela Abissal,90,7,,false,2,8,3215,310,1850,509,7073,428,6475,1782,0.11,0.016,2.5,0.012,code_calculated
+fortaleza,Fortaleza Esquecida,120,8,,false,2,8,4180,400,2450,674,9196,549,8575,2359,0.11,0.016,2.5,0.012,code_calculated
+vulcao,Vulcão Rubro,180,9,,false,2,8,6135,585,3680,1012,13497,806,12880,3542,0.11,0.016,2.5,0.012,code_calculated
+catacumbas,Catacumbas Profundas,250,10,,false,2,8,8400,799,5100,1403,18480,1099,17850,4909,0.11,0.016,2.5,0.012,code_calculated
+nevoa,Névoa Eterna,320,11,,false,2,8,10635,1010,6500,1788,23397,1384,22750,6256,0.11,0.016,2.5,0.012,code_calculated
+reliquias,Câmara das Relíquias,400,12,,false,2,8,13185,1250,8100,2228,29007,1708,28350,7796,0.11,0.016,2.5,0.012,code_calculated
+trono,Trono Mortal,450,13,,false,2,10,14865,1409,9150,2517,32703,1932,32025,8808,0.11,0.016,2.5,0.012,code_calculated
+prova_divina,Prova Divina,500,13,,true,2,12,16300,1545,10050,2764,78892,2829,35175,9674,0.11,0.016,1.2,0,code_calculated
+eter,Campos do Éter,500,14,CELESTIAL,false,2,10,16540,1567,10200,2805,36388,2156,35700,9818,0.11,0.016,2.5,0.012,code_calculated
+firmamento,Firmamento,560,15,CELESTIAL,false,2,11,18450,1748,11400,3135,40590,2400,39900,10973,0.11,0.016,2.5,0.012,code_calculated
+nexus,Nexus Celestial,620,16,CELESTIAL,false,2,12,20530,1943,12700,3493,45166,2684,44450,12224,0.11,0.016,2.5,0.012,code_calculated

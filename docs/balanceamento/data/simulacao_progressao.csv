@@ -1,0 +1,7 @@
+label,classId,gearCurve,xpMult,finalLevel,hours_to_stop,reached500,kills,faints,gold,source
+A_no_gear,GUERREIRO,none,1,500,18,true,18741,298,29029875,simulated
+B_gradual_gear,GUERREIRO,gradual,1,500,16,true,18668,85,28570186,simulated
+C_gradual_xp115,GUERREIRO,gradual,1.15,500,15,true,16065,195,25373017,simulated
+D_strong_gear,GUERREIRO,strong,1.15,500,11,true,16741,0,26290337,simulated
+E_strong_xp125,GUERREIRO,strong,1.25,500,10,true,15730,0,21336312,simulated
+E_arqueiro_strong,ARQUEIRO,strong,1.25,500,36,true,17045,1940,22248798,simulated

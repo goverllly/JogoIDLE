@@ -1,0 +1,401 @@
+id,name,slot,tier,classes,price,consumable,source
+BARBARO_boots_t1,Botas de Couro,boots,1,BARBARO,12,false,code
+ARQUEIRO_boots_t1,Botas de Couro,boots,1,ARQUEIRO,12,false,code
+GUERREIRO_boots_t1,Botas de Ferro,boots,1,GUERREIRO,12,false,code
+MAGO_boots_t1,Sandálias de Linho,boots,1,MAGO,12,false,code
+ARQUEIRO_chest_t1,Colete de Couro,chest,1,ARQUEIRO,12,false,code
+MAGO_chest_t1,Manto de Linho,chest,1,MAGO,12,false,code
+GUERREIRO_chest_t1,Peitoral de Ferro,chest,1,GUERREIRO,12,false,code
+BARBARO_chest_t1,Pele de Couro,chest,1,BARBARO,12,false,code
+consumable_mana_potion,Poção de Mana,consumable,1,GUERREIRO|BARBARO|MAGO|ARQUEIRO,80,true,code
+consumable_hp_potion,Poção de Vida,consumable,1,GUERREIRO|BARBARO|MAGO|ARQUEIRO,80,true,code
+consumable_refiner,Refinador,consumable,1,GUERREIRO|BARBARO|MAGO|ARQUEIRO,5000,true,code
+consumable_attr_reset,Reset de Pontos,consumable,1,GUERREIRO|BARBARO|MAGO|ARQUEIRO,1000000,true,code
+BARBARO_gloves_t1,Braceletes de Couro,gloves,1,BARBARO,12,false,code
+ARQUEIRO_gloves_t1,Luvas de Couro,gloves,1,ARQUEIRO,12,false,code
+MAGO_gloves_t1,Luvas de Linho,gloves,1,MAGO,12,false,code
+GUERREIRO_gloves_t1,Manoplas de Ferro,gloves,1,GUERREIRO,12,false,code
+BARBARO_head_t1,Capuz de Couro,head,1,BARBARO,12,false,code
+ARQUEIRO_head_t1,Capuz de Couro,head,1,ARQUEIRO,12,false,code
+MAGO_head_t1,Chapéu de Linho,head,1,MAGO,12,false,code
+GUERREIRO_head_t1,Elmo de Ferro,head,1,GUERREIRO,12,false,code
+BARBARO_legs_t1,Calças de Couro,legs,1,BARBARO,12,false,code
+ARQUEIRO_legs_t1,Calças de Couro,legs,1,ARQUEIRO,12,false,code
+MAGO_legs_t1,Calças de Linho,legs,1,MAGO,12,false,code
+GUERREIRO_legs_t1,Grevas de Ferro,legs,1,GUERREIRO,12,false,code
+colar_t1,Colar de Cobre,necklace,1,GUERREIRO|BARBARO|MAGO|ARQUEIRO,14.399999999999999,false,code
+ARQUEIRO_adaga_secundaria_t1,Adaga Secundária de Ferro,offhand,1,ARQUEIRO,12,false,code
+GUERREIRO_fw_shield_A_t1,Broquel de Ferro,offhand,1,GUERREIRO,12,false,code
+BARBARO_escudo_barbaro_t1,Escudo Bárbaro de Couro,offhand,1,BARBARO,12,false,code
+GUERREIRO_escudo_t1,Escudo de Ferro,offhand,1,GUERREIRO,12,false,code
+GUERREIRO_fw_shield_B_t1,Escudo Oval de Ferro,offhand,1,GUERREIRO,12,false,code
+GUERREIRO_fw_shield_C_t1,Escudo Torre de Ferro,offhand,1,GUERREIRO,12,false,code
+MAGO_grimorio_t1,Grimório de Linho,offhand,1,MAGO,12,false,code
+anel_fogo_t1,Anel da Fênix de Cobre,ring,1,MAGO,16.200000000000003,false,code
+anel_gelo_t1,Anel da Nevasca de Cobre,ring,1,MAGO,16.200000000000003,false,code
+anel_t1,Anel de Cobre,ring,1,GUERREIRO|BARBARO|MAGO|ARQUEIRO,14.399999999999999,false,code
+anel_raio_t1,Anel de Zeus de Cobre,ring,1,MAGO,16.200000000000003,false,code
+GUERREIRO_fw_dagger_B_t1,Adaga Curva de Ferro,weapon,1,GUERREIRO,12,false,code
+GUERREIRO_adaga_t1,Adaga de Ferro,weapon,1,GUERREIRO,12,false,code
+GUERREIRO_fw_halberd_t1,Alabarda de Ferro,weapon,1,GUERREIRO,16.799999999999997,false,code
+ARQUEIRO_fw_bow_A_withString_t1,Arco Armado de Carvalho,weapon,1,ARQUEIRO,16.799999999999997,false,code
+ARQUEIRO_fw_bow_A_t1,Arco de Carvalho,weapon,1,ARQUEIRO,16.799999999999997,false,code
+ARQUEIRO_fw_bow_B_withString_t1,Arco Longo Armado de Carvalho,weapon,1,ARQUEIRO,16.799999999999997,false,code
+ARQUEIRO_fw_bow_B_t1,Arco Longo de Carvalho,weapon,1,ARQUEIRO,16.799999999999997,false,code
+ARQUEIRO_besta_leve_t1,Besta Leve de Carvalho,weapon,1,ARQUEIRO,12,false,code
+ARQUEIRO_besta_t1,Besta Pesada de Carvalho,weapon,1,ARQUEIRO,16.799999999999997,false,code
+MAGO_cajado_t1,Cajado de Carvalho,weapon,1,MAGO,16.799999999999997,false,code
+MAGO_fw_staff_B_t1,Cajado Longo de Carvalho,weapon,1,MAGO,16.799999999999997,false,code
+MAGO_fw_staff_A_t1,Cajado Rúnico de Carvalho,weapon,1,MAGO,16.799999999999997,false,code
+GUERREIRO_fw_sword_E_t1,Claymore de Ferro,weapon,1,GUERREIRO,16.799999999999997,false,code
+GUERREIRO_fw_sword_D_t1,Espada Bastarda de Ferro,weapon,1,GUERREIRO,16.799999999999997,false,code
+GUERREIRO_fw_sword_A_t1,Espada Curta de Ferro,weapon,1,GUERREIRO,12,false,code
+GUERREIRO_espada_t1,Espada de Ferro,weapon,1,GUERREIRO,12,false,code
+GUERREIRO_fw_sword_B_t1,Espada Reta de Ferro,weapon,1,GUERREIRO,12,false,code
+MAGO_fenix_t1,Fênix de Carvalho,weapon,1,MAGO,12,false,code
+ARQUEIRO_fw_arrow_A_t1,Flecha de Carvalho,weapon,1,ARQUEIRO,12,false,code
+ARQUEIRO_fw_arrow_B_t1,Flecha Larga de Carvalho,weapon,1,ARQUEIRO,12,false,code
+GUERREIRO_fw_sword_C_t1,Florete de Ferro,weapon,1,GUERREIRO,12,false,code
+BARBARO_fw_fistweapon_B_t1,Garra de Ferro,weapon,1,BARBARO,12,false,code
+BARBARO_fw_fistweapon_B_stacked_t1,Garras de Ferro,weapon,1,BARBARO,12,false,code
+GUERREIRO_fw_spear_A_t1,Lança de Ferro,weapon,1,GUERREIRO,16.799999999999997,false,code
+BARBARO_fw_axe_A_t1,Machado Curto de Ferro,weapon,1,BARBARO,12,false,code
+BARBARO_machado_t1,Machado de Ferro,weapon,1,BARBARO,12,false,code
+BARBARO_fw_axe_B_t1,Machado de Mão de Ferro,weapon,1,BARBARO,12,false,code
+BARBARO_fw_axe_C_t1,Machado Largo de Ferro,weapon,1,BARBARO,12,false,code
+BARBARO_machado_pesado_t1,Machado Pesado de Ferro,weapon,1,BARBARO,16.799999999999997,false,code
+BARBARO_fw_fistweapon_A_t1,Manopla de Ferro,weapon,1,BARBARO,12,false,code
+BARBARO_fw_fistweapon_A_stacked_t1,Manoplas de Ferro,weapon,1,BARBARO,12,false,code
+BARBARO_fw_hammer_C_t1,Marreta de Ferro,weapon,1,BARBARO,12,false,code
+BARBARO_fw_hammer_A_t1,Martelo de Ferro,weapon,1,BARBARO,12,false,code
+BARBARO_fw_hammer_B_t1,Martelo de Guerra de Ferro,weapon,1,BARBARO,12,false,code
+GUERREIRO_montante_t1,Montante de Ferro,weapon,1,GUERREIRO,16.799999999999997,false,code
+MAGO_nevasca_t1,Nevasca de Carvalho,weapon,1,MAGO,12,false,code
+GUERREIRO_fw_dagger_A_t1,Punhal de Ferro,weapon,1,GUERREIRO,12,false,code
+MAGO_varinha_t1,Varinha de Carvalho,weapon,1,MAGO,12,false,code
+MAGO_fw_wand_A_t1,Varinha Rúnica de Carvalho,weapon,1,MAGO,12,false,code
+MAGO_zeus_t1,Zeus de Carvalho,weapon,1,MAGO,12,false,code
+GUERREIRO_boots_t2,Botas de Aço,boots,2,GUERREIRO,24,false,code
+BARBARO_boots_t2,Botas de Couro Curtido,boots,2,BARBARO,24,false,code
+ARQUEIRO_boots_t2,Botas de Couro Curtido,boots,2,ARQUEIRO,24,false,code
+MAGO_boots_t2,Sandálias de Seda,boots,2,MAGO,24,false,code
+ARQUEIRO_chest_t2,Colete de Couro Curtido,chest,2,ARQUEIRO,24,false,code
+MAGO_chest_t2,Manto de Seda,chest,2,MAGO,24,false,code
+GUERREIRO_chest_t2,Peitoral de Aço,chest,2,GUERREIRO,24,false,code
+BARBARO_chest_t2,Pele de Couro Curtido,chest,2,BARBARO,24,false,code
+BARBARO_gloves_t2,Braceletes de Couro Curtido,gloves,2,BARBARO,24,false,code
+ARQUEIRO_gloves_t2,Luvas de Couro Curtido,gloves,2,ARQUEIRO,24,false,code
+MAGO_gloves_t2,Luvas de Seda,gloves,2,MAGO,24,false,code
+GUERREIRO_gloves_t2,Manoplas de Aço,gloves,2,GUERREIRO,24,false,code
+BARBARO_head_t2,Capuz de Couro Curtido,head,2,BARBARO,24,false,code
+ARQUEIRO_head_t2,Capuz de Couro Curtido,head,2,ARQUEIRO,24,false,code
+MAGO_head_t2,Chapéu de Seda,head,2,MAGO,24,false,code
+GUERREIRO_head_t2,Elmo de Aço,head,2,GUERREIRO,24,false,code
+BARBARO_legs_t2,Calças de Couro Curtido,legs,2,BARBARO,24,false,code
+ARQUEIRO_legs_t2,Calças de Couro Curtido,legs,2,ARQUEIRO,24,false,code
+MAGO_legs_t2,Calças de Seda,legs,2,MAGO,24,false,code
+GUERREIRO_legs_t2,Grevas de Aço,legs,2,GUERREIRO,24,false,code
+colar_t2,Colar de Prata,necklace,2,GUERREIRO|BARBARO|MAGO|ARQUEIRO,28.799999999999997,false,code
+ARQUEIRO_adaga_secundaria_t2,Adaga Secundária de Aço,offhand,2,ARQUEIRO,24,false,code
+GUERREIRO_fw_shield_A_t2,Broquel de Aço,offhand,2,GUERREIRO,24,false,code
+BARBARO_escudo_barbaro_t2,Escudo Bárbaro de Couro Curtido,offhand,2,BARBARO,24,false,code
+GUERREIRO_escudo_t2,Escudo de Aço,offhand,2,GUERREIRO,24,false,code
+GUERREIRO_fw_shield_B_t2,Escudo Oval de Aço,offhand,2,GUERREIRO,24,false,code
+GUERREIRO_fw_shield_C_t2,Escudo Torre de Aço,offhand,2,GUERREIRO,24,false,code
+MAGO_grimorio_t2,Grimório de Seda,offhand,2,MAGO,24,false,code
+anel_fogo_t2,Anel da Fênix de Prata,ring,2,MAGO,32.400000000000006,false,code
+anel_gelo_t2,Anel da Nevasca de Prata,ring,2,MAGO,32.400000000000006,false,code
+anel_t2,Anel de Prata,ring,2,GUERREIRO|BARBARO|MAGO|ARQUEIRO,28.799999999999997,false,code
+anel_raio_t2,Anel de Zeus de Prata,ring,2,MAGO,32.400000000000006,false,code
+GUERREIRO_fw_dagger_B_t2,Adaga Curva de Aço,weapon,2,GUERREIRO,24,false,code
+GUERREIRO_adaga_t2,Adaga de Aço,weapon,2,GUERREIRO,24,false,code
+GUERREIRO_fw_halberd_t2,Alabarda de Aço,weapon,2,GUERREIRO,33.599999999999994,false,code
+ARQUEIRO_fw_bow_A_withString_t2,Arco Armado de Freixo,weapon,2,ARQUEIRO,33.599999999999994,false,code
+ARQUEIRO_fw_bow_A_t2,Arco de Freixo,weapon,2,ARQUEIRO,33.599999999999994,false,code
+ARQUEIRO_fw_bow_B_withString_t2,Arco Longo Armado de Freixo,weapon,2,ARQUEIRO,33.599999999999994,false,code
+ARQUEIRO_fw_bow_B_t2,Arco Longo de Freixo,weapon,2,ARQUEIRO,33.599999999999994,false,code
+ARQUEIRO_besta_leve_t2,Besta Leve de Freixo,weapon,2,ARQUEIRO,24,false,code
+ARQUEIRO_besta_t2,Besta Pesada de Freixo,weapon,2,ARQUEIRO,33.599999999999994,false,code
+MAGO_cajado_t2,Cajado de Freixo,weapon,2,MAGO,33.599999999999994,false,code
+MAGO_fw_staff_B_t2,Cajado Longo de Freixo,weapon,2,MAGO,33.599999999999994,false,code
+MAGO_fw_staff_A_t2,Cajado Rúnico de Freixo,weapon,2,MAGO,33.599999999999994,false,code
+GUERREIRO_fw_sword_E_t2,Claymore de Aço,weapon,2,GUERREIRO,33.599999999999994,false,code
+GUERREIRO_fw_sword_D_t2,Espada Bastarda de Aço,weapon,2,GUERREIRO,33.599999999999994,false,code
+GUERREIRO_fw_sword_A_t2,Espada Curta de Aço,weapon,2,GUERREIRO,24,false,code
+GUERREIRO_espada_t2,Espada de Aço,weapon,2,GUERREIRO,24,false,code
+GUERREIRO_fw_sword_B_t2,Espada Reta de Aço,weapon,2,GUERREIRO,24,false,code
+MAGO_fenix_t2,Fênix de Freixo,weapon,2,MAGO,24,false,code
+ARQUEIRO_fw_arrow_A_t2,Flecha de Freixo,weapon,2,ARQUEIRO,24,false,code
+ARQUEIRO_fw_arrow_B_t2,Flecha Larga de Freixo,weapon,2,ARQUEIRO,24,false,code
+GUERREIRO_fw_sword_C_t2,Florete de Aço,weapon,2,GUERREIRO,24,false,code
+BARBARO_fw_fistweapon_B_t2,Garra de Aço,weapon,2,BARBARO,24,false,code
+BARBARO_fw_fistweapon_B_stacked_t2,Garras de Aço,weapon,2,BARBARO,24,false,code
+GUERREIRO_fw_spear_A_t2,Lança de Aço,weapon,2,GUERREIRO,33.599999999999994,false,code
+BARBARO_fw_axe_A_t2,Machado Curto de Aço,weapon,2,BARBARO,24,false,code
+BARBARO_machado_t2,Machado de Aço,weapon,2,BARBARO,24,false,code
+BARBARO_fw_axe_B_t2,Machado de Mão de Aço,weapon,2,BARBARO,24,false,code
+BARBARO_fw_axe_C_t2,Machado Largo de Aço,weapon,2,BARBARO,24,false,code
+BARBARO_machado_pesado_t2,Machado Pesado de Aço,weapon,2,BARBARO,33.599999999999994,false,code
+BARBARO_fw_fistweapon_A_t2,Manopla de Aço,weapon,2,BARBARO,24,false,code
+BARBARO_fw_fistweapon_A_stacked_t2,Manoplas de Aço,weapon,2,BARBARO,24,false,code
+BARBARO_fw_hammer_C_t2,Marreta de Aço,weapon,2,BARBARO,24,false,code
+BARBARO_fw_hammer_A_t2,Martelo de Aço,weapon,2,BARBARO,24,false,code
+BARBARO_fw_hammer_B_t2,Martelo de Guerra de Aço,weapon,2,BARBARO,24,false,code
+GUERREIRO_montante_t2,Montante de Aço,weapon,2,GUERREIRO,33.599999999999994,false,code
+MAGO_nevasca_t2,Nevasca de Freixo,weapon,2,MAGO,24,false,code
+GUERREIRO_fw_dagger_A_t2,Punhal de Aço,weapon,2,GUERREIRO,24,false,code
+MAGO_varinha_t2,Varinha de Freixo,weapon,2,MAGO,24,false,code
+MAGO_fw_wand_A_t2,Varinha Rúnica de Freixo,weapon,2,MAGO,24,false,code
+MAGO_zeus_t2,Zeus de Freixo,weapon,2,MAGO,24,false,code
+BARBARO_boots_t3,Botas de Pele de Lobo,boots,3,BARBARO,36,false,code
+ARQUEIRO_boots_t3,Botas de Pele de Lobo,boots,3,ARQUEIRO,36,false,code
+GUERREIRO_boots_t3,Botas de Prata,boots,3,GUERREIRO,36,false,code
+MAGO_boots_t3,Sandálias de Runas,boots,3,MAGO,36,false,code
+ARQUEIRO_chest_t3,Colete de Pele de Lobo,chest,3,ARQUEIRO,36,false,code
+MAGO_chest_t3,Manto de Runas,chest,3,MAGO,36,false,code
+GUERREIRO_chest_t3,Peitoral de Prata,chest,3,GUERREIRO,36,false,code
+BARBARO_chest_t3,Pele de Pele de Lobo,chest,3,BARBARO,36,false,code
+BARBARO_gloves_t3,Braceletes de Pele de Lobo,gloves,3,BARBARO,36,false,code
+ARQUEIRO_gloves_t3,Luvas de Pele de Lobo,gloves,3,ARQUEIRO,36,false,code
+MAGO_gloves_t3,Luvas de Runas,gloves,3,MAGO,36,false,code
+GUERREIRO_gloves_t3,Manoplas de Prata,gloves,3,GUERREIRO,36,false,code
+BARBARO_head_t3,Capuz de Pele de Lobo,head,3,BARBARO,36,false,code
+ARQUEIRO_head_t3,Capuz de Pele de Lobo,head,3,ARQUEIRO,36,false,code
+MAGO_head_t3,Chapéu de Runas,head,3,MAGO,36,false,code
+GUERREIRO_head_t3,Elmo de Prata,head,3,GUERREIRO,36,false,code
+BARBARO_legs_t3,Calças de Pele de Lobo,legs,3,BARBARO,36,false,code
+ARQUEIRO_legs_t3,Calças de Pele de Lobo,legs,3,ARQUEIRO,36,false,code
+MAGO_legs_t3,Calças de Runas,legs,3,MAGO,36,false,code
+GUERREIRO_legs_t3,Grevas de Prata,legs,3,GUERREIRO,36,false,code
+colar_t3,Colar de Ouro,necklace,3,GUERREIRO|BARBARO|MAGO|ARQUEIRO,43.199999999999996,false,code
+ARQUEIRO_adaga_secundaria_t3,Adaga Secundária de Prata,offhand,3,ARQUEIRO,36,false,code
+GUERREIRO_fw_shield_A_t3,Broquel de Prata,offhand,3,GUERREIRO,36,false,code
+BARBARO_escudo_barbaro_t3,Escudo Bárbaro de Pele de Lobo,offhand,3,BARBARO,36,false,code
+GUERREIRO_escudo_t3,Escudo de Prata,offhand,3,GUERREIRO,36,false,code
+GUERREIRO_fw_shield_B_t3,Escudo Oval de Prata,offhand,3,GUERREIRO,36,false,code
+GUERREIRO_fw_shield_C_t3,Escudo Torre de Prata,offhand,3,GUERREIRO,36,false,code
+MAGO_grimorio_t3,Grimório de Runas,offhand,3,MAGO,36,false,code
+anel_fogo_t3,Anel da Fênix de Ouro,ring,3,MAGO,48.6,false,code
+anel_gelo_t3,Anel da Nevasca de Ouro,ring,3,MAGO,48.6,false,code
+anel_t3,Anel de Ouro,ring,3,GUERREIRO|BARBARO|MAGO|ARQUEIRO,43.199999999999996,false,code
+anel_raio_t3,Anel de Zeus de Ouro,ring,3,MAGO,48.6,false,code
+GUERREIRO_fw_dagger_B_t3,Adaga Curva de Prata,weapon,3,GUERREIRO,36,false,code
+GUERREIRO_adaga_t3,Adaga de Prata,weapon,3,GUERREIRO,36,false,code
+GUERREIRO_fw_halberd_t3,Alabarda de Prata,weapon,3,GUERREIRO,50.4,false,code
+ARQUEIRO_fw_bow_A_withString_t3,Arco Armado de Runas,weapon,3,ARQUEIRO,50.4,false,code
+ARQUEIRO_fw_bow_A_t3,Arco de Runas,weapon,3,ARQUEIRO,50.4,false,code
+ARQUEIRO_fw_bow_B_withString_t3,Arco Longo Armado de Runas,weapon,3,ARQUEIRO,50.4,false,code
+ARQUEIRO_fw_bow_B_t3,Arco Longo de Runas,weapon,3,ARQUEIRO,50.4,false,code
+ARQUEIRO_besta_leve_t3,Besta Leve de Runas,weapon,3,ARQUEIRO,36,false,code
+ARQUEIRO_besta_t3,Besta Pesada de Runas,weapon,3,ARQUEIRO,50.4,false,code
+MAGO_cajado_t3,Cajado de Runas,weapon,3,MAGO,50.4,false,code
+MAGO_fw_staff_B_t3,Cajado Longo de Runas,weapon,3,MAGO,50.4,false,code
+MAGO_fw_staff_A_t3,Cajado Rúnico de Runas,weapon,3,MAGO,50.4,false,code
+GUERREIRO_fw_sword_E_t3,Claymore de Prata,weapon,3,GUERREIRO,50.4,false,code
+GUERREIRO_fw_sword_D_t3,Espada Bastarda de Prata,weapon,3,GUERREIRO,50.4,false,code
+GUERREIRO_fw_sword_A_t3,Espada Curta de Prata,weapon,3,GUERREIRO,36,false,code
+GUERREIRO_espada_t3,Espada de Prata,weapon,3,GUERREIRO,36,false,code
+GUERREIRO_fw_sword_B_t3,Espada Reta de Prata,weapon,3,GUERREIRO,36,false,code
+MAGO_fenix_t3,Fênix de Runas,weapon,3,MAGO,36,false,code
+ARQUEIRO_fw_arrow_A_t3,Flecha de Runas,weapon,3,ARQUEIRO,36,false,code
+ARQUEIRO_fw_arrow_B_t3,Flecha Larga de Runas,weapon,3,ARQUEIRO,36,false,code
+GUERREIRO_fw_sword_C_t3,Florete de Prata,weapon,3,GUERREIRO,36,false,code
+BARBARO_fw_fistweapon_B_t3,Garra de Prata,weapon,3,BARBARO,36,false,code
+BARBARO_fw_fistweapon_B_stacked_t3,Garras de Prata,weapon,3,BARBARO,36,false,code
+GUERREIRO_fw_spear_A_t3,Lança de Prata,weapon,3,GUERREIRO,50.4,false,code
+BARBARO_fw_axe_A_t3,Machado Curto de Prata,weapon,3,BARBARO,36,false,code
+BARBARO_fw_axe_B_t3,Machado de Mão de Prata,weapon,3,BARBARO,36,false,code
+BARBARO_machado_t3,Machado de Prata,weapon,3,BARBARO,36,false,code
+BARBARO_fw_axe_C_t3,Machado Largo de Prata,weapon,3,BARBARO,36,false,code
+BARBARO_machado_pesado_t3,Machado Pesado de Prata,weapon,3,BARBARO,50.4,false,code
+BARBARO_fw_fistweapon_A_t3,Manopla de Prata,weapon,3,BARBARO,36,false,code
+BARBARO_fw_fistweapon_A_stacked_t3,Manoplas de Prata,weapon,3,BARBARO,36,false,code
+BARBARO_fw_hammer_C_t3,Marreta de Prata,weapon,3,BARBARO,36,false,code
+BARBARO_fw_hammer_B_t3,Martelo de Guerra de Prata,weapon,3,BARBARO,36,false,code
+BARBARO_fw_hammer_A_t3,Martelo de Prata,weapon,3,BARBARO,36,false,code
+GUERREIRO_montante_t3,Montante de Prata,weapon,3,GUERREIRO,50.4,false,code
+MAGO_nevasca_t3,Nevasca de Runas,weapon,3,MAGO,36,false,code
+GUERREIRO_fw_dagger_A_t3,Punhal de Prata,weapon,3,GUERREIRO,36,false,code
+MAGO_varinha_t3,Varinha de Runas,weapon,3,MAGO,36,false,code
+MAGO_fw_wand_A_t3,Varinha Rúnica de Runas,weapon,3,MAGO,36,false,code
+MAGO_zeus_t3,Zeus de Runas,weapon,3,MAGO,36,false,code
+BARBARO_boots_t4,Botas de Escamas,boots,4,BARBARO,48,false,code
+ARQUEIRO_boots_t4,Botas de Escamas,boots,4,ARQUEIRO,48,false,code
+GUERREIRO_boots_t4,Botas de Obsidiana,boots,4,GUERREIRO,48,false,code
+MAGO_boots_t4,Sandálias de Sombras,boots,4,MAGO,48,false,code
+ARQUEIRO_chest_t4,Colete de Escamas,chest,4,ARQUEIRO,48,false,code
+MAGO_chest_t4,Manto de Sombras,chest,4,MAGO,48,false,code
+GUERREIRO_chest_t4,Peitoral de Obsidiana,chest,4,GUERREIRO,48,false,code
+BARBARO_chest_t4,Pele de Escamas,chest,4,BARBARO,48,false,code
+BARBARO_gloves_t4,Braceletes de Escamas,gloves,4,BARBARO,48,false,code
+ARQUEIRO_gloves_t4,Luvas de Escamas,gloves,4,ARQUEIRO,48,false,code
+MAGO_gloves_t4,Luvas de Sombras,gloves,4,MAGO,48,false,code
+GUERREIRO_gloves_t4,Manoplas de Obsidiana,gloves,4,GUERREIRO,48,false,code
+BARBARO_head_t4,Capuz de Escamas,head,4,BARBARO,48,false,code
+ARQUEIRO_head_t4,Capuz de Escamas,head,4,ARQUEIRO,48,false,code
+MAGO_head_t4,Chapéu de Sombras,head,4,MAGO,48,false,code
+GUERREIRO_head_t4,Elmo de Obsidiana,head,4,GUERREIRO,48,false,code
+BARBARO_legs_t4,Calças de Escamas,legs,4,BARBARO,48,false,code
+ARQUEIRO_legs_t4,Calças de Escamas,legs,4,ARQUEIRO,48,false,code
+MAGO_legs_t4,Calças de Sombras,legs,4,MAGO,48,false,code
+GUERREIRO_legs_t4,Grevas de Obsidiana,legs,4,GUERREIRO,48,false,code
+colar_t4,Colar de Ônix,necklace,4,GUERREIRO|BARBARO|MAGO|ARQUEIRO,57.599999999999994,false,code
+ARQUEIRO_adaga_secundaria_t4,Adaga Secundária de Obsidiana,offhand,4,ARQUEIRO,48,false,code
+GUERREIRO_fw_shield_A_t4,Broquel de Obsidiana,offhand,4,GUERREIRO,48,false,code
+BARBARO_escudo_barbaro_t4,Escudo Bárbaro de Escamas,offhand,4,BARBARO,48,false,code
+GUERREIRO_escudo_t4,Escudo de Obsidiana,offhand,4,GUERREIRO,48,false,code
+GUERREIRO_fw_shield_B_t4,Escudo Oval de Obsidiana,offhand,4,GUERREIRO,48,false,code
+GUERREIRO_fw_shield_C_t4,Escudo Torre de Obsidiana,offhand,4,GUERREIRO,48,false,code
+MAGO_grimorio_t4,Grimório de Sombras,offhand,4,MAGO,48,false,code
+anel_fogo_t4,Anel da Fênix de Ônix,ring,4,MAGO,64.80000000000001,false,code
+anel_gelo_t4,Anel da Nevasca de Ônix,ring,4,MAGO,64.80000000000001,false,code
+anel_t4,Anel de Ônix,ring,4,GUERREIRO|BARBARO|MAGO|ARQUEIRO,57.599999999999994,false,code
+anel_raio_t4,Anel de Zeus de Ônix,ring,4,MAGO,64.80000000000001,false,code
+GUERREIRO_fw_dagger_B_t4,Adaga Curva de Obsidiana,weapon,4,GUERREIRO,48,false,code
+GUERREIRO_adaga_t4,Adaga de Obsidiana,weapon,4,GUERREIRO,48,false,code
+GUERREIRO_fw_halberd_t4,Alabarda de Obsidiana,weapon,4,GUERREIRO,67.19999999999999,false,code
+ARQUEIRO_fw_bow_A_withString_t4,Arco Armado de Obsidiana,weapon,4,ARQUEIRO,67.19999999999999,false,code
+ARQUEIRO_fw_bow_A_t4,Arco de Obsidiana,weapon,4,ARQUEIRO,67.19999999999999,false,code
+ARQUEIRO_fw_bow_B_withString_t4,Arco Longo Armado de Obsidiana,weapon,4,ARQUEIRO,67.19999999999999,false,code
+ARQUEIRO_fw_bow_B_t4,Arco Longo de Obsidiana,weapon,4,ARQUEIRO,67.19999999999999,false,code
+ARQUEIRO_besta_leve_t4,Besta Leve de Obsidiana,weapon,4,ARQUEIRO,48,false,code
+ARQUEIRO_besta_t4,Besta Pesada de Obsidiana,weapon,4,ARQUEIRO,67.19999999999999,false,code
+MAGO_cajado_t4,Cajado de Obsidiana,weapon,4,MAGO,67.19999999999999,false,code
+MAGO_fw_staff_B_t4,Cajado Longo de Obsidiana,weapon,4,MAGO,67.19999999999999,false,code
+MAGO_fw_staff_A_t4,Cajado Rúnico de Obsidiana,weapon,4,MAGO,67.19999999999999,false,code
+GUERREIRO_fw_sword_E_t4,Claymore de Obsidiana,weapon,4,GUERREIRO,67.19999999999999,false,code
+GUERREIRO_fw_sword_D_t4,Espada Bastarda de Obsidiana,weapon,4,GUERREIRO,67.19999999999999,false,code
+GUERREIRO_fw_sword_A_t4,Espada Curta de Obsidiana,weapon,4,GUERREIRO,48,false,code
+GUERREIRO_espada_t4,Espada de Obsidiana,weapon,4,GUERREIRO,48,false,code
+GUERREIRO_fw_sword_B_t4,Espada Reta de Obsidiana,weapon,4,GUERREIRO,48,false,code
+MAGO_fenix_t4,Fênix de Obsidiana,weapon,4,MAGO,48,false,code
+ARQUEIRO_fw_arrow_A_t4,Flecha de Obsidiana,weapon,4,ARQUEIRO,48,false,code
+ARQUEIRO_fw_arrow_B_t4,Flecha Larga de Obsidiana,weapon,4,ARQUEIRO,48,false,code
+GUERREIRO_fw_sword_C_t4,Florete de Obsidiana,weapon,4,GUERREIRO,48,false,code
+BARBARO_fw_fistweapon_B_t4,Garra de Obsidiana,weapon,4,BARBARO,48,false,code
+BARBARO_fw_fistweapon_B_stacked_t4,Garras de Obsidiana,weapon,4,BARBARO,48,false,code
+GUERREIRO_fw_spear_A_t4,Lança de Obsidiana,weapon,4,GUERREIRO,67.19999999999999,false,code
+BARBARO_fw_axe_A_t4,Machado Curto de Obsidiana,weapon,4,BARBARO,48,false,code
+BARBARO_fw_axe_B_t4,Machado de Mão de Obsidiana,weapon,4,BARBARO,48,false,code
+BARBARO_machado_t4,Machado de Obsidiana,weapon,4,BARBARO,48,false,code
+BARBARO_fw_axe_C_t4,Machado Largo de Obsidiana,weapon,4,BARBARO,48,false,code
+BARBARO_machado_pesado_t4,Machado Pesado de Obsidiana,weapon,4,BARBARO,67.19999999999999,false,code
+BARBARO_fw_fistweapon_A_t4,Manopla de Obsidiana,weapon,4,BARBARO,48,false,code
+BARBARO_fw_fistweapon_A_stacked_t4,Manoplas de Obsidiana,weapon,4,BARBARO,48,false,code
+BARBARO_fw_hammer_C_t4,Marreta de Obsidiana,weapon,4,BARBARO,48,false,code
+BARBARO_fw_hammer_B_t4,Martelo de Guerra de Obsidiana,weapon,4,BARBARO,48,false,code
+BARBARO_fw_hammer_A_t4,Martelo de Obsidiana,weapon,4,BARBARO,48,false,code
+GUERREIRO_montante_t4,Montante de Obsidiana,weapon,4,GUERREIRO,67.19999999999999,false,code
+MAGO_nevasca_t4,Nevasca de Obsidiana,weapon,4,MAGO,48,false,code
+GUERREIRO_fw_dagger_A_t4,Punhal de Obsidiana,weapon,4,GUERREIRO,48,false,code
+MAGO_varinha_t4,Varinha de Obsidiana,weapon,4,MAGO,48,false,code
+MAGO_fw_wand_A_t4,Varinha Rúnica de Obsidiana,weapon,4,MAGO,48,false,code
+MAGO_zeus_t4,Zeus de Obsidiana,weapon,4,MAGO,48,false,code
+BARBARO_boots_t5,Botas de Couro de Dragão,boots,5,BARBARO,60,false,code
+ARQUEIRO_boots_t5,Botas de Couro de Dragão,boots,5,ARQUEIRO,60,false,code
+GUERREIRO_boots_t5,Botas de Escamas de Dragão,boots,5,GUERREIRO,60,false,code
+MAGO_boots_t5,Sandálias de Chamas,boots,5,MAGO,60,false,code
+ARQUEIRO_chest_t5,Colete de Couro de Dragão,chest,5,ARQUEIRO,60,false,code
+MAGO_chest_t5,Manto de Chamas,chest,5,MAGO,60,false,code
+GUERREIRO_chest_t5,Peitoral de Escamas de Dragão,chest,5,GUERREIRO,60,false,code
+BARBARO_chest_t5,Pele de Couro de Dragão,chest,5,BARBARO,60,false,code
+BARBARO_gloves_t5,Braceletes de Couro de Dragão,gloves,5,BARBARO,60,false,code
+MAGO_gloves_t5,Luvas de Chamas,gloves,5,MAGO,60,false,code
+ARQUEIRO_gloves_t5,Luvas de Couro de Dragão,gloves,5,ARQUEIRO,60,false,code
+GUERREIRO_gloves_t5,Manoplas de Escamas de Dragão,gloves,5,GUERREIRO,60,false,code
+BARBARO_head_t5,Capuz de Couro de Dragão,head,5,BARBARO,60,false,code
+ARQUEIRO_head_t5,Capuz de Couro de Dragão,head,5,ARQUEIRO,60,false,code
+MAGO_head_t5,Chapéu de Chamas,head,5,MAGO,60,false,code
+GUERREIRO_head_t5,Elmo de Escamas de Dragão,head,5,GUERREIRO,60,false,code
+MAGO_legs_t5,Calças de Chamas,legs,5,MAGO,60,false,code
+BARBARO_legs_t5,Calças de Couro de Dragão,legs,5,BARBARO,60,false,code
+ARQUEIRO_legs_t5,Calças de Couro de Dragão,legs,5,ARQUEIRO,60,false,code
+GUERREIRO_legs_t5,Grevas de Escamas de Dragão,legs,5,GUERREIRO,60,false,code
+colar_t5,Colar de Dragão,necklace,5,GUERREIRO|BARBARO|MAGO|ARQUEIRO,72,false,code
+ARQUEIRO_adaga_secundaria_t5,Adaga Secundária de Escamas de Dragão,offhand,5,ARQUEIRO,60,false,code
+GUERREIRO_fw_shield_A_t5,Broquel de Escamas de Dragão,offhand,5,GUERREIRO,60,false,code
+BARBARO_escudo_barbaro_t5,Escudo Bárbaro de Couro de Dragão,offhand,5,BARBARO,60,false,code
+GUERREIRO_escudo_t5,Escudo de Escamas de Dragão,offhand,5,GUERREIRO,60,false,code
+GUERREIRO_fw_shield_B_t5,Escudo Oval de Escamas de Dragão,offhand,5,GUERREIRO,60,false,code
+GUERREIRO_fw_shield_C_t5,Escudo Torre de Escamas de Dragão,offhand,5,GUERREIRO,60,false,code
+MAGO_grimorio_t5,Grimório de Chamas,offhand,5,MAGO,60,false,code
+anel_fogo_t5,Anel da Fênix de Dragão,ring,5,MAGO,81,false,code
+anel_gelo_t5,Anel da Nevasca de Dragão,ring,5,MAGO,81,false,code
+anel_t5,Anel de Dragão,ring,5,GUERREIRO|BARBARO|MAGO|ARQUEIRO,72,false,code
+anel_raio_t5,Anel de Zeus de Dragão,ring,5,MAGO,81,false,code
+GUERREIRO_fw_dagger_B_t5,Adaga Curva de Escamas de Dragão,weapon,5,GUERREIRO,60,false,code
+GUERREIRO_adaga_t5,Adaga de Escamas de Dragão,weapon,5,GUERREIRO,60,false,code
+GUERREIRO_fw_halberd_t5,Alabarda de Escamas de Dragão,weapon,5,GUERREIRO,84,false,code
+ARQUEIRO_fw_bow_A_withString_t5,Arco Armado de Chamas,weapon,5,ARQUEIRO,84,false,code
+ARQUEIRO_fw_bow_A_t5,Arco de Chamas,weapon,5,ARQUEIRO,84,false,code
+ARQUEIRO_fw_bow_B_withString_t5,Arco Longo Armado de Chamas,weapon,5,ARQUEIRO,84,false,code
+ARQUEIRO_fw_bow_B_t5,Arco Longo de Chamas,weapon,5,ARQUEIRO,84,false,code
+ARQUEIRO_besta_leve_t5,Besta Leve de Chamas,weapon,5,ARQUEIRO,60,false,code
+ARQUEIRO_besta_t5,Besta Pesada de Chamas,weapon,5,ARQUEIRO,84,false,code
+MAGO_cajado_t5,Cajado de Chamas,weapon,5,MAGO,84,false,code
+MAGO_fw_staff_B_t5,Cajado Longo de Chamas,weapon,5,MAGO,84,false,code
+MAGO_fw_staff_A_t5,Cajado Rúnico de Chamas,weapon,5,MAGO,84,false,code
+GUERREIRO_fw_sword_E_t5,Claymore de Escamas de Dragão,weapon,5,GUERREIRO,84,false,code
+GUERREIRO_fw_sword_D_t5,Espada Bastarda de Escamas de Dragão,weapon,5,GUERREIRO,84,false,code
+GUERREIRO_fw_sword_A_t5,Espada Curta de Escamas de Dragão,weapon,5,GUERREIRO,60,false,code
+GUERREIRO_espada_t5,Espada de Escamas de Dragão,weapon,5,GUERREIRO,60,false,code
+GUERREIRO_fw_sword_B_t5,Espada Reta de Escamas de Dragão,weapon,5,GUERREIRO,60,false,code
+MAGO_fenix_t5,Fênix de Chamas,weapon,5,MAGO,60,false,code
+ARQUEIRO_fw_arrow_A_t5,Flecha de Chamas,weapon,5,ARQUEIRO,60,false,code
+ARQUEIRO_fw_arrow_B_t5,Flecha Larga de Chamas,weapon,5,ARQUEIRO,60,false,code
+GUERREIRO_fw_sword_C_t5,Florete de Escamas de Dragão,weapon,5,GUERREIRO,60,false,code
+BARBARO_fw_fistweapon_B_t5,Garra de Escamas de Dragão,weapon,5,BARBARO,60,false,code
+BARBARO_fw_fistweapon_B_stacked_t5,Garras de Escamas de Dragão,weapon,5,BARBARO,60,false,code
+GUERREIRO_fw_spear_A_t5,Lança de Escamas de Dragão,weapon,5,GUERREIRO,84,false,code
+BARBARO_fw_axe_A_t5,Machado Curto de Escamas de Dragão,weapon,5,BARBARO,60,false,code
+BARBARO_machado_t5,Machado de Escamas de Dragão,weapon,5,BARBARO,60,false,code
+BARBARO_fw_axe_B_t5,Machado de Mão de Escamas de Dragão,weapon,5,BARBARO,60,false,code
+BARBARO_fw_axe_C_t5,Machado Largo de Escamas de Dragão,weapon,5,BARBARO,60,false,code
+BARBARO_machado_pesado_t5,Machado Pesado de Escamas de Dragão,weapon,5,BARBARO,84,false,code
+BARBARO_fw_fistweapon_A_t5,Manopla de Escamas de Dragão,weapon,5,BARBARO,60,false,code
+BARBARO_fw_fistweapon_A_stacked_t5,Manoplas de Escamas de Dragão,weapon,5,BARBARO,60,false,code
+BARBARO_fw_hammer_C_t5,Marreta de Escamas de Dragão,weapon,5,BARBARO,60,false,code
+BARBARO_fw_hammer_A_t5,Martelo de Escamas de Dragão,weapon,5,BARBARO,60,false,code
+BARBARO_fw_hammer_B_t5,Martelo de Guerra de Escamas de Dragão,weapon,5,BARBARO,60,false,code
+GUERREIRO_montante_t5,Montante de Escamas de Dragão,weapon,5,GUERREIRO,84,false,code
+MAGO_nevasca_t5,Nevasca de Chamas,weapon,5,MAGO,60,false,code
+GUERREIRO_fw_dagger_A_t5,Punhal de Escamas de Dragão,weapon,5,GUERREIRO,60,false,code
+MAGO_varinha_t5,Varinha de Chamas,weapon,5,MAGO,60,false,code
+MAGO_fw_wand_A_t5,Varinha Rúnica de Chamas,weapon,5,MAGO,60,false,code
+MAGO_zeus_t5,Zeus de Chamas,weapon,5,MAGO,60,false,code
+GUERREIRO_boots_t6,Botas de Gelo Eterno,boots,6,GUERREIRO,72,false,code
+BARBARO_boots_t6,Botas de Pele Glacial,boots,6,BARBARO,72,false,code
+ARQUEIRO_boots_t6,Botas de Pele Glacial,boots,6,ARQUEIRO,72,false,code
+MAGO_boots_t6,Sandálias de Geada,boots,6,MAGO,72,false,code
+ARQUEIRO_chest_t6,Colete de Pele Glacial,chest,6,ARQUEIRO,72,false,code
+MAGO_chest_t6,Manto de Geada,chest,6,MAGO,72,false,code
+GUERREIRO_chest_t6,Peitoral de Gelo Eterno,chest,6,GUERREIRO,72,false,code
+BARBARO_chest_t6,Pele de Pele Glacial,chest,6,BARBARO,72,false,code
+BARBARO_gloves_t6,Braceletes de Pele Glacial,gloves,6,BARBARO,72,false,code
+MAGO_gloves_t6,Luvas de Geada,gloves,6,MAGO,72,false,code
+ARQUEIRO_gloves_t6,Luvas de Pele Glacial,gloves,6,ARQUEIRO,72,false,code
+GUERREIRO_gloves_t6,Manoplas de Gelo Eterno,gloves,6,GUERREIRO,72,false,code
+BARBARO_head_t6,Capuz de Pele Glacial,head,6,BARBARO,72,false,code
+ARQUEIRO_head_t6,Capuz de Pele Glacial,head,6,ARQUEIRO,72,false,code
+MAGO_head_t6,Chapéu de Geada,head,6,MAGO,72,false,code
+GUERREIRO_head_t6,Elmo de Gelo Eterno,head,6,GUERREIRO,72,false,code
+MAGO_legs_t6,Calças de Geada,legs,6,MAGO,72,false,code
+BARBARO_legs_t6,Calças de Pele Glacial,legs,6,BARBARO,72,false,code
+ARQUEIRO_legs_t6,Calças de Pele Glacial,legs,6,ARQUEIRO,72,false,code
+GUERREIRO_legs_t6,Grevas de Gelo Eterno,legs,6,GUERREIRO,72,false,code
+colar_t6,Colar de Gelo,necklace,6,GUERREIRO|BARBARO|MAGO|ARQUEIRO,86.39999999999999,false,code
+ARQUEIRO_adaga_secundaria_t6,Adaga Secundária de Gelo Eterno,offhand,6,ARQUEIRO,72,false,code
+GUERREIRO_fw_shield_A_t6,Broquel de Gelo Eterno,offhand,6,GUERREIRO,72,false,code
+BARBARO_escudo_barbaro_t6,Escudo Bárbaro de Pele Glacial,offhand,6,BARBARO,72,false,code
+GUERREIRO_escudo_t6,Escudo de Gelo Eterno,offhand,6,GUERREIRO,72,false,code
+GUERREIRO_fw_shield_B_t6,Escudo Oval de Gelo Eterno,offhand,6,GUERREIRO,72,false,code
+GUERREIRO_fw_shield_C_t6,Escudo Torre de Gelo Eterno,offhand,6,GUERREIRO,72,false,code
+MAGO_grimorio_t6,Grimório de Geada,offhand,6,MAGO,72,false,code
+anel_fogo_t6,Anel da Fênix de Gelo,ring,6,MAGO,97.2,false,code
+anel_gelo_t6,Anel da Nevasca de Gelo,ring,6,MAGO,97.2,false,code
+anel_t6,Anel de Gelo,ring,6,GUERREIRO|BARBARO|MAGO|ARQUEIRO,86.39999999999999,false,code
+anel_raio_t6,Anel de Zeus de Gelo,ring,6,MAGO,97.2,false,code
+GUERREIRO_fw_dagger_B_t6,Adaga Curva de Gelo Eterno,weapon,6,GUERREIRO,72,false,code
+GUERREIRO_adaga_t6,Adaga de Gelo Eterno,weapon,6,GUERREIRO,72,false,code
+GUERREIRO_fw_halberd_t6,Alabarda de Gelo Eterno,weapon,6,GUERREIRO,100.8,false,code
+ARQUEIRO_fw_bow_A_withString_t6,Arco Armado de Geada,weapon,6,ARQUEIRO,100.8,false,code

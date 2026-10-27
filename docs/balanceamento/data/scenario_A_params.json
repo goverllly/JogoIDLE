@@ -1,0 +1,19 @@
+{
+  "id": "A",
+  "label": "Atual (motor)",
+  "mobXpPerLevel": 20,
+  "mobHitsToKill": 10,
+  "bossHitsToKill": 28,
+  "mobAtkHpPct": 0.11,
+  "bossAtkHpPct": 0.13,
+  "xpCurve": {
+    "mode": "motor"
+  },
+  "expectedPowerIncludesGear": false,
+  "refineModel": "current",
+  "xpMultFarm": 1,
+  "dexAtk": null,
+  "dropChance": 0.11,
+  "notes": "Defaults do código. Nota: standalone live dropChance=0.016 (comparar coluna dropLive).",
+  "liveDropChance": 0.016
+}

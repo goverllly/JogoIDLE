@@ -1,0 +1,5 @@
+scenario,label,kind,totalXpTo500,guerreiro_opt_h_to_500,guerreiro_casual_h_to_500,celestial_guerreiro_h_to_700,season_days,regions,offline_cap_h,offline_efficiency,post_700,mastery_ranks,dominion_stars,notes
+A,Atual (motor),atual,96696680,12,19,7,,17,2,flat_100pct,none,0,0,Motor atual. Rush mortal.
+B,Progressão 2.0 Equilibrada,prog_2_0,103435183,26,54,19,,17,2,flat_100pct,none_proposed_cel_tier1_gap,0,0,Prog 2.0. Cap.I da temporada C.
+C,Progressão 3.0 — Temporada 120 dias,prog_3_0_season,103435183,26,54,45,120,32,8,bands_100_70_40,maestria_mais_dominio,40,5,B no Cap.I + Cap.II–IV. Celestial hours include content gates (not raw XP only).
+D,Progressão 3.0 — Endgame competitivo,prog_3_0_competitive,103435183,26,54,55,120,32,8,bands_100_70_40,maestria_mais_dominio_dense,60,7,C + endgame competitivo mais denso.

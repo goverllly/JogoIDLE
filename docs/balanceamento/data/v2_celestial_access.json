@@ -1,0 +1,155 @@
+[
+  {
+    "id": "floresta",
+    "name": "Floresta Inicial",
+    "minLevel": 1,
+    "requiresAscension": "",
+    "mortalOnly": false,
+    "accessibleAsCelestialL1": true,
+    "accessibleAsCelestialL1_note": "OK (zona mortal/baixa acessível pós-ritual)"
+  },
+  {
+    "id": "cemiterio",
+    "name": "Cemitério",
+    "minLevel": 10,
+    "requiresAscension": "",
+    "mortalOnly": false,
+    "accessibleAsCelestialL1": false,
+    "accessibleAsCelestialL1_note": "precisa level 10 (ex.: eter=10)"
+  },
+  {
+    "id": "jardim",
+    "name": "Jardim Sombrio",
+    "minLevel": 25,
+    "requiresAscension": "",
+    "mortalOnly": false,
+    "accessibleAsCelestialL1": false,
+    "accessibleAsCelestialL1_note": "precisa level 25 (ex.: eter=25)"
+  },
+  {
+    "id": "pantano",
+    "name": "Pântano Venenoso",
+    "minLevel": 35,
+    "requiresAscension": "",
+    "mortalOnly": false,
+    "accessibleAsCelestialL1": false,
+    "accessibleAsCelestialL1_note": "precisa level 35 (ex.: eter=35)"
+  },
+  {
+    "id": "hidra",
+    "name": "Cripta Ardente",
+    "minLevel": 50,
+    "requiresAscension": "",
+    "mortalOnly": false,
+    "accessibleAsCelestialL1": false,
+    "accessibleAsCelestialL1_note": "precisa level 50 (ex.: eter=50)"
+  },
+  {
+    "id": "gelo",
+    "name": "Picos Gelados",
+    "minLevel": 70,
+    "requiresAscension": "",
+    "mortalOnly": false,
+    "accessibleAsCelestialL1": false,
+    "accessibleAsCelestialL1_note": "precisa level 70 (ex.: eter=70)"
+  },
+  {
+    "id": "abismo",
+    "name": "Cidadela Abissal",
+    "minLevel": 90,
+    "requiresAscension": "",
+    "mortalOnly": false,
+    "accessibleAsCelestialL1": false,
+    "accessibleAsCelestialL1_note": "precisa level 90 (ex.: eter=90)"
+  },
+  {
+    "id": "fortaleza",
+    "name": "Fortaleza Esquecida",
+    "minLevel": 120,
+    "requiresAscension": "",
+    "mortalOnly": false,
+    "accessibleAsCelestialL1": false,
+    "accessibleAsCelestialL1_note": "precisa level 120 (ex.: eter=120)"
+  },
+  {
+    "id": "vulcao",
+    "name": "Vulcão Rubro",
+    "minLevel": 180,
+    "requiresAscension": "",
+    "mortalOnly": false,
+    "accessibleAsCelestialL1": false,
+    "accessibleAsCelestialL1_note": "precisa level 180 (ex.: eter=180)"
+  },
+  {
+    "id": "catacumbas",
+    "name": "Catacumbas Profundas",
+    "minLevel": 250,
+    "requiresAscension": "",
+    "mortalOnly": false,
+    "accessibleAsCelestialL1": false,
+    "accessibleAsCelestialL1_note": "precisa level 250 (ex.: eter=250)"
+  },
+  {
+    "id": "nevoa",
+    "name": "Névoa Eterna",
+    "minLevel": 320,
+    "requiresAscension": "",
+    "mortalOnly": false,
+    "accessibleAsCelestialL1": false,
+    "accessibleAsCelestialL1_note": "precisa level 320 (ex.: eter=320)"
+  },
+  {
+    "id": "reliquias",
+    "name": "Câmara das Relíquias",
+    "minLevel": 400,
+    "requiresAscension": "",
+    "mortalOnly": false,
+    "accessibleAsCelestialL1": false,
+    "accessibleAsCelestialL1_note": "precisa level 400 (ex.: eter=400)"
+  },
+  {
+    "id": "trono",
+    "name": "Trono Mortal",
+    "minLevel": 450,
+    "requiresAscension": "",
+    "mortalOnly": false,
+    "accessibleAsCelestialL1": false,
+    "accessibleAsCelestialL1_note": "precisa level 450 (ex.: eter=450)"
+  },
+  {
+    "id": "prova_divina",
+    "name": "Prova Divina",
+    "minLevel": 500,
+    "requiresAscension": "",
+    "mortalOnly": true,
+    "accessibleAsCelestialL1": false,
+    "accessibleAsCelestialL1_note": "BLOQUEADO (mortalOnly)"
+  },
+  {
+    "id": "eter",
+    "name": "Campos do Éter",
+    "minLevel": 500,
+    "requiresAscension": "CELESTIAL",
+    "mortalOnly": false,
+    "accessibleAsCelestialL1": false,
+    "accessibleAsCelestialL1_note": "BLOQUEADO até level 500 (Celestial exige minLevel+ascensão)"
+  },
+  {
+    "id": "firmamento",
+    "name": "Firmamento",
+    "minLevel": 560,
+    "requiresAscension": "CELESTIAL",
+    "mortalOnly": false,
+    "accessibleAsCelestialL1": false,
+    "accessibleAsCelestialL1_note": "BLOQUEADO até level 560 (Celestial exige minLevel+ascensão)"
+  },
+  {
+    "id": "nexus",
+    "name": "Nexus Celestial",
+    "minLevel": 620,
+    "requiresAscension": "CELESTIAL",
+    "mortalOnly": false,
+    "accessibleAsCelestialL1": false,
+    "accessibleAsCelestialL1_note": "BLOQUEADO até level 620 (Celestial exige minLevel+ascensão)"
+  }
+]

@@ -1,0 +1,18 @@
+zoneId,zoneName,name,level,hp,attack,defense,xp,gold,isBoss,waveSize,source
+floresta,Floresta Inicial,Senhor da Clareira,2,671,50,13,105,30,true,8,calculated_buildZoneBoss
+cemiterio,Cemitério,Rei das Lápides,12,1353,90,43,770,212,true,8,calculated_buildZoneBoss
+jardim,Jardim Sombrio,Lorde do Espinheiro,28,2453,155,95,1855,511,true,8,calculated_buildZoneBoss
+pantano,Pântano Venenoso,Primordial do Lodo,38,3135,196,131,2555,704,true,8,calculated_buildZoneBoss
+hidra,Cripta Ardente,Tirano da Cripta,55,4268,265,185,3675,1012,true,8,calculated_buildZoneBoss
+gelo,Picos Gelados,Colosso Glacial,74,5632,342,252,5040,1386,true,8,calculated_buildZoneBoss
+abismo,Cidadela Abissal,Soberano do Vazio,95,7073,428,322,6475,1782,true,8,calculated_buildZoneBoss
+fortaleza,Fortaleza Esquecida,Marechal Fantasma,125,9196,549,423,8575,2359,true,8,calculated_buildZoneBoss
+vulcao,Vulcão Rubro,Senhor do Magma,188,13497,806,634,12880,3542,true,8,calculated_buildZoneBoss
+catacumbas,Catacumbas Profundas,Guardião do Ossuário,260,18480,1099,877,17850,4909,true,8,calculated_buildZoneBoss
+nevoa,Névoa Eterna,Avatar da Névoa,330,23397,1384,1116,22750,6256,true,8,calculated_buildZoneBoss
+reliquias,Câmara das Relíquias,Curador das Relíquias,410,29007,1708,1390,28350,7796,true,8,calculated_buildZoneBoss
+trono,Trono Mortal,Regente Final,465,32703,1932,1568,32025,8808,true,10,calculated_buildZoneBoss
+prova_divina,Prova Divina,Guardião da Divindade,505,78892,2829,1723,35175,9674,true,12,calculated_buildZoneBoss
+eter,Campos do Éter,Arauto do Éter,520,36388,2156,1748,35700,9818,true,10,calculated_buildZoneBoss
+firmamento,Firmamento,Colosso Estelar,580,40590,2400,1953,39900,10973,true,11,calculated_buildZoneBoss
+nexus,Nexus Celestial,Núcleo do Nexus,650,45166,2684,2174,44450,12224,true,12,calculated_buildZoneBoss

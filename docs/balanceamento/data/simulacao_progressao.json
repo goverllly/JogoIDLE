@@ -1,0 +1,164 @@
+[
+  {
+    "label": "A_no_gear",
+    "classId": "GUERREIRO",
+    "gearCurve": "none",
+    "xpMult": 1,
+    "finalLevel": 500,
+    "hours": 18,
+    "gold": 29029875,
+    "kills": 18741,
+    "bosses": 1774,
+    "faints": 298,
+    "milestones": [
+      {
+        "level": 500,
+        "hours": 18,
+        "gold": 29029875,
+        "kills": 18741,
+        "bosses": 1774,
+        "faints": 298,
+        "zone": "trono",
+        "xpPerLastHour": 18601500,
+        "killsPerLastHour": "1674.0"
+      }
+    ],
+    "reached500": true,
+    "source": "simulated"
+  },
+  {
+    "label": "B_gradual_gear",
+    "classId": "GUERREIRO",
+    "gearCurve": "gradual",
+    "xpMult": 1,
+    "finalLevel": 500,
+    "hours": 16,
+    "gold": 28570186,
+    "kills": 18668,
+    "bosses": 1957,
+    "faints": 85,
+    "milestones": [
+      {
+        "level": 500,
+        "hours": 16,
+        "gold": 28570186,
+        "kills": 18668,
+        "bosses": 1957,
+        "faints": 85,
+        "zone": "trono",
+        "xpPerLastHour": 19093950,
+        "killsPerLastHour": "1703.0"
+      }
+    ],
+    "reached500": true,
+    "source": "simulated"
+  },
+  {
+    "label": "C_gradual_xp115",
+    "classId": "GUERREIRO",
+    "gearCurve": "gradual",
+    "xpMult": 1.15,
+    "finalLevel": 500,
+    "hours": 15,
+    "gold": 25373017,
+    "kills": 16065,
+    "bosses": 1571,
+    "faints": 195,
+    "milestones": [
+      {
+        "level": 500,
+        "hours": 15,
+        "gold": 25373017,
+        "kills": 16065,
+        "bosses": 1571,
+        "faints": 195,
+        "zone": "trono",
+        "xpPerLastHour": 21839334,
+        "killsPerLastHour": "1694.0"
+      }
+    ],
+    "reached500": true,
+    "source": "simulated"
+  },
+  {
+    "label": "D_strong_gear",
+    "classId": "GUERREIRO",
+    "gearCurve": "strong",
+    "xpMult": 1.15,
+    "finalLevel": 500,
+    "hours": 11,
+    "gold": 26290337,
+    "kills": 16741,
+    "bosses": 1815,
+    "faints": 0,
+    "milestones": [
+      {
+        "level": 500,
+        "hours": 11,
+        "gold": 26290337,
+        "kills": 16741,
+        "bosses": 1815,
+        "faints": 0,
+        "zone": "trono",
+        "xpPerLastHour": 26037789,
+        "killsPerLastHour": "2016.0"
+      }
+    ],
+    "reached500": true,
+    "source": "simulated"
+  },
+  {
+    "label": "E_strong_xp125",
+    "classId": "GUERREIRO",
+    "gearCurve": "strong",
+    "xpMult": 1.25,
+    "finalLevel": 500,
+    "hours": 10,
+    "gold": 21336312,
+    "kills": 15730,
+    "bosses": 1741,
+    "faints": 0,
+    "milestones": [
+      {
+        "level": 500,
+        "hours": 10,
+        "gold": 21336312,
+        "kills": 15730,
+        "bosses": 1741,
+        "faints": 0,
+        "zone": "reliquias",
+        "xpPerLastHour": 25920514,
+        "killsPerLastHour": "2006.0"
+      }
+    ],
+    "reached500": true,
+    "source": "simulated"
+  },
+  {
+    "label": "E_arqueiro_strong",
+    "classId": "ARQUEIRO",
+    "gearCurve": "strong",
+    "xpMult": 1.25,
+    "finalLevel": 500,
+    "hours": 36,
+    "gold": 22248798,
+    "kills": 17045,
+    "bosses": 108,
+    "faints": 1940,
+    "milestones": [
+      {
+        "level": 500,
+        "hours": 36,
+        "gold": 22248798,
+        "kills": 17045,
+        "bosses": 108,
+        "faints": 1940,
+        "zone": "trono",
+        "xpPerLastHour": 4669875,
+        "killsPerLastHour": "408.0"
+      }
+    ],
+    "reached500": true,
+    "source": "simulated"
+  }
+]

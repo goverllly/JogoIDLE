@@ -1,0 +1,50 @@
+{
+  "DEFAULT_BALANCE": {
+    "kAtk": 2.2,
+    "kMagicAtk": 2.4,
+    "kHp": 14,
+    "kMp": 12,
+    "kDefCon": 1.2,
+    "kDefStr": 0.25,
+    "baseAttack": 6,
+    "baseHp": 90,
+    "baseMp": 45,
+    "baseDefense": 3,
+    "baseIntervalMs": 1450,
+    "minIntervalMs": 420,
+    "kSpeed": 7,
+    "levelHp": 6,
+    "levelMp": 3,
+    "critPerDex": 0.0025,
+    "maxCrit": 0.45,
+    "mobHitsToKill": 10,
+    "bossHitsToKill": 28,
+    "mobAtkHpPct": 0.11,
+    "bossAtkHpPct": 0.13,
+    "bossHpMult": 1,
+    "bossAtkMult": 1,
+    "bossDropMult": 2.5,
+    "refineDropChance": 0.012,
+    "sucoCelestialDropChance": 0.007,
+    "divindadeGoldCost": 10000000,
+    "pointsPerLevel": 5,
+    "celestialPointsPerLevel": 10,
+    "mobXpPerLevel": 20,
+    "mobGoldPerLevel": 5.5,
+    "defaultBossWaveMin": 8
+  },
+  "caps": {
+    "mortal": 500,
+    "celestial": 700
+  },
+  "points": {
+    "mortal": 5,
+    "celestial": 10,
+    "ascendBonus": 20
+  },
+  "offline": {
+    "maxCatchUpMs": 7200000,
+    "maxTicksDefault": 5000
+  },
+  "source": "code"
+}

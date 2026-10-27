@@ -1,0 +1,138 @@
+{
+  "disclaimer": "Modelo analítico calendário vs conectado vs recompensado. Premissa offline = proposta_C_8h_decay.",
+  "scenario": "C",
+  "profiles": {
+    "Casual": {
+      "profile": {
+        "activeMinPerDay": 25,
+        "primaryOfflineWallH": 14,
+        "extraSyncWallH": 0,
+        "offlineAlt": "proposta_C_8h_decay",
+        "optimize": false
+      },
+      "hourBudget": {
+        "hTo500": 54,
+        "hAscendBuffer": 10,
+        "hCelTo700": 140,
+        "hClear": 380,
+        "hOptional": 100,
+        "utilization": 0.72
+      },
+      "perDay": {
+        "calendarH": 24,
+        "connectedH": 0.4166666666666667,
+        "offlineWallH": 14,
+        "offlineRewardedH": 3.816,
+        "totalRewardedH": 4.116,
+        "utilization": 0.72
+      },
+      "seasonTotals": {
+        "calendarDays": 120,
+        "connectedH": 50,
+        "rewardedH": 493.9
+      },
+      "milestones": {
+        "day_nivel_500": 14,
+        "day_ascensao": 17,
+        "day_celestial_700": 52,
+        "day_conclusao_temporada": 120,
+        "day_endgame_opcional_feito": 120
+      },
+      "chapterProgressDay30": "L400-500_prep_ritual",
+      "chapterProgressDay60": "cel_100-220",
+      "chapterProgressDay90": "cel_400-650",
+      "chapterProgressDay120": "conclusao_limite_ou_quase",
+      "conclusionBand": "d100-120"
+    },
+    "Dedicado": {
+      "profile": {
+        "activeMinPerDay": 70,
+        "primaryOfflineWallH": 10,
+        "extraSyncWallH": 2,
+        "offlineAlt": "proposta_C_8h_decay",
+        "optimize": true
+      },
+      "hourBudget": {
+        "hTo500": 35,
+        "hAscendBuffer": 6,
+        "hCelTo700": 120,
+        "hClear": 420,
+        "hOptional": 110,
+        "utilization": 0.88
+      },
+      "perDay": {
+        "calendarH": 24,
+        "connectedH": 1.1666666666666667,
+        "offlineWallH": 12,
+        "offlineRewardedH": 5.544,
+        "totalRewardedH": 6.571,
+        "utilization": 0.88
+      },
+      "seasonTotals": {
+        "calendarDays": 120,
+        "connectedH": 140,
+        "rewardedH": 788.5
+      },
+      "milestones": {
+        "day_nivel_500": 6,
+        "day_ascensao": 7,
+        "day_celestial_700": 26,
+        "day_conclusao_temporada": 90,
+        "day_endgame_opcional_feito": 107
+      },
+      "chapterProgressDay30": "ascendido_ou_L500",
+      "chapterProgressDay60": "cel_300-450",
+      "chapterProgressDay90": "cel_700_maestria_mid",
+      "chapterProgressDay120": "conclusao+opcionais",
+      "conclusionBand": "d75-95"
+    },
+    "Competitivo": {
+      "profile": {
+        "activeMinPerDay": 150,
+        "primaryOfflineWallH": 6,
+        "extraSyncWallH": 2,
+        "offlineAlt": "proposta_C_8h_decay",
+        "optimize": true
+      },
+      "hourBudget": {
+        "hTo500": 26,
+        "hAscendBuffer": 4,
+        "hCelTo700": 100,
+        "hClear": 380,
+        "hOptional": 140,
+        "utilization": 0.95
+      },
+      "perDay": {
+        "calendarH": 24,
+        "connectedH": 2.5,
+        "offlineWallH": 8,
+        "offlineRewardedH": 5.225,
+        "totalRewardedH": 7.6,
+        "utilization": 0.95
+      },
+      "seasonTotals": {
+        "calendarDays": 120,
+        "connectedH": 300,
+        "rewardedH": 912
+      },
+      "milestones": {
+        "day_nivel_500": 4,
+        "day_ascensao": 5,
+        "day_celestial_700": 19,
+        "day_conclusao_temporada": 69,
+        "day_endgame_opcional_feito": 88
+      },
+      "chapterProgressDay30": "ascendido_cel_early_zones",
+      "chapterProgressDay60": "cel_500_maestria_inicio",
+      "chapterProgressDay90": "maestria_alta_dominio4",
+      "chapterProgressDay120": "conclusao_cedo+leaderboards",
+      "conclusionBand": "d60-80"
+    }
+  },
+  "distributionNote": {
+    "p10_competitive_clear": "d60-70",
+    "p50_dedicated_clear": "d80-90",
+    "p90_casual_clear": "d110-120",
+    "never_clears_if_no_catchup": "jogador sem offline adequado pode não concluir Cap.IV"
+  }
+}

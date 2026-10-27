@@ -1,0 +1,42 @@
+{
+  "id": "B",
+  "label": "Progressão 2.0 Equilibrada",
+  "mobXpPerLevel": 15,
+  "mobHitsToKill": 11,
+  "bossHitsToKill": 32,
+  "mobAtkHpPct": 0.115,
+  "bossAtkHpPct": 0.135,
+  "xpCurve": {
+    "mode": "smooth_B"
+  },
+  "expectedPowerIncludesGear": true,
+  "gearPowerFraction": 0.32,
+  "refineModel": "B-det",
+  "xpMultFarm": 1,
+  "dexAtk": {
+    "mode": "H2",
+    "kAtk": 2.2,
+    "kDexAtk": 1.55,
+    "weights": {
+      "GUERREIRO": {
+        "wStr": 0.85,
+        "wDex": 0.15
+      },
+      "BARBARO": {
+        "wStr": 0.9,
+        "wDex": 0.1
+      },
+      "MAGO": {
+        "wStr": 0,
+        "wDex": 0
+      },
+      "ARQUEIRO": {
+        "wStr": 0.35,
+        "wDex": 0.65
+      }
+    }
+  },
+  "dropChance": 0.11,
+  "bossClearXpBonus": 1.05,
+  "notes": "Meta: otimizado 25–40h / casual 45–70h. gearPowerFraction=0.32. Refine B-det. DES→ATK H2."
+}

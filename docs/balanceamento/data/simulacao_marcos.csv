@@ -1,0 +1,7 @@
+profile,level,hours,gold,kills,bosses,faints,zone,xpPerLastHour,killsPerLastHour,source
+A_no_gear,500,18,29029875,18741,1774,298,trono,18601500,1674.0,simulated
+B_gradual_gear,500,16,28570186,18668,1957,85,trono,19093950,1703.0,simulated
+C_gradual_xp115,500,15,25373017,16065,1571,195,trono,21839334,1694.0,simulated
+D_strong_gear,500,11,26290337,16741,1815,0,trono,26037789,2016.0,simulated
+E_strong_xp125,500,10,21336312,15730,1741,0,reliquias,25920514,2006.0,simulated
+E_arqueiro_strong,500,36,22248798,17045,108,1940,trono,4669875,408.0,simulated

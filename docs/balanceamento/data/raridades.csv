@@ -1,0 +1,6 @@
+id,name,mult,weight,sellMult,weight_share_pct,source
+common,Comum,1,600,1,60.00,code
+uncommon,Incomum,1.25,260,1.5,26.00,code
+rare,Raro,1.6,100,3,10.00,code
+epic,Épico,2.1,32,7,3.20,code
+legendary,Lendário,2.8,8,20,0.80,code

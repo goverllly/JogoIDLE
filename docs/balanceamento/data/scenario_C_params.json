@@ -1,0 +1,58 @@
+{
+  "id": "C",
+  "label": "Progressão 3.0 — Temporada 120 dias",
+  "inherits": "B",
+  "mobXpPerLevel": 15,
+  "mobHitsToKill": 11,
+  "bossHitsToKill": 32,
+  "mobAtkHpPct": 0.115,
+  "bossAtkHpPct": 0.135,
+  "xpCurve": { "mode": "smooth_B" },
+  "expectedPowerIncludesGear": true,
+  "gearPowerFraction": 0.32,
+  "refineModel": "B-det",
+  "xpMultFarm": 1,
+  "dexAtk": {
+    "mode": "H2",
+    "kAtk": 2.2,
+    "kDexAtk": 1.55,
+    "weights": {
+      "GUERREIRO": { "wStr": 0.85, "wDex": 0.15 },
+      "BARBARO": { "wStr": 0.9, "wDex": 0.1 },
+      "MAGO": { "wStr": 0, "wDex": 0 },
+      "ARQUEIRO": { "wStr": 0.35, "wDex": 0.65 }
+    }
+  },
+  "dropChance": 0.11,
+  "bossClearXpBonus": 1.05,
+  "seasonDays": 120,
+  "chapters": [
+    { "id": 1, "name": "Era Mortal", "dayStart": 1, "dayEnd": 30, "goal": "nivel_500_e_prep_ascensao" },
+    { "id": 2, "name": "Despertar Celestial", "dayStart": 31, "dayEnd": 60, "goal": "ascensao_e_celestial_mid" },
+    { "id": 3, "name": "Ruptura dos Reinos", "dayStart": 61, "dayEnd": 90, "goal": "celestial_700_e_maestria" },
+    { "id": 4, "name": "Trono dos Deuses Antigos", "dayStart": 91, "dayEnd": 120, "goal": "endgame_e_conclusao" }
+  ],
+  "regionTargetTotal": 32,
+  "offline": {
+    "maxCatchUpHours": 8,
+    "efficiencyBands": [
+      { "hoursFrom": 0, "hoursTo": 2, "efficiency": 1.0 },
+      { "hoursFrom": 2, "hoursTo": 5, "efficiency": 0.7 },
+      { "hoursFrom": 5, "hoursTo": 8, "efficiency": 0.4 }
+    ],
+    "maxTicks": 12000
+  },
+  "postCelestial": {
+    "system": "maestria_mais_dominio",
+    "raiseLevelCap": false,
+    "masteryRanks": 40,
+    "regionDominionStars": 5
+  },
+  "powerScale": {
+    "chapter1_dps": [1e3, 5e5],
+    "chapter2_dps": [5e5, 5e8],
+    "chapter3_dps": [5e8, 5e11],
+    "chapter4_dps": [5e11, 5e14]
+  },
+  "notes": "Cap.I = Cenário B. Caps 500/700 inalterados. Conteúdo pós-700 via Maestria+Domínio. Offline 8h com eficiência decrescente. Somente proposta — não aplicar no motor."
+}

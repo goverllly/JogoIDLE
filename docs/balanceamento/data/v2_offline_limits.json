@@ -1,0 +1,7 @@
+{
+  "maxCatchUpMs": 7200000,
+  "maxTicks": 5000,
+  "note": "Com TTK baixo, 5000 ticks esgotam antes de 2h de elapsed; syncs múltiplos necessários.",
+  "liveDropChance": 0.016,
+  "defaultDropChance": 0.11
+}

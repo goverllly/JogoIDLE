@@ -1,0 +1,42 @@
+{
+  "id": "Bplus",
+  "label": "Progressão 2.0 +exigente",
+  "mobXpPerLevel": 13,
+  "mobHitsToKill": 13,
+  "bossHitsToKill": 38,
+  "mobAtkHpPct": 0.12,
+  "bossAtkHpPct": 0.14,
+  "xpCurve": {
+    "mode": "smooth_Bplus"
+  },
+  "expectedPowerIncludesGear": true,
+  "gearPowerFraction": 0.4,
+  "refineModel": "B-det",
+  "xpMultFarm": 1,
+  "dexAtk": {
+    "mode": "H2",
+    "kAtk": 2.2,
+    "kDexAtk": 1.55,
+    "weights": {
+      "GUERREIRO": {
+        "wStr": 0.85,
+        "wDex": 0.15
+      },
+      "BARBARO": {
+        "wStr": 0.9,
+        "wDex": 0.1
+      },
+      "MAGO": {
+        "wStr": 0,
+        "wDex": 0
+      },
+      "ARQUEIRO": {
+        "wStr": 0.35,
+        "wDex": 0.65
+      }
+    }
+  },
+  "dropChance": 0.11,
+  "bossClearXpBonus": 1.03,
+  "notes": "~15–25% mais duro que B (XP/TTK/gear fraction)."
+}

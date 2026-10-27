@@ -1,0 +1,35 @@
+zoneId,zoneName,name,level,hp,attack,defense,xp,gold,isBoss,source
+floresta,Floresta Inicial,Esqueleto Errante,1,290,34,3,20,6,false,calculated_scaleMonster
+floresta,Floresta Inicial,Saqueador Ósseo,2,320,37,4,40,11,false,calculated_scaleMonster
+cemiterio,Cemitério,Guerreiro Ósseo,10,580,61,11,200,55,false,calculated_scaleMonster
+cemiterio,Cemitério,Necromante Aprendiz,12,650,67,13,240,66,false,calculated_scaleMonster
+jardim,Jardim Sombrio,Espectro Musgoso,25,1070,106,25,500,138,false,calculated_scaleMonster
+jardim,Jardim Sombrio,Guardião Espinhoso,28,1160,115,28,560,154,false,calculated_scaleMonster
+pantano,Pântano Venenoso,Afogado do Pântano,35,1380,136,35,700,193,false,calculated_scaleMonster
+pantano,Pântano Venenoso,Bruxo Lodoso,38,1470,145,38,760,209,false,calculated_scaleMonster
+hidra,Cripta Ardente,Campeão Flamejante,50,1860,181,49,1000,275,false,calculated_scaleMonster
+hidra,Cripta Ardente,Arquimago Cinzento,55,2020,196,54,1100,303,false,calculated_scaleMonster
+gelo,Picos Gelados,Sentinela Congelada,70,2500,241,68,1400,385,false,calculated_scaleMonster
+gelo,Picos Gelados,Caçador da Nevasca,74,2620,253,72,1480,407,false,calculated_scaleMonster
+abismo,Cidadela Abissal,Cavaleiro do Abismo,90,3140,302,87,1800,495,false,calculated_scaleMonster
+abismo,Cidadela Abissal,Lich Abissal,95,3290,317,92,1900,523,false,calculated_scaleMonster
+fortaleza,Fortaleza Esquecida,Sentinela da Muralha,120,4100,392,115,2400,660,false,calculated_scaleMonster
+fortaleza,Fortaleza Esquecida,Arqueiro Espectral,125,4260,407,120,2500,688,false,calculated_scaleMonster
+vulcao,Vulcão Rubro,Elemental de Cinzas,180,6010,573,172,3600,990,false,calculated_scaleMonster
+vulcao,Vulcão Rubro,Golem Magmático,188,6260,597,180,3760,1034,false,calculated_scaleMonster
+catacumbas,Catacumbas Profundas,Devorador de Almas,250,8240,784,239,5000,1375,false,calculated_scaleMonster
+catacumbas,Catacumbas Profundas,Sacerdote Cadavérico,260,8560,814,248,5200,1430,false,calculated_scaleMonster
+nevoa,Névoa Eterna,Sombra Errante,320,10480,994,305,6400,1760,false,calculated_scaleMonster
+nevoa,Névoa Eterna,Caçador Nebuloso,330,10790,1025,315,6600,1815,false,calculated_scaleMonster
+reliquias,Câmara das Relíquias,Golem de Runas,400,13030,1235,381,8000,2200,false,calculated_scaleMonster
+reliquias,Câmara das Relíquias,Lacaio Arcano,410,13340,1265,391,8200,2255,false,calculated_scaleMonster
+trono,Trono Mortal,Cavaleiro do Trono,450,14630,1386,428,9000,2475,false,calculated_scaleMonster
+trono,Trono Mortal,Algoz Imperial,465,15100,1431,443,9300,2558,false,calculated_scaleMonster
+prova_divina,Prova Divina,Sentinela do Limiar,500,16220,1537,476,10000,2750,false,calculated_scaleMonster
+prova_divina,Prova Divina,Arauto do Julgamento,505,16380,1552,481,10100,2778,false,calculated_scaleMonster
+eter,Campos do Éter,Serafim Caído,500,16220,1537,476,10000,2750,false,calculated_scaleMonster
+eter,Campos do Éter,Sentinela Astral,520,16860,1597,495,10400,2860,false,calculated_scaleMonster
+firmamento,Firmamento,Cometa Vivo,560,18130,1717,533,11200,3080,false,calculated_scaleMonster
+firmamento,Firmamento,Guardião da Aurora,580,18770,1778,552,11600,3190,false,calculated_scaleMonster
+nexus,Nexus Celestial,Fragmento do Infinito,620,20050,1898,590,12400,3410,false,calculated_scaleMonster
+nexus,Nexus Celestial,Eco do Criador,650,21010,1988,618,13000,3575,false,calculated_scaleMonster

@@ -1,0 +1,306 @@
+[
+  {
+    "model": "current",
+    "pieces": 8,
+    "refiners": 80,
+    "gold": 2000000,
+    "rows": [
+      {
+        "level": 1,
+        "model": "current",
+        "success": 1,
+        "refiners": 1,
+        "gold": 25000,
+        "materialTier": 0,
+        "bonusPerStat": 5
+      },
+      {
+        "level": 2,
+        "model": "current",
+        "success": 1,
+        "refiners": 1,
+        "gold": 25000,
+        "materialTier": 0,
+        "bonusPerStat": 5
+      },
+      {
+        "level": 3,
+        "model": "current",
+        "success": 1,
+        "refiners": 1,
+        "gold": 25000,
+        "materialTier": 0,
+        "bonusPerStat": 5
+      },
+      {
+        "level": 4,
+        "model": "current",
+        "success": 1,
+        "refiners": 1,
+        "gold": 25000,
+        "materialTier": 0,
+        "bonusPerStat": 5
+      },
+      {
+        "level": 5,
+        "model": "current",
+        "success": 1,
+        "refiners": 1,
+        "gold": 25000,
+        "materialTier": 0,
+        "bonusPerStat": 5
+      },
+      {
+        "level": 6,
+        "model": "current",
+        "success": 1,
+        "refiners": 1,
+        "gold": 25000,
+        "materialTier": 0,
+        "bonusPerStat": 5
+      },
+      {
+        "level": 7,
+        "model": "current",
+        "success": 1,
+        "refiners": 1,
+        "gold": 25000,
+        "materialTier": 0,
+        "bonusPerStat": 5
+      },
+      {
+        "level": 8,
+        "model": "current",
+        "success": 1,
+        "refiners": 1,
+        "gold": 25000,
+        "materialTier": 0,
+        "bonusPerStat": 5
+      },
+      {
+        "level": 9,
+        "model": "current",
+        "success": 1,
+        "refiners": 1,
+        "gold": 25000,
+        "materialTier": 0,
+        "bonusPerStat": 5
+      },
+      {
+        "level": 10,
+        "model": "current",
+        "success": 1,
+        "refiners": 1,
+        "gold": 25000,
+        "materialTier": 0,
+        "bonusPerStat": 5
+      }
+    ]
+  },
+  {
+    "model": "B-det",
+    "pieces": 8,
+    "refiners": 168,
+    "gold": 17245464,
+    "rows": [
+      {
+        "level": 1,
+        "model": "B-det",
+        "success": 1,
+        "refiners": 1,
+        "gold": 15000,
+        "materialTier": 1,
+        "bonusPerStat": 3
+      },
+      {
+        "level": 2,
+        "model": "B-det",
+        "success": 1,
+        "refiners": 1,
+        "gold": 23250,
+        "materialTier": 1,
+        "bonusPerStat": 3
+      },
+      {
+        "level": 3,
+        "model": "B-det",
+        "success": 1,
+        "refiners": 1,
+        "gold": 36037,
+        "materialTier": 1,
+        "bonusPerStat": 3
+      },
+      {
+        "level": 4,
+        "model": "B-det",
+        "success": 1,
+        "refiners": 2,
+        "gold": 55858,
+        "materialTier": 2,
+        "bonusPerStat": 3
+      },
+      {
+        "level": 5,
+        "model": "B-det",
+        "success": 1,
+        "refiners": 2,
+        "gold": 86580,
+        "materialTier": 2,
+        "bonusPerStat": 4
+      },
+      {
+        "level": 6,
+        "model": "B-det",
+        "success": 1,
+        "refiners": 2,
+        "gold": 134199,
+        "materialTier": 2,
+        "bonusPerStat": 4
+      },
+      {
+        "level": 7,
+        "model": "B-det",
+        "success": 1,
+        "refiners": 3,
+        "gold": 208008,
+        "materialTier": 3,
+        "bonusPerStat": 4
+      },
+      {
+        "level": 8,
+        "model": "B-det",
+        "success": 1,
+        "refiners": 3,
+        "gold": 322413,
+        "materialTier": 3,
+        "bonusPerStat": 4
+      },
+      {
+        "level": 9,
+        "model": "B-det",
+        "success": 1,
+        "refiners": 3,
+        "gold": 499740,
+        "materialTier": 3,
+        "bonusPerStat": 4
+      },
+      {
+        "level": 10,
+        "model": "B-det",
+        "success": 1,
+        "refiners": 3,
+        "gold": 774598,
+        "materialTier": 3,
+        "bonusPerStat": 4
+      }
+    ]
+  },
+  {
+    "model": "B-prob",
+    "pieces": 8,
+    "refiners": 102,
+    "gold": 16254992,
+    "rows": [
+      {
+        "level": 1,
+        "model": "B-prob",
+        "success": 1,
+        "refiners": 1,
+        "gold": 15000,
+        "materialTier": 1,
+        "bonusPerStat": 3,
+        "break": false
+      },
+      {
+        "level": 2,
+        "model": "B-prob",
+        "success": 1,
+        "refiners": 1,
+        "gold": 21750,
+        "materialTier": 1,
+        "bonusPerStat": 3,
+        "break": false
+      },
+      {
+        "level": 3,
+        "model": "B-prob",
+        "success": 1,
+        "refiners": 1,
+        "gold": 31537,
+        "materialTier": 1,
+        "bonusPerStat": 3,
+        "break": false
+      },
+      {
+        "level": 4,
+        "model": "B-prob",
+        "success": 1,
+        "refiners": 1,
+        "gold": 45729,
+        "materialTier": 1,
+        "bonusPerStat": 3,
+        "break": false
+      },
+      {
+        "level": 5,
+        "model": "B-prob",
+        "success": 0.85,
+        "refiners": 1.1764705882352942,
+        "gold": 78008,
+        "materialTier": 2,
+        "bonusPerStat": 4,
+        "break": false
+      },
+      {
+        "level": 6,
+        "model": "B-prob",
+        "success": 0.7999999999999999,
+        "refiners": 1.25,
+        "gold": 120182,
+        "materialTier": 2,
+        "bonusPerStat": 4,
+        "break": false
+      },
+      {
+        "level": 7,
+        "model": "B-prob",
+        "success": 0.75,
+        "refiners": 1.3333333333333333,
+        "gold": 185881,
+        "materialTier": 2,
+        "bonusPerStat": 4,
+        "break": false
+      },
+      {
+        "level": 8,
+        "model": "B-prob",
+        "success": 0.6,
+        "refiners": 1.6666666666666667,
+        "gold": 336910,
+        "materialTier": 2,
+        "bonusPerStat": 4,
+        "break": false
+      },
+      {
+        "level": 9,
+        "model": "B-prob",
+        "success": 0.6,
+        "refiners": 1.6666666666666667,
+        "gold": 488521,
+        "materialTier": 2,
+        "bonusPerStat": 4,
+        "break": false
+      },
+      {
+        "level": 10,
+        "model": "B-prob",
+        "success": 0.6,
+        "refiners": 1.6666666666666667,
+        "gold": 708356,
+        "materialTier": 2,
+        "bonusPerStat": 4,
+        "break": false
+      }
+    ]
+  }
+]

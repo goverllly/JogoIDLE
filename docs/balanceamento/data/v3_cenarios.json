@@ -1,0 +1,361 @@
+{
+  "generatedAt": "2026-10-27T04:03:49.217Z",
+  "disclaimer": "Proposta Progressão 3.0 — simulação analítica. Não altera produção.",
+  "scenarios": [
+    {
+      "scenario": "A",
+      "label": "Atual (motor)",
+      "kind": "atual",
+      "totalXpTo500": 96696680,
+      "guerreiro_opt_h_to_500": 12,
+      "guerreiro_casual_h_to_500": 19,
+      "celestial_guerreiro_h_to_700": 7,
+      "season_days": null,
+      "regions": 17,
+      "offline_cap_h": 2,
+      "offline_efficiency": "flat_100pct",
+      "post_700": "none",
+      "mastery_ranks": 0,
+      "dominion_stars": 0,
+      "notes": "Motor atual. Rush mortal."
+    },
+    {
+      "scenario": "B",
+      "label": "Progressão 2.0 Equilibrada",
+      "kind": "prog_2_0",
+      "totalXpTo500": 103435183,
+      "guerreiro_opt_h_to_500": 26,
+      "guerreiro_casual_h_to_500": 54,
+      "celestial_guerreiro_h_to_700": 19,
+      "season_days": null,
+      "regions": 17,
+      "offline_cap_h": 2,
+      "offline_efficiency": "flat_100pct",
+      "post_700": "none_proposed_cel_tier1_gap",
+      "mastery_ranks": 0,
+      "dominion_stars": 0,
+      "notes": "Prog 2.0. Cap.I da temporada C."
+    },
+    {
+      "scenario": "C",
+      "label": "Progressão 3.0 — Temporada 120 dias",
+      "kind": "prog_3_0_season",
+      "totalXpTo500": 103435183,
+      "guerreiro_opt_h_to_500": 26,
+      "guerreiro_casual_h_to_500": 54,
+      "celestial_guerreiro_h_to_700": 45,
+      "season_days": 120,
+      "regions": 32,
+      "offline_cap_h": 8,
+      "offline_efficiency": "bands_100_70_40",
+      "post_700": "maestria_mais_dominio",
+      "mastery_ranks": 40,
+      "dominion_stars": 5,
+      "notes": "B no Cap.I + Cap.II–IV. Celestial hours include content gates (not raw XP only)."
+    },
+    {
+      "scenario": "D",
+      "label": "Progressão 3.0 — Endgame competitivo",
+      "kind": "prog_3_0_competitive",
+      "totalXpTo500": 103435183,
+      "guerreiro_opt_h_to_500": 26,
+      "guerreiro_casual_h_to_500": 54,
+      "celestial_guerreiro_h_to_700": 55,
+      "season_days": 120,
+      "regions": 32,
+      "offline_cap_h": 8,
+      "offline_efficiency": "bands_100_70_40",
+      "post_700": "maestria_mais_dominio_dense",
+      "mastery_ranks": 60,
+      "dominion_stars": 7,
+      "notes": "C + endgame competitivo mais denso."
+    }
+  ],
+  "params": {
+    "A": {
+      "id": "A",
+      "label": "Atual (motor)",
+      "mobXpPerLevel": 20,
+      "mobHitsToKill": 10,
+      "bossHitsToKill": 28,
+      "mobAtkHpPct": 0.11,
+      "bossAtkHpPct": 0.13,
+      "xpCurve": {
+        "mode": "motor"
+      },
+      "expectedPowerIncludesGear": false,
+      "refineModel": "current",
+      "xpMultFarm": 1,
+      "dexAtk": null,
+      "dropChance": 0.11,
+      "notes": "Defaults do código. Nota: standalone live dropChance=0.016 (comparar coluna dropLive).",
+      "liveDropChance": 0.016
+    },
+    "B": {
+      "id": "B",
+      "label": "Progressão 2.0 Equilibrada",
+      "mobXpPerLevel": 15,
+      "mobHitsToKill": 11,
+      "bossHitsToKill": 32,
+      "mobAtkHpPct": 0.115,
+      "bossAtkHpPct": 0.135,
+      "xpCurve": {
+        "mode": "smooth_B"
+      },
+      "expectedPowerIncludesGear": true,
+      "gearPowerFraction": 0.32,
+      "refineModel": "B-det",
+      "xpMultFarm": 1,
+      "dexAtk": {
+        "mode": "H2",
+        "kAtk": 2.2,
+        "kDexAtk": 1.55,
+        "weights": {
+          "GUERREIRO": {
+            "wStr": 0.85,
+            "wDex": 0.15
+          },
+          "BARBARO": {
+            "wStr": 0.9,
+            "wDex": 0.1
+          },
+          "MAGO": {
+            "wStr": 0,
+            "wDex": 0
+          },
+          "ARQUEIRO": {
+            "wStr": 0.35,
+            "wDex": 0.65
+          }
+        }
+      },
+      "dropChance": 0.11,
+      "bossClearXpBonus": 1.05,
+      "notes": "Meta: otimizado 25–40h / casual 45–70h. gearPowerFraction=0.32. Refine B-det. DES→ATK H2."
+    },
+    "C": {
+      "id": "C",
+      "label": "Progressão 3.0 — Temporada 120 dias",
+      "inherits": "B",
+      "mobXpPerLevel": 15,
+      "mobHitsToKill": 11,
+      "bossHitsToKill": 32,
+      "mobAtkHpPct": 0.115,
+      "bossAtkHpPct": 0.135,
+      "xpCurve": {
+        "mode": "smooth_B"
+      },
+      "expectedPowerIncludesGear": true,
+      "gearPowerFraction": 0.32,
+      "refineModel": "B-det",
+      "xpMultFarm": 1,
+      "dexAtk": {
+        "mode": "H2",
+        "kAtk": 2.2,
+        "kDexAtk": 1.55,
+        "weights": {
+          "GUERREIRO": {
+            "wStr": 0.85,
+            "wDex": 0.15
+          },
+          "BARBARO": {
+            "wStr": 0.9,
+            "wDex": 0.1
+          },
+          "MAGO": {
+            "wStr": 0,
+            "wDex": 0
+          },
+          "ARQUEIRO": {
+            "wStr": 0.35,
+            "wDex": 0.65
+          }
+        }
+      },
+      "dropChance": 0.11,
+      "bossClearXpBonus": 1.05,
+      "seasonDays": 120,
+      "chapters": [
+        {
+          "id": 1,
+          "name": "Era Mortal",
+          "dayStart": 1,
+          "dayEnd": 30,
+          "goal": "nivel_500_e_prep_ascensao"
+        },
+        {
+          "id": 2,
+          "name": "Despertar Celestial",
+          "dayStart": 31,
+          "dayEnd": 60,
+          "goal": "ascensao_e_celestial_mid"
+        },
+        {
+          "id": 3,
+          "name": "Ruptura dos Reinos",
+          "dayStart": 61,
+          "dayEnd": 90,
+          "goal": "celestial_700_e_maestria"
+        },
+        {
+          "id": 4,
+          "name": "Trono dos Deuses Antigos",
+          "dayStart": 91,
+          "dayEnd": 120,
+          "goal": "endgame_e_conclusao"
+        }
+      ],
+      "regionTargetTotal": 32,
+      "offline": {
+        "maxCatchUpHours": 8,
+        "efficiencyBands": [
+          {
+            "hoursFrom": 0,
+            "hoursTo": 2,
+            "efficiency": 1
+          },
+          {
+            "hoursFrom": 2,
+            "hoursTo": 5,
+            "efficiency": 0.7
+          },
+          {
+            "hoursFrom": 5,
+            "hoursTo": 8,
+            "efficiency": 0.4
+          }
+        ],
+        "maxTicks": 12000
+      },
+      "postCelestial": {
+        "system": "maestria_mais_dominio",
+        "raiseLevelCap": false,
+        "masteryRanks": 40,
+        "regionDominionStars": 5
+      },
+      "powerScale": {
+        "chapter1_dps": [
+          1000,
+          500000
+        ],
+        "chapter2_dps": [
+          500000,
+          500000000
+        ],
+        "chapter3_dps": [
+          500000000,
+          500000000000
+        ],
+        "chapter4_dps": [
+          500000000000,
+          500000000000000
+        ]
+      },
+      "notes": "Cap.I = Cenário B. Caps 500/700 inalterados. Conteúdo pós-700 via Maestria+Domínio. Offline 8h com eficiência decrescente. Somente proposta — não aplicar no motor."
+    },
+    "D": {
+      "id": "D",
+      "label": "Progressão 3.0 — Endgame competitivo",
+      "inherits": "C",
+      "mobXpPerLevel": 15,
+      "mobHitsToKill": 11,
+      "bossHitsToKill": 32,
+      "mobAtkHpPct": 0.115,
+      "bossAtkHpPct": 0.135,
+      "xpCurve": {
+        "mode": "smooth_B"
+      },
+      "expectedPowerIncludesGear": true,
+      "gearPowerFraction": 0.32,
+      "refineModel": "B-det-plus",
+      "xpMultFarm": 1,
+      "dexAtk": {
+        "mode": "H2",
+        "kAtk": 2.2,
+        "kDexAtk": 1.55,
+        "weights": {
+          "GUERREIRO": {
+            "wStr": 0.85,
+            "wDex": 0.15
+          },
+          "BARBARO": {
+            "wStr": 0.9,
+            "wDex": 0.1
+          },
+          "MAGO": {
+            "wStr": 0,
+            "wDex": 0
+          },
+          "ARQUEIRO": {
+            "wStr": 0.35,
+            "wDex": 0.65
+          }
+        }
+      },
+      "dropChance": 0.11,
+      "bossClearXpBonus": 1.05,
+      "seasonDays": 120,
+      "regionTargetTotal": 32,
+      "offline": {
+        "maxCatchUpHours": 8,
+        "efficiencyBands": [
+          {
+            "hoursFrom": 0,
+            "hoursTo": 2,
+            "efficiency": 1
+          },
+          {
+            "hoursFrom": 2,
+            "hoursTo": 5,
+            "efficiency": 0.7
+          },
+          {
+            "hoursFrom": 5,
+            "hoursTo": 8,
+            "efficiency": 0.4
+          }
+        ],
+        "maxTicks": 12000
+      },
+      "postCelestial": {
+        "system": "maestria_mais_dominio",
+        "raiseLevelCap": false,
+        "masteryRanks": 60,
+        "regionDominionStars": 7,
+        "bossLeaderboards": true,
+        "weeklyModifiers": true,
+        "artifactEvolutionTiers": 5
+      },
+      "competitive": {
+        "earlySeasonClearDays_p10": 75,
+        "optionalEndgameHoursAfterClear": 40,
+        "rankingCategories": [
+          "nivel_celestial",
+          "maestria",
+          "dominio_total",
+          "chefe_final_ttk",
+          "ouro_gasto_refino"
+        ]
+      },
+      "powerScale": {
+        "chapter1_dps": [
+          1000,
+          500000
+        ],
+        "chapter2_dps": [
+          500000,
+          800000000
+        ],
+        "chapter3_dps": [
+          800000000,
+          2000000000000
+        ],
+        "chapter4_dps": [
+          2000000000000,
+          900000000000000
+        ]
+      },
+      "notes": "Cenário C + endgame mais denso (mais ranks, modifiers semanais, leaderboards de chefe). Sem subir cap de nível. Somente proposta."
+    }
+  }
+}

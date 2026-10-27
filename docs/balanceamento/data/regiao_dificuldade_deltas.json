@@ -1,0 +1,146 @@
+[
+  {
+    "from": "floresta",
+    "to": "cemiterio",
+    "minLevelDelta": 9,
+    "avgHpRatio": "2.016",
+    "avgAtkRatio": "1.778",
+    "avgXpRatio": "7.333",
+    "bossHpRatio": "2.016"
+  },
+  {
+    "from": "cemiterio",
+    "to": "jardim",
+    "minLevelDelta": 15,
+    "avgHpRatio": "1.813",
+    "avgAtkRatio": "1.734",
+    "avgXpRatio": "2.409",
+    "bossHpRatio": "1.813"
+  },
+  {
+    "from": "jardim",
+    "to": "pantano",
+    "minLevelDelta": 10,
+    "avgHpRatio": "1.278",
+    "avgAtkRatio": "1.270",
+    "avgXpRatio": "1.377",
+    "bossHpRatio": "1.278"
+  },
+  {
+    "from": "pantano",
+    "to": "hidra",
+    "minLevelDelta": 15,
+    "avgHpRatio": "1.361",
+    "avgAtkRatio": "1.340",
+    "avgXpRatio": "1.438",
+    "bossHpRatio": "1.361"
+  },
+  {
+    "from": "hidra",
+    "to": "gelo",
+    "minLevelDelta": 20,
+    "avgHpRatio": "1.320",
+    "avgAtkRatio": "1.307",
+    "avgXpRatio": "1.371",
+    "bossHpRatio": "1.320"
+  },
+  {
+    "from": "gelo",
+    "to": "abismo",
+    "minLevelDelta": 20,
+    "avgHpRatio": "1.256",
+    "avgAtkRatio": "1.255",
+    "avgXpRatio": "1.285",
+    "bossHpRatio": "1.256"
+  },
+  {
+    "from": "abismo",
+    "to": "fortaleza",
+    "minLevelDelta": 30,
+    "avgHpRatio": "1.300",
+    "avgAtkRatio": "1.290",
+    "avgXpRatio": "1.324",
+    "bossHpRatio": "1.300"
+  },
+  {
+    "from": "fortaleza",
+    "to": "vulcao",
+    "minLevelDelta": 60,
+    "avgHpRatio": "1.468",
+    "avgAtkRatio": "1.462",
+    "avgXpRatio": "1.502",
+    "bossHpRatio": "1.468"
+  },
+  {
+    "from": "vulcao",
+    "to": "catacumbas",
+    "minLevelDelta": 70,
+    "avgHpRatio": "1.369",
+    "avgAtkRatio": "1.366",
+    "avgXpRatio": "1.386",
+    "bossHpRatio": "1.369"
+  },
+  {
+    "from": "catacumbas",
+    "to": "nevoa",
+    "minLevelDelta": 70,
+    "avgHpRatio": "1.266",
+    "avgAtkRatio": "1.264",
+    "avgXpRatio": "1.275",
+    "bossHpRatio": "1.266"
+  },
+  {
+    "from": "nevoa",
+    "to": "reliquias",
+    "minLevelDelta": 80,
+    "avgHpRatio": "1.240",
+    "avgAtkRatio": "1.238",
+    "avgXpRatio": "1.246",
+    "bossHpRatio": "1.240"
+  },
+  {
+    "from": "reliquias",
+    "to": "trono",
+    "minLevelDelta": 50,
+    "avgHpRatio": "1.127",
+    "avgAtkRatio": "1.127",
+    "avgXpRatio": "1.130",
+    "bossHpRatio": "1.127"
+  },
+  {
+    "from": "trono",
+    "to": "prova_divina",
+    "minLevelDelta": 50,
+    "avgHpRatio": "1.097",
+    "avgAtkRatio": "1.097",
+    "avgXpRatio": "1.098",
+    "bossHpRatio": "2.412"
+  },
+  {
+    "from": "prova_divina",
+    "to": "eter",
+    "minLevelDelta": 0,
+    "avgHpRatio": "1.015",
+    "avgAtkRatio": "1.014",
+    "avgXpRatio": "1.015",
+    "bossHpRatio": "0.461"
+  },
+  {
+    "from": "eter",
+    "to": "firmamento",
+    "minLevelDelta": 60,
+    "avgHpRatio": "1.115",
+    "avgAtkRatio": "1.116",
+    "avgXpRatio": "1.118",
+    "bossHpRatio": "1.115"
+  },
+  {
+    "from": "firmamento",
+    "to": "nexus",
+    "minLevelDelta": 60,
+    "avgHpRatio": "1.113",
+    "avgAtkRatio": "1.112",
+    "avgXpRatio": "1.114",
+    "bossHpRatio": "1.113"
+  }
+]

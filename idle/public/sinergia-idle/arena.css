@@ -1,0 +1,514 @@
+/* ——— Arena ——— */
+.arena {
+  --sky-top: #1a2a3a;
+  --sky-bottom: #2d4a3a;
+  --far: #1d3326;
+  --ground: #2e4a2a;
+  --ground-edge: #44683a;
+  --particle: #e8ff8a;
+  position: relative;
+  height: 300px;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, var(--sky-top), var(--sky-bottom));
+  transition: background 1.2s ease;
+  isolation: isolate;
+}
+
+.arena[data-zone='idle'] {
+  --sky-top: #141c18;
+  --sky-bottom: #1d2a22;
+  --far: #18241d;
+  --ground: #22301f;
+  --ground-edge: #33472e;
+  --particle: #c9a227;
+}
+
+.arena[data-zone='cemiterio'] {
+  --sky-top: #10131f;
+  --sky-bottom: #2a2f45;
+  --far: #1a1d2c;
+  --ground: #2b2b33;
+  --ground-edge: #44445a;
+  --particle: #9fc4ff;
+}
+
+.arena[data-zone='jardim'] {
+  --sky-top: #1d1028;
+  --sky-bottom: #3e2a4a;
+  --far: #2a1a33;
+  --ground: #243a24;
+  --ground-edge: #3f6a3a;
+  --particle: #ff9fd0;
+}
+
+.arena[data-zone='hidra'] {
+  --sky-top: #200c08;
+  --sky-bottom: #4a1e10;
+  --far: #2c120a;
+  --ground: #2e1a12;
+  --ground-edge: #5a2e1a;
+  --particle: #ffab4a;
+}
+
+.arena[data-zone='pantano'] {
+  --sky-top: #10160c;
+  --sky-bottom: #1e2a14;
+  --far: #1a2410;
+  --ground: #2a2c18;
+  --ground-edge: #3a4a22;
+  --particle: #b8ff6a;
+}
+
+.arena[data-zone='gelo'] {
+  --sky-top: #8aa8c0;
+  --sky-bottom: #c8d8e8;
+  --far: #9eb4c6;
+  --ground: #dfe8f0;
+  --ground-edge: #f4f8ff;
+  --particle: #ffffff;
+}
+
+.arena[data-zone='abismo'] {
+  --sky-top: #0a0612;
+  --sky-bottom: #1a1028;
+  --far: #140c20;
+  --ground: #1a1224;
+  --ground-edge: #2a1a3a;
+  --particle: #b06aff;
+}
+
+.arena__far {
+  position: absolute;
+  inset: auto 0 22% 0;
+  height: 55%;
+  background:
+    radial-gradient(ellipse 30% 70% at 10% 100%, var(--far) 60%, transparent 61%),
+    radial-gradient(ellipse 25% 55% at 35% 100%, var(--far) 60%, transparent 61%),
+    radial-gradient(ellipse 35% 80% at 65% 100%, var(--far) 60%, transparent 61%),
+    radial-gradient(ellipse 25% 60% at 92% 100%, var(--far) 60%, transparent 61%);
+  opacity: 0.9;
+  transition: background 1.2s ease;
+}
+
+.arena__ground {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 26%;
+  background: linear-gradient(180deg, var(--ground-edge), var(--ground) 30%);
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.3);
+}
+
+.arena__particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.arena__particles span {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--particle);
+  box-shadow: 0 0 8px var(--particle);
+  opacity: 0;
+  animation: float-particle var(--d) linear infinite;
+  animation-delay: var(--delay);
+}
+
+.arena[data-zone='hidra'] .arena__particles span {
+  animation-name: ember;
+}
+
+@keyframes float-particle {
+  0% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.8;
+  }
+  50% {
+    transform: translate(18px, -24px);
+    opacity: 0.4;
+  }
+  80% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(-10px, -50px);
+    opacity: 0;
+  }
+}
+
+@keyframes ember {
+  0% {
+    transform: translate(0, 40px) scale(1);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(30px, -160px) scale(0.3);
+    opacity: 0;
+  }
+}
+
+.fighter {
+  position: absolute;
+  bottom: 14%;
+  width: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 2;
+}
+
+.fighter.f-hero {
+  left: 12%;
+  width: 120px;
+}
+
+.fighter.f-monster {
+  right: 10%;
+  width: 180px;
+  transition: opacity 0.3s;
+}
+
+.fighter.f-monster.gone {
+  opacity: 0;
+}
+
+.fighter__body {
+  width: 100%;
+  transform-origin: 50% 90%;
+}
+
+.sprite {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.hero-sprite {
+  animation: breathe 2.4s ease-in-out infinite;
+  transform-origin: 50% 95%;
+}
+
+.monster-sprite {
+  animation: bob 2s ease-in-out infinite;
+  transform-origin: 50% 95%;
+}
+
+.monster-spirit {
+  animation: hover 3s ease-in-out infinite;
+}
+
+.orb-glow {
+  animation: glow 1.6s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(1.025);
+  }
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0) scaleX(1);
+  }
+  50% {
+    transform: translateY(-3px) scaleX(1.02);
+  }
+}
+
+@keyframes hover {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+
+@keyframes glow {
+  0%,
+  100% {
+    opacity: 0.25;
+    r: 9;
+  }
+  50% {
+    opacity: 0.6;
+    r: 13;
+  }
+}
+
+.bar {
+  width: 90px;
+  height: 6px;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  margin-bottom: 6px;
+  overflow: hidden;
+}
+
+.bar span {
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #b8322a, #e65a3a);
+  transition: width 0.25s ease;
+}
+
+.bar.hp span {
+  background: linear-gradient(90deg, #2f8a4a, #6fd37f);
+}
+
+.target-plate {
+  display: flex;
+  gap: 0.4rem;
+  align-items: baseline;
+  font-size: 0.82rem;
+  margin-bottom: 4px;
+  text-shadow: 0 1px 3px #000;
+  white-space: nowrap;
+}
+
+.target-plate strong {
+  font-family: var(--font-display);
+  color: #ffd3c4;
+}
+
+.target-plate span {
+  color: var(--muted);
+}
+
+.arena__fx {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.arena__idle-msg {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  font-family: var(--font-display);
+  color: var(--gold-soft);
+  text-shadow: 0 2px 8px #000;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.float-text {
+  position: absolute;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: #fff;
+  text-shadow:
+    0 2px 0 #000,
+    0 0 8px rgba(0, 0, 0, 0.8);
+  white-space: nowrap;
+  will-change: transform, opacity;
+}
+
+.float-text.crit {
+  font-size: 1.7rem;
+  color: #ffd54a;
+  text-shadow:
+    0 2px 0 #7a3a00,
+    0 0 14px rgba(255, 170, 0, 0.8);
+}
+
+.float-text.hurt {
+  color: #ff6b5a;
+}
+
+.float-text.block {
+  color: #9fc4ff;
+  font-size: 0.9rem;
+}
+
+.float-text.xp {
+  color: #b48aff;
+  font-size: 1rem;
+}
+
+.float-text.drop {
+  font-size: 0.82rem;
+  color: #e2d6bd;
+}
+
+.float-text.drop.r-uncommon { color: #63c763; }
+.float-text.drop.r-rare { color: #4f9fff; }
+.float-text.drop.r-epic { color: #b46cff; }
+.float-text.drop.r-legendary {
+  color: #ff9a2e;
+  font-size: 1.05rem;
+}
+
+.proj {
+  position: absolute;
+  will-change: transform;
+}
+
+.proj.arrow {
+  width: 34px;
+  height: 3px;
+  margin-top: -1.5px;
+  background: linear-gradient(90deg, #e8e0c8 70%, #9aa4a8 70%);
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.6);
+}
+
+.proj.arrow::after {
+  content: '';
+  position: absolute;
+  right: -7px;
+  top: -4px;
+  border: 5.5px solid transparent;
+  border-left: 8px solid #cfd8dc;
+}
+
+.proj.orb {
+  width: 18px;
+  height: 18px;
+  margin: -9px 0 0 -9px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 15%, #9fd6ff 45%, rgba(80, 140, 255, 0) 70%);
+  box-shadow:
+    0 0 18px #6fb8ff,
+    0 0 36px #3a6bff;
+}
+
+.spark {
+  position: absolute;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 0%, rgba(255, 240, 200, 0.9) 20%, rgba(255, 180, 80, 0) 65%);
+}
+
+.spark.crit {
+  width: 120px;
+  height: 120px;
+  background:
+    conic-gradient(from 0deg, transparent 0 8%, #ffd54a 9% 11%, transparent 12% 33%, #ffd54a 34% 36%, transparent 37% 58%, #ffd54a 59% 61%, transparent 62% 83%, #ffd54a 84% 86%, transparent 87%),
+    radial-gradient(circle, #fff 0%, rgba(255, 213, 74, 0.9) 25%, rgba(255, 140, 0, 0) 65%);
+}
+
+.coin {
+  position: fixed;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #fff6c0, #e8c33a 45%, #9a7414);
+  box-shadow: 0 0 8px rgba(255, 213, 74, 0.8);
+  pointer-events: none;
+  z-index: 50;
+}
+
+.levelup {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+}
+
+.levelup__ring {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 3px solid #ffd54a;
+  box-shadow: 0 0 20px #ffd54a;
+  animation: ring 1s ease-out forwards;
+}
+
+.levelup__ring.delay {
+  animation-delay: 0.2s;
+  opacity: 0;
+}
+
+.levelup strong {
+  position: relative;
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  color: #ffe680;
+  white-space: nowrap;
+  text-shadow:
+    0 2px 0 #6b4a00,
+    0 0 18px rgba(255, 200, 0, 0.9);
+  animation: levelup-text 1.6s ease-out forwards;
+}
+
+@keyframes ring {
+  from {
+    transform: scale(0.3);
+    opacity: 1;
+  }
+  to {
+    transform: scale(5);
+    opacity: 0;
+  }
+}
+
+@keyframes levelup-text {
+  0% {
+    transform: translateY(10px) scale(0.5);
+    opacity: 0;
+  }
+  20% {
+    transform: translateY(-40px) scale(1.2);
+    opacity: 1;
+  }
+  80% {
+    transform: translateY(-60px) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-80px) scale(1);
+    opacity: 0;
+  }
+}
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 2rem;
+  transform: translateX(-50%);
+  padding: 0.9rem 1.3rem;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  color: var(--ink);
+  z-index: 60;
+  box-shadow: 0 10px 40px rgba(15, 23, 42, 0.25);
+  animation: rise 0.4s ease both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-sprite,
+  .monster-sprite,
+  .arena__particles span,
+  .atmosphere {
+    animation: none;
+  }
+}
+

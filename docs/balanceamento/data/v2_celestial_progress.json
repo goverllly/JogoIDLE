@@ -1,0 +1,50 @@
+[
+  {
+    "classId": "GUERREIRO",
+    "scenario": "A",
+    "hours": 7,
+    "level": 700,
+    "marks": {
+      "100": 2,
+      "300": 4,
+      "500": 5,
+      "700": 7
+    }
+  },
+  {
+    "classId": "ARQUEIRO",
+    "scenario": "A",
+    "hours": 32,
+    "level": 700,
+    "marks": {
+      "100": 2,
+      "300": 7,
+      "500": 18,
+      "700": 32
+    }
+  },
+  {
+    "classId": "GUERREIRO",
+    "scenario": "B",
+    "hours": 19,
+    "level": 700,
+    "marks": {
+      "100": 3,
+      "300": 6,
+      "500": 13,
+      "700": 19
+    }
+  },
+  {
+    "classId": "ARQUEIRO",
+    "scenario": "B",
+    "hours": 15,
+    "level": 700,
+    "marks": {
+      "100": 3,
+      "300": 5,
+      "500": 9,
+      "700": 15
+    }
+  }
+]
