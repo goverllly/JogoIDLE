@@ -209,7 +209,37 @@ Auth/`requireAdmin`/CSRF preservados; rotas HUD admin continuam atrás do gate; 
 
 ---
 
-## Matriz (Fases 0–3)
+## Fase 4 — Integridade do gameplay, economia e balanceamento
+
+### Escopo
+Integridade técnica (RNG, farm offline, inventário, ascensão, HTTP) + auditoria quantitativa **sem retune**. Detalhe: `14_AUDITORIA_GAMEPLAY.md`.
+
+### Correções de integridade
+| Área | Entrega |
+|------|---------|
+| RNG | `options.rng` em `processFarm` e callees; sem mock global de `Math.random` |
+| NaN | Guard em dano outgoing/incoming e HP |
+| Testes | 4.1 combate · 4.2 progressão · 4.3 inventário · 4.4 offline · 4.6 HTTP |
+| Economia | Sim isolada → `AUDITORIA_JOGO_IDLE/fase4_economy/` (não grava `docs/balanceamento/` nem save) |
+
+### Decisão de produto (offline)
+Teto **2h por request** (`maxCatchUpMs`) + **5000 ticks**; chunks com `catchUpPending` podem acumular >2h. Não alterado automaticamente.
+
+### Balanceamento
+Somente relatório (`14_AUDITORIA_GAMEPLAY.md`). Nenhum preço/prob/fórmula mudado sem bug de integridade comprovado.
+
+### Testes
+| Comando | Resultado |
+|---------|-----------|
+| `cd idle && npm test` | **130 pass / 0 fail** |
+| `cd idle && npm run admin:build` | **OK** |
+
+### Veredito
+**Fase 4 (integridade) concluída.** Retune de balanceamento permanece decisão conjunta.
+
+---
+
+## Matriz (Fases 0–4)
 
 | ID | Problema | Prioridade | Status | Teste | Commit |
 |----|----------|------------|--------|-------|--------|
@@ -222,4 +252,5 @@ Auth/`requireAdmin`/CSRF preservados; rotas HUD admin continuam atrás do gate; 
 | P0-STORE-REV | Revisão final Fase 1 | P0 | Resolvido | 44 pass + admin build | (esta revisão) |
 | P2-AUTH | Auth protected + Admin gate + CSRF | P0 | Resolvido | 57 pass + admin build | (fase 2 commits) |
 | P3-HUD | HUD Builder dirty/breakpoints/publish/CSS | P0 | Resolvido | 76 pass + admin build | (fase 3 commits) |
-| Fases 4–6 | Combate / economia / … | P1+ | Pendente | — | — |
+| P4-GAMEPLAY | Combate/farm/inv/ascensão/HTTP + auditoria | P0 | Resolvido | suite Fase 4 + admin build | (fase 4 commits) |
+| Fases 5–6 | … | P1+ | Pendente | — | — |

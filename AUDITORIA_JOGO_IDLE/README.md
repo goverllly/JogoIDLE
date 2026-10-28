@@ -38,6 +38,10 @@ Não existe mais `sinergia-idle` nem `AUDITORIA_SINERGIA_IDLE` na `main`. Se um 
 | 08 | [08_PROBLEMAS_CONHECIDOS.md](08_PROBLEMAS_CONHECIDOS.md) | Comprovado / risco / precisa teste |
 | 09 | [09_ROADMAP_ATUAL.md](09_ROADMAP_ATUAL.md) | Roadmaps já documentados no repo |
 | 10 | [10_GUIA_EXECUCAO_TESTES.md](10_GUIA_EXECUCAO_TESTES.md) | Como subir, smoke, `npm test` |
+| 11 | [11_PLANO_CORRECAO.md](11_PLANO_CORRECAO.md) | Checklist estabilização |
+| 12 | [12_RELATORIO_ESTABILIZACAO.md](12_RELATORIO_ESTABILIZACAO.md) | Relatório Fases 0–4 |
+| 13 | [13_FASE2_AUTH.md](13_FASE2_AUTH.md) | Auth local/protected |
+| 14 | [14_AUDITORIA_GAMEPLAY.md](14_AUDITORIA_GAMEPLAY.md) | Fase 4: integridade + economia (sem retune) |
 
 ## Legendas de status
 

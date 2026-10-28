@@ -2,8 +2,8 @@
 
 Branch de trabalho: **`main`** (sem branch de estabilização).  
 Commit de partida Fase 0/1: `90f51da` → integrado em `main` até `59dd861`.  
-Escopo concluído e **revalidado**: **Fases 0, 1, 2 (auth) e 3 (HUD Builder)**. Fases 4–6 permanecem **Pendente**.  
-Detalhe Fase 2: `13_FASE2_AUTH.md`.
+Escopo concluído e **revalidado**: **Fases 0, 1, 2 (auth), 3 (HUD Builder) e 4 (gameplay/economia)**. Fases 5–6 permanecem **Pendente**.  
+Detalhe Fase 2: `13_FASE2_AUTH.md`. Detalhe Fase 4: `14_AUDITORIA_GAMEPLAY.md`.
 
 ## Baseline (Fase 0) + revisão final
 
@@ -24,6 +24,9 @@ Detalhe Fase 2: `13_FASE2_AUTH.md`.
 | `npm test` (pós Fase 3) | + HUD state/API | **76 pass / 0 fail** | 2026-10-28 |
 | `admin:build` (pós Fase 3) | `cd idle && npm run admin:build` | **OK** | 2026-10-28 |
 | Fase 3 HUD Builder | dirty/undo, breakpoints, publish, CSS | Critérios atendidos | 2026-10-28 |
+| `npm test` (pós Fase 4) | combate/progressão/inv/farm/HTTP | **130 pass / 0 fail** | 2026-10-28 |
+| `admin:build` (pós Fase 4) | `cd idle && npm run admin:build` | **OK** | 2026-10-28 |
+| Fase 4 gameplay | RNG + integridade + auditoria econômica | Critérios de integridade; **sem retune** | 2026-10-28 |
 
 ## Itens
 
@@ -37,6 +40,12 @@ Detalhe Fase 2: `13_FASE2_AUTH.md`.
 | P0-STORE-05 | Race lógica async + STALE | P0 | `store.ts` + local-service | Gaps async | Event loop ≠ transação lógica | updatedAt monotônico + STALE; doc limites | Resolvido | concurrent + STALE | Passou | ver log git |
 | P2-AUTH-01… | Auth local/protected, Admin gate, CSRF, isolamento | P0 | `idle/src/auth/*`, `server.ts` | Auditoria + plano Fase 2 | Identidade fixa standalone | Sessões + middleware + testes HTTP | Resolvido | npm test 57 / admin:build | Passou | ver log git |
 | P3-HUD-01… | Dirty/undo slice, breakpoints, bridge, draftRevision, publish atômico, CSS vars | P0 | `admin-hud-builder`, `hud-layout*`, `admin-service` | Plano Fase 3 | Dirty só components; gestos→desktop; Publicar disabled | Slice editável + concurrency + restore/CSS | Resolvido | npm test 76 / admin:build | Passou | ver log git |
+| P4-COMBAT-01 | RNG não injetável no farm PvE | P0 | `combat.ts`, `items.ts`, `combat-skills.ts` | Plano Fase 4 | Math.random espalhado | `options.rng` + NaN guard | Resolvido | combat.test | Passou | ver log git |
+| P4-PROG-01 | Ascensão/XP/capítulos sem testes de integridade | P0 | `character.ts`, `chapters.ts` | Plano Fase 4 | Sem cobertura | Testes consume-once + STALE | Resolvido | progression.test | Passou | ver log git |
+| P4-INV-01 | Drops/inventário/refine sem invariantes | P0 | `inventory.ts`, `items.ts` | Plano Fase 4 | Sem cobertura | Sell/stack/Suco held/refine | Resolvido | inventory.test | Passou | ver log git |
+| P4-FARM-01 | Offline sem matriz 30m–24h / 5k / pending | P0 | `combat.ts` | Plano Fase 4 | Teto 2h/request documentado | Matriz + chunks >2h | Resolvido | farm-offline.test | Passou | ver log git |
+| P4-ECON-01 | Auditoria quantitativa sem retune | P1 | `phase4-economy-sim.mjs`, `14_*.md` | Plano Fase 4 | Relatório | Sim isolada + doc | Resolvido | sim + docs | Passou | ver log git |
+| P4-HTTP-01 | Fluxos protected farm/sell/refine/ascend | P0 | `gameplay-http.test.ts` | Plano Fase 4 | Sem HTTP gameplay | CSRF/IDOR/replay | Resolvido | gameplay-http.test | Passou | ver log git |
 
 ## Limitações documentadas (concorrência)
 
