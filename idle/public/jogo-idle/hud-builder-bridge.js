@@ -8,6 +8,74 @@
   var MSG_V = 1;
   var ORIGIN = window.location.origin;
   var DRAG_THRESHOLD = 4;
+  var SESSION_ID =
+    "hb-" +
+    Math.random().toString(36).slice(2) +
+    "-" +
+    Date.now().toString(36);
+  var seqCounter = 0;
+  var currentBreakpoint = "desktop";
+  var ALLOWED_PROP_KEYS = {
+    width: 1,
+    height: 1,
+    minWidth: 1,
+    maxWidth: 1,
+    minHeight: 1,
+    maxHeight: 1,
+    marginTop: 1,
+    marginRight: 1,
+    marginBottom: 1,
+    marginLeft: 1,
+    paddingTop: 1,
+    paddingRight: 1,
+    paddingBottom: 1,
+    paddingLeft: 1,
+    gap: 1,
+    fontSize: 1,
+    fontWeight: 1,
+    color: 1,
+    opacity: 1,
+    borderRadius: 1,
+    gridTemplateColumns: 1,
+    aspectRatio: 1,
+    visible: 1,
+    order: 1,
+    position: 1,
+    left: 1,
+    top: 1,
+    right: 1,
+    bottom: 1,
+    zIndex: 1,
+    flexGrow: 1,
+    alignSelf: 1,
+  };
+  var PARENT_TYPES = {
+    "jogo-idle:hud-builder-select": 1,
+    "jogo-idle:hud-builder-patch": 1,
+    "jogo-idle:hud-builder-set-layout": 1,
+    "jogo-idle:hud-builder-mode": 1,
+    "jogo-idle:hud-builder-layout-mode": 1,
+    "jogo-idle:hud-builder-snap": 1,
+    "jogo-idle:hud-builder-viewport": 1,
+  };
+
+  function parseBreakpoint(raw) {
+    if (raw === "desktop" || raw === "tablet" || raw === "mobile") return raw;
+    return null;
+  }
+
+  function filterProps(props) {
+    var out = {};
+    if (!props || typeof props !== "object") return out;
+    Object.keys(props).forEach(function (k) {
+      if (!ALLOWED_PROP_KEYS[k]) return;
+      var v = props[k];
+      if (typeof v === "string" || typeof v === "number" || typeof v === "boolean") {
+        out[k] = v;
+      }
+    });
+    return out;
+  }
 
   /** Meta espelhada do registry (minSize / dragModes). */
   var META = {
@@ -55,7 +123,14 @@
 
   function post(type, payload) {
     try {
-      window.parent.postMessage(Object.assign({ type: type, v: MSG_V }, payload || {}), ORIGIN);
+      seqCounter += 1;
+      window.parent.postMessage(
+        Object.assign(
+          { type: type, v: MSG_V, sessionId: SESSION_ID, seq: seqCounter },
+          payload || {},
+        ),
+        ORIGIN,
+      );
     } catch (e) {}
   }
 
@@ -267,14 +342,14 @@
     var rt = runtime();
     if (!rt || !rt.setLayout) return;
     try {
-      rt.setLayout(JSON.parse(snap.layoutJson));
+      rt.setLayout(JSON.parse(snap.layoutJson), currentBreakpoint);
     } catch (e) {}
     syncChrome();
   }
 
   function applyLivePatch(id, props) {
     var rt = runtime();
-    if (rt && rt.patch) rt.patch(id, props, "desktop");
+    if (rt && rt.patch) rt.patch(id, filterProps(props), currentBreakpoint);
     scheduleChromeSync();
   }
 
@@ -627,7 +702,8 @@
       post("jogo-idle:hud-builder-transform-end", {
         id: g.id,
         kind: g.kind,
-        props: g.lastProps || {},
+        props: filterProps(g.lastProps || {}),
+        breakpoint: currentBreakpoint,
       });
       emitSelection(g.id);
     } else if (g.kind === "reorder") {
@@ -636,6 +712,7 @@
         kind: "reorder",
         props: {},
         orders: g.lastOrders || {},
+        breakpoint: currentBreakpoint,
       });
       emitSelection(g.id);
     }
@@ -674,25 +751,34 @@
 
   function onMessage(event) {
     if (event.origin !== ORIGIN) return;
+    if (event.source !== window.parent) return;
     var data = event.data;
     if (!data || typeof data !== "object" || data.v !== MSG_V) return;
     var type = data.type;
-    if (typeof type !== "string" || type.indexOf("jogo-idle:hud-builder") !== 0) return;
+    if (typeof type !== "string" || !PARENT_TYPES[type]) return;
 
     if (type === "jogo-idle:hud-builder-select") {
-      emitSelection(typeof data.id === "string" ? data.id : null);
+      var sid = typeof data.id === "string" && META[data.id] ? data.id : null;
+      if (data.id != null && data.id !== "" && !sid) return;
+      emitSelection(sid);
       return;
     }
     if (type === "jogo-idle:hud-builder-patch") {
-      if (typeof data.id !== "string" || !data.props || typeof data.props !== "object") return;
+      if (typeof data.id !== "string" || !META[data.id]) return;
+      if (!data.props || typeof data.props !== "object") return;
+      var bpPatch = parseBreakpoint(data.breakpoint);
+      if (data.breakpoint != null && !bpPatch) return;
       var rt = runtime();
-      if (rt && rt.patch) rt.patch(data.id, data.props, data.breakpoint || "desktop");
+      if (rt && rt.patch) rt.patch(data.id, filterProps(data.props), bpPatch || currentBreakpoint);
       if (selectedId === data.id) syncChrome();
       return;
     }
     if (type === "jogo-idle:hud-builder-set-layout") {
+      var bpSet = parseBreakpoint(data.breakpoint);
+      if (data.breakpoint != null && !bpSet) return;
+      if (bpSet) currentBreakpoint = bpSet;
       var rt2 = runtime();
-      if (rt2 && rt2.setLayout) rt2.setLayout(data.layout || null, data.breakpoint || "desktop");
+      if (rt2 && rt2.setLayout) rt2.setLayout(data.layout || null, bpSet || currentBreakpoint);
       syncChrome();
       return;
     }
@@ -716,8 +802,11 @@
       return;
     }
     if (type === "jogo-idle:hud-builder-viewport") {
+      var bpVp = parseBreakpoint(data.breakpoint);
+      if (!bpVp) return;
+      currentBreakpoint = bpVp;
       var rt3 = runtime();
-      if (rt3 && rt3.setBreakpoint && data.breakpoint) rt3.setBreakpoint(data.breakpoint);
+      if (rt3 && rt3.setBreakpoint) rt3.setBreakpoint(bpVp);
       syncChrome();
     }
   }
@@ -729,7 +818,7 @@
     window.addEventListener("resize", syncChrome);
     window.addEventListener("scroll", syncChrome, true);
     window.addEventListener("keydown", onKeyDown);
-    post("jogo-idle:hud-builder-ready", { ids: listIds(), meta: META });
+    post("jogo-idle:hud-builder-ready", { ids: listIds(), meta: META, sessionId: SESSION_ID });
   }
 
   if (document.readyState === "loading") {

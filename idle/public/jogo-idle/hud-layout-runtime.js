@@ -150,7 +150,61 @@
     return document.querySelector(".play-stage") || document.documentElement;
   }
 
+  /** Shared HUD CSS vars owned by this runtime (cleared on full layout apply). */
+  var MANAGED_ROOT_VARS = ["--side-panel-w"];
+  var MANAGED_COMBAT_VARS = ["--hud-h"];
+  var SIDE_PANEL_IDS = ["stage-left", "stage-right"];
+  var HUD_HEIGHT_IDS = ["unit-hero", "unit-skills", "unit-target"];
+
+  function clearManagedCssVars() {
+    var root = stageRoot();
+    MANAGED_ROOT_VARS.forEach(function (v) {
+      root.style.removeProperty(v);
+    });
+    var combat = document.querySelector(".stage__combat, .duel--trio");
+    if (combat) {
+      MANAGED_COMBAT_VARS.forEach(function (v) {
+        combat.style.removeProperty(v);
+      });
+    }
+  }
+
+  /**
+   * Deterministic shared vars from the full layout:
+   * --side-panel-w = max width among stage-left/right (registry order).
+   * --hud-h = last non-empty height among unit-hero → unit-skills → unit-target.
+   */
+  function recomputeSharedCssVars(layout, breakpoint) {
+    clearManagedCssVars();
+    if (!layout || !layout.components) return;
+    var root = stageRoot();
+    var maxSide = null;
+    var maxSidePx = -1;
+    SIDE_PANEL_IDS.forEach(function (id) {
+      var props = resolveProps(layout.components[id], breakpoint);
+      if (!props || !props.width) return;
+      var n = Number.parseFloat(props.width);
+      if (!Number.isFinite(n)) return;
+      if (n > maxSidePx) {
+        maxSidePx = n;
+        maxSide = props.width;
+      }
+    });
+    if (maxSide) root.style.setProperty("--side-panel-w", maxSide);
+
+    var hudH = null;
+    HUD_HEIGHT_IDS.forEach(function (id) {
+      var props = resolveProps(layout.components[id], breakpoint);
+      if (props && props.height) hudH = props.height;
+    });
+    if (hudH) {
+      var combat = document.querySelector(".stage__combat, .duel--trio");
+      if (combat) combat.style.setProperty("--hud-h", hudH);
+    }
+  }
+
   function syncCssVars(id, props) {
+    /* Live patches: update only vars this component owns; full apply uses recomputeSharedCssVars. */
     var root = stageRoot();
     if (id === "stage-left" || id === "stage-right") {
       if (props.width) root.style.setProperty("--side-panel-w", props.width);
@@ -213,7 +267,12 @@
   }
 
   function applyLayout(layout, breakpoint) {
-    if (!layout || !layout.components) return;
+    if (!layout || !layout.components) {
+      clearManagedCssVars();
+      document.querySelectorAll("[data-hud-id]").forEach(clearHudInline);
+      applyThemeTokens(null);
+      return;
+    }
     var bp = breakpoint || currentBreakpoint(layout);
     applyThemeTokens(layout);
     document.querySelectorAll("[data-hud-id]").forEach(function (el) {
@@ -222,6 +281,7 @@
       var props = resolveProps(layout.components[id], bp);
       applyPropsToEl(el, props);
     });
+    recomputeSharedCssVars(layout, bp);
     try {
       window.dispatchEvent(new Event("resize"));
     } catch (e) {}
@@ -285,19 +345,29 @@
     },
     setLayout: function (layout, breakpoint) {
       state.layout = layout || null;
-      state.breakpoint = breakpoint || currentBreakpoint(layout);
+      if (breakpoint === "desktop" || breakpoint === "tablet" || breakpoint === "mobile") {
+        state.breakpoint = breakpoint;
+      } else if (layout) {
+        state.breakpoint = currentBreakpoint(layout);
+      }
       if (layout) applyLayout(layout, state.breakpoint);
       else {
         document.querySelectorAll("[data-hud-id]").forEach(clearHudInline);
+        clearManagedCssVars();
         applyThemeTokens(null);
       }
     },
     patch: function (id, props, breakpoint) {
+      var bp = breakpoint;
+      if (bp != null && bp !== "desktop" && bp !== "tablet" && bp !== "mobile") {
+        return state.layout;
+      }
+      if (bp == null) bp = state.breakpoint;
       state.layout = patchComponent(
         state.layout || { components: {}, breakpoints: { desktop: 1024, tablet: 768, mobile: 0 } },
         id,
         props,
-        breakpoint || state.breakpoint,
+        bp,
       );
       return state.layout;
     },
@@ -315,9 +385,13 @@
       return state.layout;
     },
     setBreakpoint: function (bp) {
-      state.breakpoint = bp || "desktop";
+      if (bp !== "desktop" && bp !== "tablet" && bp !== "mobile") return state.breakpoint;
+      state.breakpoint = bp;
       if (state.layout) applyLayout(state.layout, state.breakpoint);
+      return state.breakpoint;
     },
+    clearManagedCssVars: clearManagedCssVars,
+    recomputeSharedCssVars: recomputeSharedCssVars,
     applyLayout: applyLayout,
     applyThemeTokens: applyThemeTokens,
     resolveProps: resolveProps,
