@@ -11,28 +11,29 @@ export const CLASSES = {
   GUERREIRO: {
     id: 'GUERREIRO',
     name: 'Guerreiro',
-    description: 'Tanque físico com alto HP e defesa.',
+    description: 'Combate físico: Força define o dano; Constituição a resistência; Destreza o ritmo e o crítico.',
     base: { str: 12, int: 3, dex: 6, con: 10 },
     growth: { str: 3, int: 0, dex: 1, con: 2 },
   },
   BARBARO: {
     id: 'BARBARO',
     name: 'Bárbaro',
-    description: 'Dano bruto com machados e muita vitalidade.',
+    description: 'Dano bruto físico (Força), vitalidade (Constituição) e ritmo/crítico (Destreza).',
     base: { str: 14, int: 2, dex: 5, con: 11 },
     growth: { str: 3, int: 0, dex: 1, con: 2 },
   },
   MAGO: {
     id: 'MAGO',
     name: 'Mago',
-    description: 'Dano mágico e mana alta.',
+    description: 'Dano mágico e mana: Intelecto é a fonte principal de ataque e MP.',
     base: { str: 3, int: 12, dex: 5, con: 6 },
     growth: { str: 0, int: 3, dex: 1, con: 1 },
   },
   ARQUEIRO: {
     id: 'ARQUEIRO',
     name: 'Arqueiro',
-    description: 'Ataque rápido e crítico.',
+    description:
+      'Flechas físicas: Força aumenta o dano; Destreza a velocidade e o crítico; Constituição a resistência. Destreza não aumenta o dano básico.',
     base: { str: 7, int: 4, dex: 12, con: 6 },
     growth: { str: 1, int: 0, dex: 3, con: 1 },
   },

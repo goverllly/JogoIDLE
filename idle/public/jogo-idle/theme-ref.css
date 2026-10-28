@@ -869,7 +869,8 @@ body.play-stage {
   display: grid !important;
   grid-template-columns: 3.1rem minmax(0, 1fr) auto !important;
   grid-template-areas:
-    'code bar val' !important;
+    'code bar val'
+    'hint hint hint' !important;
   gap: 0.32rem 0.5rem !important;
   align-items: center !important;
   padding: 0.48rem 0.5rem !important;
@@ -917,10 +918,35 @@ body.play-stage {
 .play-stage .attr-row:has(.attr-custom-amount:not(.hidden)) {
   grid-template-areas:
     'code bar val'
+    'hint hint hint'
     'actions actions actions' !important;
   row-gap: 0.42rem !important;
   padding-bottom: 0.5rem !important;
   border-color: color-mix(in srgb, var(--wood-border) 62%, transparent) !important;
+}
+
+.play-stage .attr-row__hint {
+  grid-area: hint;
+  margin: 0;
+  min-width: 0;
+  z-index: 1;
+}
+
+.play-stage .attr-hint {
+  display: block;
+  font-size: 0.58rem;
+  line-height: 1.35;
+  font-weight: 500;
+  color: color-mix(in srgb, var(--muted) 88%, var(--ink));
+  letter-spacing: 0.01em;
+}
+
+.play-stage .attr-hint:empty {
+  display: none;
+}
+
+.play-stage .attr-row--key .attr-hint {
+  color: color-mix(in srgb, var(--ink) 78%, var(--attr-tone));
 }
 
 .play-stage .attr-row > dt {

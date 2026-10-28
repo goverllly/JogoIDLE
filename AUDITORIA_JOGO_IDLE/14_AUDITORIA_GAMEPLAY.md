@@ -154,21 +154,42 @@ Dados: `balance_study_ttk.json`. Mob Cap.I mid: HP 6680, DEF 192.
 
 ---
 
-## Decisões que exigem aprovação
+## Decisões de produto (aprovadas — UX pós-Fase 4)
 
-1. **Identidade do Arqueiro:** DEX só speed/crit, ou DEX também gera ATK (B), ou híbrido (C)?
-2. **Meta TTK 8–12:** vale para personagem esperado/médio, build otimizada, ou com gear on-level?
-3. **Offline:** confirmar comunicação ao jogador de que ausências longas recuperam **≈2h** (já é o comportamento medido)?
+| # | Decisão | Entrega |
+|---|---------|---------|
+| 1 | **Identidade Arqueiro = fórmula A** (FOR = dano físico; DES = velocidade/crítico; CON = resistência). Sem retune B/C. | Copy em `data.ts` + hints em `attr-guide.js` |
+| 2 | **Meta TTK 8–12** permanece calibrada no poder esperado (não em builds otimizadas). Sem mudança de motor. | Documentado; sem código de balance |
+| 3 | **Offline:** manter algoritmo; comunicar teto de **até 2h** sem atribuir gaps a só `elapsed > rewarded`. | `offline-report.js` + `engagement.js` |
+| 4 | **`primaryAttrForClass(ARQUEIRO)=dex` intacto** (automação inventário/pets ≠ fórmula de ATK). | Comentário em `inventory-automation.ts` |
 
-Após essas decisões: pequena etapa de balanceamento **ou** seguir direto à **Fase 5 — Performance**.
+### Arquivos alterados (UX only)
+
+| Arquivo | Mudança |
+|---------|---------|
+| `idle/public/jogo-idle/attr-guide.js` | `getAttrHints` / `applyAttrGuides` por classe |
+| `idle/public/jogo-idle/play.html` | spans `.attr-hint` no painel de atributos |
+| `idle/public/jogo-idle/app.js` | chama `applyAttrGuides` em `renderCharacter` |
+| `idle/public/jogo-idle/styles.css` + `theme-ref.css` | layout discreto dos hints (desktop/mobile; botões intactos) |
+| `idle/lib/jogo-idle/game/data.ts` | descrições curtas das classes (Arqueiro esclarece FOR vs DES) |
+| `idle/public/jogo-idle/offline-report.js` | notas gerais + over-cap só se ausência > 2h |
+| `idle/public/jogo-idle/engagement.js` | texto do Cofre Offline alinhado |
+| `idle/lib/jogo-idle/inventory-automation.ts` | doc da diferença auto-equip vs `computeStats` |
+| `idle/lib/jogo-idle/game/__tests__/ux-copy.test.ts` | regressão de copy (attrs + offline) |
+
+**Páginas standalone usadas:** `lobby.html` → `criar.html` → `play.html`. `index.html` não é o fluxo ativo — não editado.
+
+**Não alterado:** fórmulas `computeStats` / farm / scores / pesos / auto-equip / `primaryAttrForClass` comportamento.
+
+Após UX: seguir à **Fase 5 — Performance** quando aprovado (retune de fórmula continua fora de escopo).
 
 ---
 
 ## Riscos remanescentes
 
-- Faint no catch-up encerra a sessão (produto atual).
+- Faint no catch-up encerra a sessão (produto atual) — copy deixa claro que o recompensado “pode ser menor”.
 - Multi-instância no mesmo `save.json` não suportada.
-- Dissonância `primaryAttrForClass(ARQUEIRO)=dex` vs ATK=STR permanece até decisão UX/fórmula.
+- `primaryAttrForClass(ARQUEIRO)=dex` vs ATK=STR permanece **de propósito** na automação; jogador agora vê a fórmula real nos hints.
 - Admin Backup/Map publish ainda disabled (fora deste escopo).
 
 ---
@@ -177,6 +198,7 @@ Após essas decisões: pequena etapa de balanceamento **ou** seguir direto à **
 
 | Camada | Status |
 |--------|--------|
-| Integridade Fase 4 | **Confirmada** (130 pass, build OK, greps) |
+| Integridade Fase 4 | **Confirmada** |
 | Estudo balanceamento | **Entregue** (números; sem retune) |
-| Retune / Fase 5 | **Aguarda** decisões 1–3 acima |
+| UX pós-Fase 4 (attrs + offline) | **Entregue** — `npm test` **137 pass / 0 fail**; `admin:build` OK; motor intacto |
+| Retune / Fase 5 | **Aguarda** aprovação de Performance |

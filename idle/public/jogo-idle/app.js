@@ -19,6 +19,7 @@ import {
   setAudioSettings,
 } from './audio.js';
 import { runPlayIntro } from './play-intro.js';
+import { applyAttrGuides } from './attr-guide.js';
 
 const POLL_MS = 2000;
 const MILESTONE = 100;
@@ -962,6 +963,7 @@ function renderCharacter(c) {
   paintAttrBar('attr-bar-int', a.int, eff.int, c.level);
   paintAttrBar('attr-bar-dex', a.dex, eff.dex, c.level);
   paintAttrBar('attr-bar-con', a.con, eff.con, c.level);
+  applyAttrGuides(document, c.classId);
   const unspent = c.unspentPoints || 0;
   if (els.unspentPoints) {
     els.unspentPoints.classList.toggle('hidden', unspent <= 0);

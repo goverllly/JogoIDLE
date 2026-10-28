@@ -16,7 +16,7 @@ export function createEngagementUI({ button, badge, eventChip, getState, onClaim
         <button type="button" class="idle-engagement__close" data-act="close" aria-label="Fechar">✕</button>
       </header>
       <p class="idle-engagement__hint">Bônus de engajamento — não medem desempenho.</p>
-      <p class="idle-engagement__hint idle-engagement__vault">Cofre offline: o farm continua até 2h; o progresso é resgatado ao reabrir o jogo.</p>
+      <p class="idle-engagement__hint idle-engagement__vault">Cofre offline: você pode recuperar até 2 horas de caça por período de ausência; o tempo efetivamente recompensado depende das condições do personagem e pode ser menor. O progresso é resgatado ao reabrir o jogo.</p>
       <div class="idle-engagement__bonus" id="engagement-bonus-line"></div>
       <div class="idle-engagement__list" id="engagement-list"></div>
     </div>

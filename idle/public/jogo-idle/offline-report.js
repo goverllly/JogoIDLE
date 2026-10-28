@@ -2,11 +2,44 @@
  * Relatório de Caça Offline — modal navy/dourado.
  * Consolida chunks pelo catchUpId do servidor até catchUpPending=false.
  * sessionStorage só evita reexibir o mesmo relatório na sessão do browser.
+ *
+ * Copy de limite: comunica o teto de 2h sem atribuir qualquer gap
+ * elapsed−rewarded só ao teto (desmaio, manutenção, pending, etc.).
  */
 
 const SHOWN_PREFIX = 'jogo_idle_offline_shown:';
 const MIN_REWARDED_MS = 60_000;
 const MAX_EVENTS = 80;
+
+/** Espelha o teto de catch-up do motor (comunicação apenas — não altera farm). */
+export const OFFLINE_CATCH_UP_CAP_MS = 2 * 60 * 60 * 1000;
+
+export const OFFLINE_CATCH_UP_GENERAL =
+  'Você pode recuperar até 2 horas de caça offline por período de ausência. O tempo efetivamente recompensado depende das condições do personagem e pode ser menor.';
+
+export const OFFLINE_CATCH_UP_OVER_CAP =
+  'O tempo além do limite de 2 horas não gera recompensas de caça.';
+
+/**
+ * Observação do teto só quando a ausência ultrapassa 2h — nunca por
+ * `elapsed > rewarded` isoladamente (faint/manutenção/pending também encurtam).
+ * @param {number} elapsedSinceLastMs
+ */
+export function shouldShowOfflineCapNote(elapsedSinceLastMs) {
+  return Number(elapsedSinceLastMs) > OFFLINE_CATCH_UP_CAP_MS;
+}
+
+/**
+ * @param {{ elapsedSinceLastMs?: number }} summary
+ * @returns {{ general: string, overCap: string | null }}
+ */
+export function offlineCatchUpNotes(summary) {
+  const elapsed = Number(summary?.elapsedSinceLastMs) || 0;
+  return {
+    general: OFFLINE_CATCH_UP_GENERAL,
+    overCap: shouldShowOfflineCapNote(elapsed) ? OFFLINE_CATCH_UP_OVER_CAP : null,
+  };
+}
 
 function characterIdFromCatchUpId(catchUpId) {
   if (!catchUpId || typeof catchUpId !== 'string') return null;
@@ -249,6 +282,16 @@ export function createOfflineReportUI(opts = {}) {
         ? `<p class="idle-offline-report__note muted">Drops: ${fmt(summary.dropsKept)} guardados · ${fmt(summary.dropsAutoSold)} vendidos automaticamente (totais do processamento).</p>`
         : '';
 
+    const catchUpNotes = offlineCatchUpNotes(summary);
+    const catchUpNoteHtml = `
+      <p class="idle-offline-report__note idle-offline-report__catchup">${escapeHtml(catchUpNotes.general)}</p>
+      ${
+        catchUpNotes.overCap
+          ? `<p class="idle-offline-report__note idle-offline-report__catchup-cap">${escapeHtml(catchUpNotes.overCap)}</p>`
+          : ''
+      }
+    `;
+
     body.innerHTML = `
       <section class="idle-offline-report__meta">
         <p><span>Personagem</span><strong>${escapeHtml(characterName || 'Heroi')}</strong></p>
@@ -259,6 +302,7 @@ export function createOfflineReportUI(opts = {}) {
             ? `<p><span>Tempo decorrido</span><strong>${formatDurationMs(summary.elapsedSinceLastMs)}</strong></p>`
             : ''
         }
+        ${catchUpNoteHtml}
       </section>
 
       <section class="idle-offline-report__block">

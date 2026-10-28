@@ -805,7 +805,8 @@ h3 {
   grid-template-columns: minmax(0, 1fr) auto;
   grid-template-areas:
     "meta val"
-    "bar bar";
+    "bar bar"
+    "hint hint";
   align-items: center;
   column-gap: 0.45rem;
   row-gap: 0.28rem;
@@ -826,6 +827,7 @@ h3 {
   grid-template-areas:
     "meta val"
     "bar bar"
+    "hint hint"
     "actions actions";
   row-gap: 0.4rem;
 }
@@ -862,6 +864,29 @@ h3 {
   color: var(--muted);
   font-weight: 500;
   line-height: 1.2;
+}
+
+.attr-list .attr-row__hint {
+  grid-area: hint;
+  margin: 0;
+  min-width: 0;
+}
+
+.attr-list .attr-hint {
+  display: block;
+  font-size: 0.62rem;
+  line-height: 1.35;
+  font-weight: 500;
+  color: var(--muted);
+  letter-spacing: 0.01em;
+}
+
+.attr-list .attr-hint:empty {
+  display: none;
+}
+
+.attr-list .attr-row--key .attr-hint {
+  color: color-mix(in srgb, var(--ink) 72%, var(--muted));
 }
 
 .attr-list dd {

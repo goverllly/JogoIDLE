@@ -132,6 +132,12 @@ export function isEligibleForPetAutoSell(
   return rarityRank(item.rarity) <= rarityRank(prefs.maxSellRarity);
 }
 
+/**
+ * Atributo preferido só para automação de inventário/pets (isItemBetter, scores).
+ * Não define o dano do combate: em computeStats o ATK físico (incl. Arqueiro) usa STR;
+ * DEX no Arqueiro afeta intervalo/crítico. Manter ARQUEIRO → dex aqui — não “corrigir”
+ * para str sem retune explícito da automação.
+ */
 export function primaryAttrForClass(classId: string): "str" | "int" | "dex" {
   if (classId === "MAGO") return "int";
   if (classId === "ARQUEIRO") return "dex";
