@@ -4394,3 +4394,13 @@ body.play-stage {
     transform: none !important;
   }
 }
+
+/* Duelo PvP oculto. A regra genérica do botão usa display:inline-flex !important
+   e vence .hidden; esta especificidade cobre só os botões do duelo.
+   #arena (cenário de caça) não entra aqui. */
+.play-stage #arena-combat-btn[hidden],
+.play-stage #arena-btn[hidden],
+.play-stage #arena-combat-btn.hidden,
+.play-stage #arena-btn.hidden {
+  display: none !important;
+}

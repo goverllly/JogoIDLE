@@ -524,56 +524,13 @@ const engagementUi = createEngagementUI({
   },
 });
 
-const arenaUi = createArenaUI({
-  button: els.arenaBtn,
-  getState: () => ({ arena: arenaState, character, duel: duelState }),
-  onToast: (msg) => toast(msg, 3500),
-  onEnter: async () => {
-    const data = await api('/api/arena/enter', { method: 'POST', body: '{}' });
-    applyArenaPayload(data);
-    toast(data.message || 'Entrou na Arena', 3500);
-    pushLog([data.message || 'Entrou na Arena']);
-    return data;
-  },
-  onLeave: async () => {
-    const data = await api('/api/arena/leave', { method: 'POST', body: '{}' });
-    clearDuelUi();
-    applyArenaPayload({ ...data, duel: null });
-    toast(data.message || 'Saiu da Arena', 3000);
-    return data;
-  },
-  onRefreshPlayers: async () => {
-    const data = await api('/api/arena/players');
-    applyArenaPayload(data);
-    return data.players || [];
-  },
-  onChallenge: async (opponentCharacterId, stake) => {
-    const data = await api('/api/arena/challenge', {
-      method: 'POST',
-      body: JSON.stringify({ opponentCharacterId, stake }),
-    });
-    applyArenaPayload(data);
-    pushLog([data.message || 'Desafio enviado']);
-    return data;
-  },
-  onRespond: async (duelId, accept) => {
-    const data = await api('/api/arena/respond', {
-      method: 'POST',
-      body: JSON.stringify({ duelId, accept }),
-    });
-    applyArenaPayload(data);
-    if (accept && data.duel) playDuelReplay(data.duel);
-    pushLog([data.message || (accept ? 'Duelo' : 'Recusado')]);
-    return data;
-  },
-  onForfeit: async () => {
-    const data = await api('/api/arena/forfeit', { method: 'POST', body: '{}' });
-    applyArenaPayload(data);
-    return data;
-  },
-});
-
-els.arenaCombatBtn?.addEventListener('click', () => arenaUi.open());
+/**
+ * Duelo PvP continua implementado em arena-ui.js, mas não é montado:
+ * a API responde 501 e o botão fica oculto. A caça usa #arena, outro elemento.
+ * Não há parâmetro de duelo nem de pvp. O hash do cenário de caça não abre este módulo.
+ */
+const arenaUi = null;
+void createArenaUI;
 
 const divindadeUi = createDivindadeUI({
   button: els.divindadeBtn,
@@ -599,7 +556,7 @@ function applyArenaPayload(data) {
   if (data?.duel !== undefined) duelState = data.duel;
   syncArenaChrome();
   syncArenaDuelFire();
-  arenaUi.syncFromMe({ arena: arenaState, character, duel: duelState });
+  arenaUi?.syncFromMe({ arena: arenaState, character, duel: duelState });
 }
 
 function syncArenaChrome() {
@@ -1473,7 +1430,7 @@ async function startFarm(zoneId) {
     renderCharacter(data.character);
     syncArenaChrome();
     syncArenaDuelFire();
-    arenaUi.syncFromMe({ arena: arenaState, character: data.character, duel: null });
+    arenaUi?.syncFromMe({ arena: arenaState, character: data.character, duel: null });
     scene.setMonster(data.character.target, true);
     const leftNote = data.leftArena ? ' (saiu da Arena)' : '';
     pushLog([`Iniciou caçada em ${data.zone.name}${leftNote}`]);
@@ -1526,7 +1483,7 @@ async function refreshOnce(epoch) {
       if (data.engagement) applyEngagement(data.engagement);
       updateEventFarmLine();
       syncArenaDuelFire();
-      arenaUi.syncFromMe({ arena: arenaState, character: data.character, duel: duelState });
+      arenaUi?.syncFromMe({ arena: arenaState, character: data.character, duel: duelState });
     }
 
     if (

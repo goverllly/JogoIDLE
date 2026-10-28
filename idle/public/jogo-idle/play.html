@@ -192,7 +192,7 @@
               </div>
             </div>
 
-            <button id="arena-btn" class="sr-only" type="button">Arena</button>
+            <button id="arena-btn" class="sr-only hidden" type="button" hidden disabled aria-disabled="true">Arena</button>
             </div>
           </section>
         </aside>
@@ -320,9 +320,12 @@
               </button>
               <button
                 id="arena-combat-btn"
-                class="btn btn--small stage-btn btn--arena"
+                class="btn btn--small stage-btn btn--arena hidden"
                 type="button"
-                title="Arena de duelos com aposta"
+                hidden
+                disabled
+                aria-disabled="true"
+                title="Arena de duelos indisponível"
               >
                 <img src="/jogo-idle/assets/hud/ui-arena.png" alt="" />Arena
               </button>
