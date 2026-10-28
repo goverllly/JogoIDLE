@@ -1,0 +1,82 @@
+[
+  {
+    "classId": "GUERREIRO",
+    "pre": {
+      "level": 500,
+      "classification": "MORTAL",
+      "maxHp": 15452,
+      "attack": 3607,
+      "dps": 2628.92
+    },
+    "post": {
+      "level": 1,
+      "classification": "CELESTIAL",
+      "chapter": "II",
+      "maxHp": 12458,
+      "attack": 3607,
+      "dps": 2628.92,
+      "unspentPoints": 20,
+      "gold": 0
+    }
+  },
+  {
+    "classId": "BARBARO",
+    "pre": {
+      "level": 500,
+      "classification": "MORTAL",
+      "maxHp": 15466,
+      "attack": 3614,
+      "dps": 2615.7
+    },
+    "post": {
+      "level": 1,
+      "classification": "CELESTIAL",
+      "chapter": "II",
+      "maxHp": 12472,
+      "attack": 3614,
+      "dps": 2615.7,
+      "unspentPoints": 20,
+      "gold": 0
+    }
+  },
+  {
+    "classId": "MAGO",
+    "pre": {
+      "level": 500,
+      "classification": "MORTAL",
+      "maxHp": 15396,
+      "attack": 3937,
+      "dps": 2810.16
+    },
+    "post": {
+      "level": 1,
+      "classification": "CELESTIAL",
+      "chapter": "II",
+      "maxHp": 12402,
+      "attack": 3937,
+      "dps": 2810.16,
+      "unspentPoints": 20,
+      "gold": 0
+    }
+  },
+  {
+    "classId": "ARQUEIRO",
+    "pre": {
+      "level": 500,
+      "classification": "MORTAL",
+      "maxHp": 15396,
+      "attack": 26,
+      "dps": 84.19
+    },
+    "post": {
+      "level": 1,
+      "classification": "CELESTIAL",
+      "chapter": "II",
+      "maxHp": 12402,
+      "attack": 26,
+      "dps": 84.19,
+      "unspentPoints": 20,
+      "gold": 0
+    }
+  }
+]

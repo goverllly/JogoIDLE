@@ -1,0 +1,42 @@
+[
+  {
+    "classId": "GUERREIRO",
+    "levelStart": 10,
+    "levelEnd": 19,
+    "windowMs": 3600000,
+    "kills": 632,
+    "xpGained": 39570,
+    "goldGained": 11695,
+    "goldEnd": 47887
+  },
+  {
+    "classId": "BARBARO",
+    "levelStart": 10,
+    "levelEnd": 19,
+    "windowMs": 3600000,
+    "kills": 651,
+    "xpGained": 41880,
+    "goldGained": 12364,
+    "goldEnd": 14178
+  },
+  {
+    "classId": "MAGO",
+    "levelStart": 10,
+    "levelEnd": 16,
+    "windowMs": 3600000,
+    "kills": 358,
+    "xpGained": 22925,
+    "goldGained": 6771,
+    "goldEnd": 7638
+  },
+  {
+    "classId": "ARQUEIRO",
+    "levelStart": 10,
+    "levelEnd": 13,
+    "windowMs": 3600000,
+    "kills": 161,
+    "xpGained": 10175,
+    "goldGained": 3013,
+    "goldEnd": 3013
+  }
+]

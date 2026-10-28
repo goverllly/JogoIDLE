@@ -1,0 +1,32 @@
+[
+  {
+    "level": 1,
+    "xpToNext": 100,
+    "totalXpToReach": 0
+  },
+  {
+    "level": 10,
+    "xpToNext": 2511,
+    "totalXpToReach": 9231
+  },
+  {
+    "level": 50,
+    "xpToNext": 20980,
+    "totalXpToReach": 486170
+  },
+  {
+    "level": 100,
+    "xpToNext": 52381,
+    "totalXpToReach": 2276123
+  },
+  {
+    "level": 250,
+    "xpToNext": 187708,
+    "totalXpToReach": 19898596
+  },
+  {
+    "level": 500,
+    "xpToNext": null,
+    "totalXpToReach": 96696680
+  }
+]
