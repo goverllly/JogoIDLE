@@ -133,15 +133,34 @@ Camada de I/O mínima sem atomicidade, sem distinção ENOENT vs corrupt, e conf
 ### Limitações remanescentes
 - Multi-processo no mesmo `save.json`: não suportado.
 - `updatedAt` `ISO#seq` não é timestamp parseável; se no futuro precisar de data, preferir campo ISO separado + `revision` numérico.
-- Auth admin aberta (Fase 2).
 - `adminEndSeason` stub sem soft-reset / backup.
 
 ### Veredito
-**Fase 1 validada e pronta para integração / início da Fase 2** (em trabalho separado).
+**Fase 1 validada.** Auth passou à Fase 2 (abaixo / `13_FASE2_AUTH.md`).
 
 ---
 
-## Matriz (Fases 0–1)
+## Fase 2 — Autenticação / autorização
+
+### Entregue
+- `IDLE_AUTH_MODE=local|protected` com boot fail-closed (HTTPS/proxy/cookie Secure).
+- Usuários Argon2id + sessões com hash SHA-256; CSRF + Origin; Admin Studio gated antes do static.
+- `userId=1` reservado; CLIs `auth:create-admin` / `auth:create-player`; isolamento multi-conta.
+- `assertIdleAdmin` via ALS do principal (protected) sem allowlist fixa bloqueando ADMIN legítimo.
+- Persistência auth atômica em `auth-users.json` / `auth-sessions.json` (gitignored).
+
+### Testes
+| Comando | Resultado |
+|---------|-----------|
+| `cd idle && npm test` | **57 pass / 0 fail** |
+| `cd idle && npm run admin:build` | **OK** |
+
+### Veredito
+**Fase 2 concluída no código standalone.** Lançamento público ainda depende de TLS na borda e revisão de implantação.
+
+---
+
+## Matriz (Fases 0–2)
 
 | ID | Problema | Prioridade | Status | Teste | Commit |
 |----|----------|------------|--------|-------|--------|
@@ -152,4 +171,5 @@ Camada de I/O mínima sem atomicidade, sem distinção ENOENT vs corrupt, e conf
 | P0-STORE-04 | Backups | P0 | Resolvido | backup/restore tests | (fix store) |
 | P0-STORE-05 | STALE / concurrency | P0 | Resolvido | concurrent + monotonic | (fix store) |
 | P0-STORE-REV | Revisão final Fase 1 | P0 | Resolvido | 44 pass + admin build | (esta revisão) |
-| Fases 2–6 | Auth, HUD, … | P1+ | Pendente | — | — |
+| P2-AUTH | Auth protected + Admin gate + CSRF | P0 | Resolvido | 57 pass + admin build | (fase 2 commits) |
+| Fases 3–6 | HUD / economia / … | P1+ | Pendente | — | — |

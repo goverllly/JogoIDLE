@@ -6,12 +6,12 @@ Somente riscos e fatos com evidência no código. Sem claim de exploit comprovad
 
 | Mecanismo | Evidência | Status |
 |-----------|-----------|--------|
-| User id fixo | `LOCAL_USER_ID = 1` em `local-service.ts`; `uid()` em `server.ts` | Sem login |
-| Admin email fixo | `LOCAL_USER_EMAIL = "local@idle.local"`; `adminEmail()` | Sem cookie/session |
-| Module gate | Removido — `idle/README.md` | Acesso livre local |
-| Cookies / JWT | **Não encontrado** no path standalone | — |
+| Modo `local` | `IDLE_AUTH_MODE=local` (`npm run dev`); principal fixo `userId=1` | Dev loopback |
+| Modo `protected` | Sessão HttpOnly + Argon2id + CSRF; ver `13_FASE2_AUTH.md` | Obrigatório p/ exposição |
+| Admin Studio | Gate **antes** do static `/jogo-idle/admin*` | Protegido em protected |
+| Cookies / JWT | Cookie opaco `jogo_idle_sid`; hash SHA-256 no disco — **sem JWT** | Fase 2 |
 
-**Risco comprovado pelo design:** qualquer cliente que alcance a porta (ex. `:8787`) pode chamar APIs de jogo e `/api/jogo-idle/admin/*` (grant, catalog, simulate, publish HUD). Adequado a single-player local; **não** pronto para exposição pública sem auth.
+**Risco residual:** `local` em porta alcançável (túnel) ainda é identidade fixa ADMIN. Use `protected` + HTTPS na borda para qualquer exposição. Detalhes e evidências: `13_FASE2_AUTH.md`.
 
 ## 2. Superfície admin
 
@@ -52,7 +52,7 @@ Validação: payloads JSON (`express.json` limit **2mb**); lógica de negócio e
 
 - Express 5 + `tsx`; farm processado sob demanda nas rotas (catch-up offline capped — ver `02_MECANICAS.md`).
 - Sem worker queue / Redis encontrado no standalone.
-- JSON body 2mb — protege um pouco DoS de payload; sem rate limit encontrado.
+- JSON body 2mb — protege um pouco DoS de payload; rate limit no login (protected).
 
 ## 7. Segredos
 
@@ -63,7 +63,7 @@ Validação: payloads JSON (`express.json` limit **2mb**); lógica de negócio e
 
 | Item | Tipo |
 |------|------|
-| Admin aberto no standalone | Comprovado (código) |
+| Admin aberto em `local` / gated em `protected` | Comprovado (Fase 2) |
 | Arena/engagement desligados | Comprovado |
 | Poll 2s sob carga multi-aba | Risco perf |
 | CSS/JS grandes em play | Risco perf (tamanho) |
