@@ -2044,20 +2044,99 @@ export function createScene3D(root, { goldTarget, onTarget = () => {}, onTargetH
     placePlate(heroPlate, hero, 0.2);
   }
 
+  /** Arena explicitamente ligada via setActive — independente de aba oculta. */
+  let explicitlyActive = false;
+  /** Suspensão temporária (document.hidden) — NÃO limpa timeline nem combate. */
+  let renderSuspended = false;
+
+  function frameInstrumented(time) {
+    frame(time);
+    try {
+      if (typeof globalThis.__idleNoteWebglFrame === 'function') {
+        globalThis.__idleNoteWebglFrame(renderer);
+      }
+    } catch {
+      /* probe opcional */
+    }
+  }
+
+  function syncAnimationLoop() {
+    const shouldRun = explicitlyActive && !renderSuspended;
+    if (shouldRun) {
+      resize();
+      // Descarta delta acumulado em background — evita salto de animação.
+      clock.getDelta();
+      renderer.setAnimationLoop(frameInstrumented);
+    } else {
+      renderer.setAnimationLoop(null);
+    }
+  }
+
+  /**
+   * Suspensão temporária da renderização (aba oculta).
+   * Não chama timeline.clear() nem esconde plates — distinto de setActive(false).
+   */
+  function setRenderSuspended(on) {
+    renderSuspended = Boolean(on);
+    syncAnimationLoop();
+  }
+
   function setActive(on) {
-    active = on;
+    explicitlyActive = Boolean(on);
+    active = explicitlyActive;
     renderer.domElement.classList.toggle('hidden', !on);
     if (on) {
-      resize();
-      clock.getDelta();
-      renderer.setAnimationLoop(frame);
+      renderSuspended = false;
+      syncAnimationLoop();
     } else {
       renderer.setAnimationLoop(null);
       timeline.clear();
       plate.classList.add('hidden');
       heroPlate.classList.add('hidden');
+      renderSuspended = false;
     }
     setLoading(0);
+  }
+
+  /**
+   * Destruição definitiva do contexto WebGL desta instância.
+   * Não usar em troca de zona — só ao descartar a arena por completo.
+   */
+  function destroy() {
+    explicitlyActive = false;
+    active = false;
+    renderSuspended = false;
+    renderer.setAnimationLoop(null);
+    timeline.clear();
+    try {
+      controls.dispose?.();
+    } catch {
+      /* ignore */
+    }
+    disposeGroup(zoneGroup);
+    if (hero) {
+      hero.dispose();
+      scene.remove(hero.holder);
+      hero = null;
+    }
+    removeMonster();
+    clearPet();
+    if (particles) {
+      scene.remove(particles);
+      particles.geometry.dispose();
+      particles.material.dispose();
+      particles = null;
+    }
+    try {
+      renderer.dispose();
+    } catch {
+      /* ignore */
+    }
+    try {
+      renderer.domElement.remove();
+    } catch {
+      /* ignore */
+    }
   }
 
   zoneId = 'idle';
@@ -2070,6 +2149,8 @@ export function createScene3D(root, { goldTarget, onTarget = () => {}, onTargetH
     setHero,
     setMonster,
     setActive,
+    setRenderSuspended,
+    destroy,
     clearCombat,
     clearQueue: timeline.clear,
   };

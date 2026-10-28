@@ -63,5 +63,16 @@ export function createArena(root, hooks) {
       state.target = target;
       current()?.setMonster(target, animate);
     },
+    /** Aba oculta — não usa setActive(false). */
+    setRenderSuspended(on) {
+      scene3d?.setRenderSuspended?.(on);
+    },
+    /** Destruição definitiva (não é troca de zona). */
+    destroy() {
+      scene3d?.destroy?.();
+      scene3d = null;
+      scene2d?.destroy?.();
+      scene2d = null;
+    },
   };
 }
