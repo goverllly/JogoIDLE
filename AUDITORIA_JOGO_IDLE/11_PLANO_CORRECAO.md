@@ -1,0 +1,43 @@
+# 11 — Plano de correção (checklist)
+
+Branch: `stabilize/store-integrity`  
+Commit de partida: `90f51da`  
+Escopo ativo concluído neste ciclo: **Fases 0 e 1**. Fases 2–6 permanecem **Pendente**.
+
+## Baseline (Fase 0)
+
+| Check | Comando | Resultado | Quando |
+|-------|---------|-----------|--------|
+| Git limpo | `git status` | Limpo → branch `stabilize/store-integrity` | 2026-10-28 |
+| HEAD partida | `git rev-parse --short HEAD` | `90f51da` | 2026-10-28 |
+| `npm test` (pré) | `cd idle && npm test` | **21 pass / 0 fail** | 2026-10-28 |
+| `admin:build` (pré) | `cd idle && npm run admin:build` | **OK** | 2026-10-28 |
+| `npm test` (pós Fase 1) | inclui `src/__tests__/store.test.ts` | **39 pass / 0 fail** | 2026-10-28 |
+| `admin:build` (pós) | `cd idle && npm run admin:build` | **OK** | 2026-10-28 |
+| `save.json` no git | `.gitignore` | Ignorado + backups/tmp/evidence | Confirmado |
+
+## Itens
+
+| ID | Descrição | Pri | Arquivo | Evidência | Causa raiz | Correção | Status | Testes | Resultado | Commit |
+|----|-----------|-----|---------|-----------|------------|----------|--------|--------|-----------|--------|
+| P0-BASE-01 | Baseline + branch + checklist | P0 | `11_PLANO_CORRECAO.md` | Auditoria | — | Documentar + gitignore | Resolvido | npm test / admin:build | 21→39 pass; build OK | ver log git |
+| P0-STORE-01 | WriteFileSync não atômico | P0 | `store-io.ts` | writeFileSync antigo | Truncamento | tmp+fsync+rename | Resolvido | fail before/during temp | Passou | ver log git |
+| P0-STORE-02 | JSON corrupt → emptySave wipe | P0 | `store.ts` / `store-io.ts` | catch → emptySave | Catch silencioso | Bloquear writes; arquivo permanece | Resolvido | JSON inválido + restart | Passou | ver log git |
+| P0-STORE-03 | Sem schema validation | P0 | `store-io.ts` | Só JSON.parse | Aceita qualquer JSON | validateSaveDocument + schemaVersion | Resolvido | structure + future schema | Passou | ver log git |
+| P0-STORE-04 | Sem backups versionados | P0 | `store-backup.ts` | Aba Backup disabled | Sem motor | Backups internos (sem HTTP) | Resolvido | backup/restore | Passou | ver log git |
+| P0-STORE-05 | Race lógica async + STALE | P0 | `store.ts` + local-service | Gaps async | Event loop ≠ transação lógica | updatedAt monotônico + STALE; doc limites | Resolvido | concurrent + STALE | Passou | ver log git |
+| P1-SEC-01… | Auth / HUD / … | P1+ | — | Fase 2+ | — | Fora deste ciclo | Pendente | — | — | — |
+
+## Limitações documentadas (concorrência)
+
+- Métodos sync `load→mutate→save` no store não intercalam entre si no mesmo processo Node (event loop).
+- Operações de gameplay assíncronas em `local-service` / `admin-service` podem carregar o personagem, aguardar, e só então `persist` — a proteção é **otimista** via `expectedUpdatedAt` / `STALE_CHARACTER` (409).
+- Mutex só em `save()` **não** cobriria essa transação lógica; **não foi implementado nem afirmado**.
+- `updatedAt` agora é `ISO#seq` para evitar duas revisões idênticas no mesmo milissegundo.
+- Múltiplos processos/instâncias no mesmo `save.json`: **não suportado** nesta fase.
+
+## Limitações OS / FS (escrita atômica)
+
+- Temporário exclusivo no **mesmo diretório** do save; `rename` atômico no mesmo volume.
+- `fsync` do arquivo e do diretório: best-effort (pode ser no-op/erro no Windows ou FS de rede).
+- Falha antes do rename: principal intacto; tmp removido na limpeza.
