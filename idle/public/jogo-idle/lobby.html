@@ -40,15 +40,14 @@
             <iframe
               id="preview-frame"
               title="Prévia do personagem"
-              src="/jogo-idle/preview.html"
+              src="/jogo-idle/preview.html?hall=1"
               allow="autoplay"
             ></iframe>
             <span class="idle-lobby-preview__hint">Arraste para girar · Roda para zoom</span>
           </div>
         </section>
 
-        <!-- Lista -->
-        <section class="idle-lobby-panel">
+        <section class="idle-lobby-panel idle-lobby-hall is-empty" id="hero-hall">
           <div class="idle-lobby-panel-head">
             <div class="idle-lobby-panel-ico" aria-hidden="true">☰</div>
             <div>
@@ -56,12 +55,12 @@
               <p class="idle-lobby-panel-desc" id="slots-label">0/3 slots</p>
             </div>
           </div>
-          <div class="idle-lobby-panel__body" id="char-list"></div>
-        </section>
+          <div class="idle-lobby-hall__body">
+          <div class="idle-slot-grid" id="char-list">
+            <p class="lobby-status" id="lobby-status">Abrindo o salão…</p>
+          </div>
 
-        <!-- Detalhe + criar -->
-        <div class="idle-lobby-side">
-          <section class="idle-lobby-panel idle-lobby-side-card" id="detail-panel" hidden>
+          <section class="idle-lobby-side-card" id="detail-panel" hidden>
             <div class="idle-detail-head">
               <div>
                 <h3 id="detail-name">—</h3>
@@ -85,25 +84,26 @@
             </div>
           </section>
 
-          <section class="idle-lobby-panel idle-lobby-side-card" id="create-panel">
+          <section class="idle-lobby-side-card idle-lobby-create" id="create-panel">
             <div class="idle-lobby-panel-head">
               <div class="idle-lobby-panel-ico" aria-hidden="true">＋</div>
               <div>
                 <h2 class="idle-lobby-panel-title">Novo personagem</h2>
-                <p class="idle-lobby-panel-desc">Abra o Studio 3D para definir a aparência definitiva.</p>
+                <p class="idle-lobby-panel-desc">Abra o Estúdio 3D para definir a aparência definitiva.</p>
               </div>
             </div>
             <div class="idle-lobby-panel__body">
-              <p class="idle-lobby-empty" style="padding:0.5rem 0 0.85rem;text-align:left">
-                Classe, cores, capa e elmo são escolhidos na criação e não podem ser alterados depois.
+              <p class="idle-lobby-create__note">
+                Guerreiro, Bárbaro, Mago e Arqueiro são escolhidos no estúdio. Classe, cores, capa e elmo não podem ser alterados depois.
               </p>
-              <a class="idle-btn idle-btn-create" id="btn-studio" href="/jogo-idle/criar.html" style="display:inline-block;text-align:center;text-decoration:none;box-sizing:border-box">
-                Abrir Studio de Criação
+              <a class="idle-btn idle-btn-create" id="btn-studio" href="/jogo-idle/criar.html">
+                Abrir Estúdio de Criação
               </a>
               <p class="lobby-err" id="create-err" hidden></p>
             </div>
           </section>
-        </div>
+          </div>
+        </section>
       </div>
     </div>
 
@@ -151,6 +151,8 @@
         btnPlay: document.getElementById("btn-play"),
         btnDelete: document.getElementById("btn-delete"),
         frame: document.getElementById("preview-frame"),
+        hall: document.getElementById("hero-hall"),
+        status: document.getElementById("lobby-status"),
       };
 
       function fmt(n) {
@@ -215,32 +217,49 @@
         el.textContent = msg;
       }
 
+      function ascentLabel(character) {
+        if (character.ascension) return String(character.ascension);
+        if (character.classification && character.classification !== "MORTAL") return String(character.classification);
+        return "";
+      }
+
       function renderList() {
         const max = state.maxCharacters || 3;
         els.slots.textContent = `${state.characters.length}/${max} slots`;
+        els.hall?.classList.toggle("is-empty", state.characters.length === 0);
+        if (els.status) els.status.hidden = true;
 
-        if (!state.characters.length) {
-          els.list.innerHTML = `<div class="idle-lobby-empty">Nenhum personagem ainda.<br />Abra o Studio ao lado.</div>`;
-          return;
+        const cards = [];
+        for (let i = 0; i < max; i += 1) {
+          const c = state.characters[i];
+          if (!c) {
+            const first = state.characters.length === 0 && i === 0;
+            cards.push(`
+              <div class="idle-slot idle-slot--empty">
+                <span class="idle-slot__mark" aria-hidden="true">✦</span>
+                <span class="idle-slot__title">${first ? "Lugar do primeiro aventureiro" : "Espaço disponível"}</span>
+                <span class="idle-slot__hint">${first ? "Abra o estúdio para começar a jornada." : "Você ainda pode criar outro personagem."}</span>
+              </div>`);
+            continue;
+          }
+          const active = c.id === state.selectedId;
+          const glyph = CLASS_GLYPH[c.classId] || "◆";
+          const farm = c.farmZoneId ? `<span class="idle-char-card__badge">Em farm</span>` : "";
+          const ascent = ascentLabel(c);
+          const ascentHtml = ascent ? `<span class="idle-char-card__ascent">${escapeHtml(ascent)}</span>` : "";
+          cards.push(`
+            <button type="button" class="idle-char-card idle-slot${active ? " idle-char-card--active" : ""}" data-id="${c.id}" aria-pressed="${active ? "true" : "false"}">
+              <span class="idle-char-card__avatar" aria-hidden="true">${glyph}</span>
+              <span class="idle-char-card__copy">
+                <span class="idle-char-card__name">${escapeHtml(c.name)}</span>
+                <span class="idle-char-card__meta">${escapeHtml(classLabel(c.classId))}</span>
+                ${ascentHtml}
+                ${farm}
+              </span>
+              <span class="idle-char-card__lv">Lv. ${c.level || 1}</span>
+            </button>`);
         }
-
-        els.list.innerHTML = state.characters
-          .map((c) => {
-            const active = c.id === state.selectedId ? " idle-char-card--active" : "";
-            const glyph = CLASS_GLYPH[c.classId] || "◆";
-            const farm = c.farmZoneId ? `<span class="idle-char-card__badge">Em farm</span>` : "";
-            return `
-              <button type="button" class="idle-char-card${active}" data-id="${c.id}">
-                <span class="idle-char-card__avatar" aria-hidden="true">${glyph}</span>
-                <span>
-                  <span class="idle-char-card__name">${escapeHtml(c.name)}</span>
-                  <span class="idle-char-card__meta">${escapeHtml(classLabel(c.classId))}</span>
-                  ${farm}
-                </span>
-                <span class="idle-char-card__lv">Lv. ${c.level || 1}</span>
-              </button>`;
-          })
-          .join("");
+        els.list.innerHTML = cards.join("");
 
         els.list.querySelectorAll("[data-id]").forEach((btn) => {
           btn.addEventListener("click", () => selectCharacter(btn.getAttribute("data-id")));
@@ -266,7 +285,10 @@
 
         const attrs = c.attributes || {};
         els.detailName.textContent = c.name;
-        els.detailMeta.textContent = `Lv. ${c.level || 1} · ${classLabel(c.classId)}`;
+        const ascent = ascentLabel(c);
+        els.detailMeta.textContent = ascent
+          ? `Lv. ${c.level || 1} · ${classLabel(c.classId)} · ${ascent}`
+          : `Lv. ${c.level || 1} · ${classLabel(c.classId)}`;
         els.gold.textContent = fmt(c.gold);
 
         els.attrGrid.innerHTML = [
@@ -410,7 +432,8 @@
       });
 
       loadLobby().catch((err) => {
-        els.list.innerHTML = `<div class="idle-lobby-empty">${escapeHtml(err.message)}</div>`;
+        if (els.status) els.status.hidden = true;
+        els.list.innerHTML = `<div class="idle-lobby-empty">${escapeHtml(err.message || "Não foi possível abrir o salão.")}</div>`;
       });
     </script>
   </body>

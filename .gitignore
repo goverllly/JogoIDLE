@@ -23,6 +23,7 @@ idle/data/*.tmp
 idle/data/*.bak
 idle/data/save.json.corrupt-evidence-*
 idle/data/.store-lock
+idle/data-protected/
 idle/node_modules
 idle/admin-ui/node_modules
 idle/admin-ui/dist
