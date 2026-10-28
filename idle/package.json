@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "start": "tsx src/server.ts",
-    "test": "tsx --test lib/jogo-idle/game/__tests__/**/*.test.ts",
+    "test": "tsx --test lib/jogo-idle/game/__tests__/**/*.test.ts src/__tests__/**/*.test.ts",
     "audit:balance": "tsx scripts/balance-audit/run-all.mjs && tsx scripts/balance-audit/write-docs.mjs",
     "admin:install": "npm install --prefix admin-ui",
     "admin:dev": "npm run dev --prefix admin-ui",
