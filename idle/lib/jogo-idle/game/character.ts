@@ -766,6 +766,8 @@ export function publicCharacter(character) {
   const out = {
     id: character.id,
     name: character.name,
+    /** Store revision (ISO#seq) when hydrated from persistence — used by client sync. */
+    revision: typeof character.__dbUpdatedAt === 'string' ? character.__dbUpdatedAt : null,
     classId: character.classId,
     className: CLASSES[character.classId]?.name,
     currentChapterId: chapters.currentChapterId || 'I',

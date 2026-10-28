@@ -20,6 +20,18 @@ import {
 } from './audio.js';
 import { runPlayIntro } from './play-intro.js';
 import { applyAttrGuides } from './attr-guide.js';
+import { createClientSync } from './client-sync.js';
+import {
+  applyPerfMeta,
+  mark as perfMark,
+  noteFetch,
+  noteWebglFrame,
+  snapshot as perfSnapshot,
+} from './perf-probe.js';
+
+const clientSync = createClientSync();
+globalThis.__idleNoteWebglFrame = noteWebglFrame;
+globalThis.__idlePerfSnapshot = perfSnapshot;
 
 const POLL_MS = 2000;
 const MILESTONE = 100;
@@ -474,7 +486,7 @@ const merchant = createMerchantUI({
   getState: () => ({ merchant: meta.merchant, character }),
   onBuy: async (sku) => {
     try {
-      const data = await api('/api/merchant/buy', {
+      const data = await apiMutation('/api/merchant/buy', {
         method: 'POST',
         body: JSON.stringify({ sku }),
       });
@@ -567,7 +579,7 @@ const divindadeUi = createDivindadeUI({
   getState: () => ({ character }),
   onToast: (msg, ms) => toast(msg, ms),
   onAscend: async () => {
-    const data = await api('/api/me/ascend', { method: 'POST', body: '{}' });
+    const data = await apiMutation('/api/me/ascend', { method: 'POST', body: '{}' });
     renderCharacter(data.character);
     toast(data.message || 'Ritual concluído — você é Celestial!', 5500);
     sfx('level');
@@ -755,9 +767,11 @@ function notifyMaintenance(message) {
 }
 
 async function api(path, options = {}) {
+  const t0 = performance.now();
   const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
   const res = await fetch(apiPath(path), { credentials: 'include', ...options, headers });
   const data = await res.json().catch(() => ({}));
+  noteFetch(performance.now() - t0);
   if (!res.ok) {
     if (res.status === 401) {
       window.location.assign('/jogo-idle/lobby.html');
@@ -775,6 +789,20 @@ async function api(path, options = {}) {
     throw err;
   }
   return data;
+}
+
+/** Mutação do jogador: marca barreira e aplica revision ao sucesso. */
+async function apiMutation(path, options = {}) {
+  clientSync.beginMutation();
+  try {
+    const data = await api(path, options);
+    if (data?.character) clientSync.noteMutationResult(data.character);
+    else clientSync.endMutation();
+    return data;
+  } catch (err) {
+    clientSync.endMutation();
+    throw err;
+  }
 }
 
 const huntPerfUi = createHuntPerfUI({
@@ -1149,7 +1177,7 @@ function renderPetsPanel(c) {
     btn.addEventListener('click', async () => {
       if (pet.active) return;
       try {
-        const data = await api('/api/me/pets', {
+        const data = await apiMutation('/api/me/pets', {
           method: 'PUT',
           body: JSON.stringify({ petId: pet.id }),
         });
@@ -1387,7 +1415,7 @@ const inventory = createInventoryUI({
   smartInvBody: $('smart-inv-body'),
   onPrefsSave: async (patch) => {
     try {
-      const data = await api('/api/me/inventory-automation', {
+      const data = await apiMutation('/api/me/inventory-automation', {
         method: 'POST',
         body: JSON.stringify(patch),
       });
@@ -1411,7 +1439,7 @@ async function itemAction(op, body) {
       sfx('click');
       return;
     }
-    const data = await api(`/api/items/${op}`, { method: 'POST', body: JSON.stringify(body) });
+    const data = await apiMutation(`/api/items/${op}`, { method: 'POST', body: JSON.stringify(body) });
     renderCharacter(data.character);
     if (op === 'equip') sfx('equip');
     else if (op === 'sell' || op === 'sell-junk') sfx('sell');
@@ -1424,7 +1452,7 @@ async function itemAction(op, body) {
 
 async function startFarm(zoneId) {
   try {
-    const data = await api('/api/farm/start', {
+    const data = await apiMutation('/api/farm/start', {
       method: 'POST',
       body: JSON.stringify({ zoneId }),
     });
@@ -1448,7 +1476,7 @@ async function startFarm(zoneId) {
 
 async function stopFarm() {
   try {
-    const data = await api('/api/farm/stop', { method: 'POST', body: '{}' });
+    const data = await apiMutation('/api/farm/stop', { method: 'POST', body: '{}' });
     renderCharacter(data.character);
     renderWorld({ online: Number(els.onlineCount.textContent) || 1, zonePlayers: [] });
     pushLog(['Combate parado']);
@@ -1457,26 +1485,39 @@ async function stopFarm() {
   }
 }
 
-async function refresh() {
+async function refreshOnce(epoch) {
   const refreshSeq = offlineReport.beginRefresh();
   try {
     const data = await api('/api/me');
+    if (!clientSync.isRefreshCurrent(epoch)) {
+      // Uma refresh mais nova já começou — não aplicar snapshot antigo.
+      // Offline ingest ainda usa refreshSeq próprio; descartamos se epoch obsoleto.
+      return;
+    }
     const prevLevel = character?.level;
     const prevCharacterId = character?.id;
     if (data.world?.catalogRevision) {
       await syncCatalogThemes(data.world.catalogRevision);
     }
+    if (!clientSync.isRefreshCurrent(epoch)) return;
+
     if (data.arena) arenaState = { ...arenaState, ...data.arena };
     duelState = data.duel ?? null;
     if (prevCharacterId && data.character?.id && prevCharacterId !== data.character.id) {
       offlineReport.reset();
+      clientSync.reset();
     }
-    renderCharacter(data.character);
-    renderWorld(data.world);
-    if (data.engagement) applyEngagement(data.engagement);
-    updateEventFarmLine();
-    syncArenaDuelFire();
-    arenaUi.syncFromMe({ arena: arenaState, character: data.character, duel: duelState });
+
+    const rev = data.character?.revision ?? null;
+    const applyChar = clientSync.acceptCharacterSnapshot(data.character);
+    if (applyChar) {
+      renderCharacter(data.character);
+      renderWorld(data.world);
+      if (data.engagement) applyEngagement(data.engagement);
+      updateEventFarmLine();
+      syncArenaDuelFire();
+      arenaUi.syncFromMe({ arena: arenaState, character: data.character, duel: duelState });
+    }
 
     if (
       duelState?.status === 'PENDING' &&
@@ -1493,42 +1534,51 @@ async function refresh() {
     }
 
     const farm = data.farm;
+    // Relatório offline: sempre tenta ingest (tem seq próprio); não depende de scene.play.
     offlineReport.ingest(farm, data.character, refreshSeq);
-    if (farm?.log?.length) pushLog(farm.log);
-    if (prevLevel != null && data.character.level > prevLevel) {
-      pushLog([`Subiu para o nível ${data.character.level}!`]);
-      pushSessionFeed(`Nível ${data.character.level}`, 'level');
-    }
-    for (const ev of farm?.events || []) {
-      if (ev.type === 'kill' && ev.isBoss) {
-        pushSessionFeed(`Boss: ${ev.monster || 'derrotado'}`, 'boss');
-      } else if (ev.type === 'drop' && ['rare', 'epic', 'legendary'].includes(ev.rarity)) {
-        pushSessionFeed(`Drop ${ev.rarity}: ${ev.name}`, 'drop');
-      } else if (ev.type === 'pet_equip') {
-        pushSessionFeed(`Pet equipou ${ev.name}`, 'drop');
-      } else if (ev.type === 'pet_sell' && ev.count > 0) {
-        pushSessionFeed(`Pet vendeu ${ev.count} item(ns)`, 'drop');
-      } else if (ev.type === 'potion' && ev.auto) {
-        pushSessionFeed(`Auto poção +${ev.healed} HP`, 'drop');
+
+    const presentFarm = clientSync.acceptFarmPresentation(farm, rev);
+    if (presentFarm && applyChar) {
+      if (farm?.log?.length) pushLog(farm.log);
+      if (prevLevel != null && data.character.level > prevLevel) {
+        pushLog([`Subiu para o nível ${data.character.level}!`]);
+        pushSessionFeed(`Nível ${data.character.level}`, 'level');
+      }
+      for (const ev of farm?.events || []) {
+        if (ev.type === 'kill' && ev.isBoss) {
+          pushSessionFeed(`Boss: ${ev.monster || 'derrotado'}`, 'boss');
+        } else if (ev.type === 'drop' && ['rare', 'epic', 'legendary'].includes(ev.rarity)) {
+          pushSessionFeed(`Drop ${ev.rarity}: ${ev.name}`, 'drop');
+        } else if (ev.type === 'pet_equip') {
+          pushSessionFeed(`Pet equipou ${ev.name}`, 'drop');
+        } else if (ev.type === 'pet_sell' && ev.count > 0) {
+          pushSessionFeed(`Pet vendeu ${ev.count} item(ns)`, 'drop');
+        } else if (ev.type === 'potion' && ev.auto) {
+          pushSessionFeed(`Auto poção +${ev.healed} HP`, 'drop');
+        }
+      }
+      const bigDrop = (farm?.events || [])
+        .filter((e) => e.type === 'drop' && ['rare', 'epic', 'legendary'].includes(e.rarity))
+        .pop();
+      const offlineCatchUp = Boolean(farm?.catchUpId);
+      if (bigDrop && !offlineCatchUp && !(farm?.rewardedMs > 60_000 || farm?.windowMs > 60_000)) {
+        toast(`✦ Drop ${bigDrop.name}!`, 3500);
+      }
+      if (
+        !(duelState?.status === 'FINISHED' && duelState.id === lastPlayedDuelId && duelState.events?.length)
+      ) {
+        scene.play(farm?.events, data.character.target);
       }
     }
-    const bigDrop = (farm?.events || []).filter((e) => e.type === 'drop' && ['rare', 'epic', 'legendary'].includes(e.rarity)).pop();
-    const offlineCatchUp = Boolean(farm?.catchUpId);
-    if (bigDrop && !offlineCatchUp && !(farm?.rewardedMs > 60_000 || farm?.windowMs > 60_000)) {
-      toast(`✦ Drop ${bigDrop.name}!`, 3500);
-    }
-    // Não misturar farm replay com duelo acabado de tocar
-    if (!(duelState?.status === 'FINISHED' && duelState.id === lastPlayedDuelId && duelState.events?.length)) {
-      scene.play(farm?.events, data.character.target);
-    }
-    if (arenaState?.inArena || data.character?.arenaMode) {
+
+    if (applyChar && (arenaState?.inArena || data.character?.arenaMode)) {
       if (els.activityName) els.activityName.textContent = 'Arena';
       if (els.activityDesc) els.activityDesc.textContent = 'Desafie jogadores online com aposta de gold';
       els.farmStatus.textContent = duelState?.status === 'PENDING'
         ? 'Aguardando resposta do duelo…'
         : 'Na Arena — caça pausada';
     }
-    els.farmStatus.classList.remove('offline');
+    if (applyChar) els.farmStatus.classList.remove('offline');
   } catch (err) {
     if (err.status === 401 || err.code === 'MAINTENANCE') {
       return;
@@ -1536,6 +1586,10 @@ async function refresh() {
     els.farmStatus.textContent = 'Reconectando ao servidor…';
     els.farmStatus.classList.add('offline');
   }
+}
+
+function refresh() {
+  return clientSync.runRefreshExclusive((epoch) => refreshOnce(epoch));
 }
 
 function showGame() {
@@ -1607,7 +1661,7 @@ els.stopBtn.addEventListener('click', () => stopFarm());
 els.autoRestartBtn?.addEventListener('click', async () => {
   const next = !Boolean(character?.autoRestartFarm);
   try {
-    const data = await api('/api/farm/auto-restart', {
+    const data = await apiMutation('/api/farm/auto-restart', {
       method: 'POST',
       body: JSON.stringify({ enabled: next }),
     });
@@ -1625,7 +1679,7 @@ async function investAttributePoints(key, amount) {
   try {
     const body = { str: 0, int: 0, dex: 0, con: 0 };
     body[key] = n;
-    const data = await api('/api/me/attributes', { method: 'POST', body: JSON.stringify(body) });
+    const data = await apiMutation('/api/me/attributes', { method: 'POST', body: JSON.stringify(body) });
     renderCharacter(data.character);
     toast(`+${fmt(n)} ${key.toUpperCase()}`, 2500);
     sfx('level');
@@ -2012,7 +2066,7 @@ function renderSkills(c) {
 
 async function postSkillAction(skillId, buy) {
   const path = buy ? '/api/me/skills/unlock' : '/api/me/skills/activate';
-  const data = await api(path, {
+  const data = await apiMutation(path, {
     method: 'POST',
     body: JSON.stringify({ skillId }),
   });
@@ -2072,7 +2126,7 @@ els.combatSkillSlots?.addEventListener('click', async (e) => {
   if (!skillId) return;
   try {
     btn.disabled = true;
-    const data = await api('/api/me/combat-skills/cast', {
+    const data = await apiMutation('/api/me/combat-skills/cast', {
       method: 'POST',
       body: JSON.stringify({ skillId }),
     });
@@ -2088,7 +2142,7 @@ els.combatSkillSlots?.addEventListener('click', async (e) => {
 els.combatAutoCast?.addEventListener('change', async () => {
   const enabled = Boolean(els.combatAutoCast.checked);
   try {
-    const data = await api('/api/me/combat-skills/auto-cast', {
+    const data = await apiMutation('/api/me/combat-skills/auto-cast', {
       method: 'POST',
       body: JSON.stringify({ enabled }),
     });
@@ -2101,7 +2155,7 @@ els.combatAutoCast?.addEventListener('change', async () => {
 });
 
 async function saveAutoHpPotion(partial) {
-  const data = await api('/api/me/auto-hp-potion', {
+  const data = await apiMutation('/api/me/auto-hp-potion', {
     method: 'POST',
     body: JSON.stringify(partial),
   });
@@ -2147,6 +2201,16 @@ async function pollAnnouncements() {
 
 document.addEventListener('visibilitychange', () => {
   syncArenaDuelFire();
+  // Suspensão ≠ setActive(false): não limpa timeline/combate.
+  if (document.visibilityState === 'hidden') {
+    scene.setRenderSuspended?.(true);
+    perfMark('tab_hidden');
+  } else {
+    scene.setRenderSuspended?.(false);
+    perfMark('tab_visible');
+    // Sincroniza snapshot; eventos antigos são filtrados por client-sync.
+    void refresh();
+  }
 });
 
 function goToLobby() {
@@ -2218,12 +2282,15 @@ async function boot() {
 
   const loadCore = (async () => {
     meta = await api('/api/meta');
+    applyPerfMeta(meta);
     catalogRevision = meta.catalogRevision || null;
     if (meta.merchant) merchant.render();
     applyZoneThemesFromZones(meta.zones);
     showGame();
     await scene.ready;
+    perfMark('arena_ready');
     await refresh();
+    perfMark('first_me');
   })();
 
   // Primeiro /api/me via refresh alimenta playIntro; para a intro precisamos
@@ -2234,7 +2301,7 @@ async function boot() {
   if (!introPayload) {
     try {
       const early = await api('/api/me');
-      if (early?.character) {
+      if (early?.character && clientSync.acceptCharacterSnapshot(early.character)) {
         character = early.character;
         introPayload = early.character.playIntro || null;
         if (early.character.currentChapterId) {
