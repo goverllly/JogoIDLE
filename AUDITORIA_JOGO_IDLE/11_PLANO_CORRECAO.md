@@ -2,8 +2,8 @@
 
 Branch de trabalho: **`main`** (sem branch de estabilização).  
 Commit de partida Fase 0/1: `90f51da` → integrado em `main` até `59dd861`.  
-Escopo concluído e **revalidado**: **Fases 0, 1, 2 (auth), 3 (HUD Builder) e 4 (gameplay/economia)**. Fases 5–6 permanecem **Pendente**.  
-Detalhe Fase 2: `13_FASE2_AUTH.md`. Detalhe Fase 4: `14_AUDITORIA_GAMEPLAY.md`.
+Escopo concluído e **revalidado**: **Fases 0–4** + **UX pós-4**. Fase 5 (performance) **em andamento / parcial** — ver `15_AUDITORIA_PERFORMANCE.md` (métricas browser ainda pendentes). Fase 6 permanece **Pendente**.  
+Detalhe Fase 2: `13_FASE2_AUTH.md`. Detalhe Fase 4: `14_AUDITORIA_GAMEPLAY.md`. Detalhe Fase 5: `15_AUDITORIA_PERFORMANCE.md`.
 
 ## Baseline (Fase 0) + revisão final
 
@@ -27,6 +27,9 @@ Detalhe Fase 2: `13_FASE2_AUTH.md`. Detalhe Fase 4: `14_AUDITORIA_GAMEPLAY.md`.
 | `npm test` (pós Fase 4) | combate/progressão/inv/farm/HTTP | **130 pass / 0 fail** | 2026-10-28 |
 | `admin:build` (pós Fase 4) | `cd idle && npm run admin:build` | **OK** | 2026-10-28 |
 | Fase 4 gameplay | RNG + integridade + auditoria econômica | Critérios de integridade; **sem retune** | 2026-10-28 |
+| `npm test` (pós UX attrs/offline) | + ux-copy | **137 pass / 0 fail** | 2026-10-28 |
+| `npm test` (Fase 5 parcial) | + client-sync + perf gate + farm bench | **149 pass / 0 fail** | 2026-10-28 |
+| Fase 5 performance | probe gated, sync /me, suspend render | Parcial — browser FPS/GPU pendente | 2026-10-28 |
 
 ## Itens
 
@@ -46,6 +49,9 @@ Detalhe Fase 2: `13_FASE2_AUTH.md`. Detalhe Fase 4: `14_AUDITORIA_GAMEPLAY.md`.
 | P4-FARM-01 | Offline sem matriz 30m–24h / 5k / pending | P0 | `combat.ts` | Plano Fase 4 | Teto 2h/request documentado | Matriz + chunks >2h | Resolvido | farm-offline.test | Passou | ver log git |
 | P4-ECON-01 | Auditoria quantitativa sem retune | P1 | `phase4-economy-sim.mjs`, `14_*.md` | Plano Fase 4 | Relatório | Sim isolada + doc | Resolvido | sim + docs | Passou | ver log git |
 | P4-HTTP-01 | Fluxos protected farm/sell/refine/ascend | P0 | `gameplay-http.test.ts` | Plano Fase 4 | Sem HTTP gameplay | CSRF/IDOR/replay | Resolvido | gameplay-http.test | Passou | ver log git |
+| P5-DIAG-01 | Probe perf gated (não protected) | P0 | `perf-probe.js`, `mode.ts` | Plano Fase 5 | Sem instrumentação | IDLE_PERF_DIAGNOSTICS + meta | Parcial | auth perf gate | Passou | ver log git |
+| P5-SYNC-01 | /me vs mutações fora de ordem | P0 | `client-sync.js`, `app.js` | Análise concorrência | Só offline-report tinha seq | revision + exclusive refresh | Resolvido | client-sync.test | Passou | ver log git |
+| P5-3D-01 | Suspend ≠ setActive(false) | P1 | `scene3d.js`, `arena.js` | setActive limpa timeline | Aba oculta usaria clear indevido | setRenderSuspended + destroy | Parcial (GPU pendente) | manual checklist | — | ver log git |
 
 ## Limitações documentadas (concorrência)
 

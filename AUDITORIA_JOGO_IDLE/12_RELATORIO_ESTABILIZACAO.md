@@ -253,4 +253,27 @@ Somente relatório (`14_AUDITORIA_GAMEPLAY.md`). Nenhum preço/prob/fórmula mud
 | P2-AUTH | Auth protected + Admin gate + CSRF | P0 | Resolvido | 57 pass + admin build | (fase 2 commits) |
 | P3-HUD | HUD Builder dirty/breakpoints/publish/CSS | P0 | Resolvido | 76 pass + admin build | (fase 3 commits) |
 | P4-GAMEPLAY | Combate/farm/inv/ascensão/HTTP + auditoria | P0 | Resolvido | suite Fase 4 + admin build | (fase 4 commits) |
-| Fases 5–6 | … | P1+ | Pendente | — | — |
+| P5-PERF | Probe + sync /me + suspend render | P1 | Parcial | 149 pass; browser FPS pendente | ver `15_*.md` |
+| Fase 6 | … | P1+ | Pendente | — | — |
+
+---
+
+## Fase 5 — Performance (parcial)
+
+### Entregue nesta rodada
+- Instrumentação `perf-probe.js` gated por `IDLE_PERF_DIAGNOSTICS` + modo local (`15_AUDITORIA_PERFORMANCE.md`).
+- `client-sync.js`: revision em `publicCharacter`, coalesce de refresh, barreira mutação vs `/me` atrasado.
+- `setRenderSuspended` distinto de `setActive(false)`; `destroy()` para teardown definitivo.
+- Bench Node `processFarm` (não substitui métricas GPU).
+
+### Não validado integralmente
+- FPS / frame time / draw calls / Network bytes no Chrome.
+- Overhead do probe ligado vs desligado.
+- Lazy-init do fallback 2D (ainda cria 2D antes do 3D).
+- Presets gráficos / mudança de `POLL_MS` / compressão GLB.
+
+### Testes
+| Comando | Resultado |
+|---------|-----------|
+| `cd idle && npm test` | **149 pass / 0 fail** |
+| Veredito | **Parcial** — aguarda matriz browser em `15_*.md` |
