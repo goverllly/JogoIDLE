@@ -160,7 +160,56 @@ Camada de I/O mínima sem atomicidade, sem distinção ENOENT vs corrupt, e conf
 
 ---
 
-## Matriz (Fases 0–2)
+## Fase 3 — Estabilização do HUD Builder
+
+### Problemas revalidados
+- Dirty/undo só em `components` (tokens/intro/breakpoints ignorados).
+- Drag/resize/reorder gravavam sempre no desktop.
+- Botão Publicar desabilitado (“Fase 5”) apesar da API existir.
+- Sem `draftRevision` / conflito otimista no rascunho; `basedOnRevision` não checado na publish.
+- Publish mutava memória antes do write (risco de divergência disco/memória).
+- `--side-panel-w` / `--hud-h` podiam permanecer após restore.
+- Bridge sem `source`/sessão/seq e fallback silencioso de breakpoint.
+
+### Correções
+| Área | Entrega |
+|------|---------|
+| Estado | Slice editável `{name,breakpoints,components,tokens}`; undo/redo completo |
+| Breakpoints | Gestos e live patch usam breakpoint ativo; inválido rejeitado |
+| Bridge | origin + source + sessionId + seq; allowlist de props/tipos |
+| Draft | `draftRevision` + `expectedDraftRevision` → 409 `HUD_DRAFT_CONFLICT` |
+| Publish | expected published+draft; snapshot/rollback se write falhar; UI com confirm; bloqueado se dirty |
+| Restore | só draft; histórico na UI; CSS vars limpas e reaplicadas |
+| Preview | editor aplica documento sanitizado do servidor pós-save/publish |
+
+### Arquivos principais
+- `idle/lib/jogo-idle/hud-builder-state.ts` (novo)
+- `idle/lib/jogo-idle/hud-layout.ts` (`draftRevision`, `replaceHudCatalogPayload`)
+- `idle/admin-ui/src/admin/admin-hud-builder.tsx`, `App.tsx` (CSRF header)
+- `idle/public/jogo-idle/hud-builder-bridge.js`, `hud-layout-runtime.js`
+- `idle/src/admin-service.ts`, `server.ts`
+- `idle/src/__tests__/hud-builder-state.test.ts`, `hud-api.test.ts`
+
+### Testes
+| Comando | Resultado |
+|---------|-----------|
+| `cd idle && npm test` | **76 pass / 0 fail** (57 Fase 1–2 + 19 HUD) |
+| `cd idle && npm run admin:build` | **OK** |
+
+### Compatibilidade Fase 2
+Auth/`requireAdmin`/CSRF preservados; rotas HUD admin continuam atrás do gate; modo `local` sem login obrigatório.
+
+### Riscos remanescentes
+- Sem E2E browser completo do iframe (unit + HTTP + smoke manual).
+- Auth/catalog/save single-process.
+- Rollback ao vivo exige republicar após restore no rascunho (by design).
+
+### Veredito
+**Fase 3 concluída** — HUD Builder estabilizado para edição, save, publish e restore com evidências automatizadas.
+
+---
+
+## Matriz (Fases 0–3)
 
 | ID | Problema | Prioridade | Status | Teste | Commit |
 |----|----------|------------|--------|-------|--------|
@@ -172,4 +221,5 @@ Camada de I/O mínima sem atomicidade, sem distinção ENOENT vs corrupt, e conf
 | P0-STORE-05 | STALE / concurrency | P0 | Resolvido | concurrent + monotonic | (fix store) |
 | P0-STORE-REV | Revisão final Fase 1 | P0 | Resolvido | 44 pass + admin build | (esta revisão) |
 | P2-AUTH | Auth protected + Admin gate + CSRF | P0 | Resolvido | 57 pass + admin build | (fase 2 commits) |
-| Fases 3–6 | HUD / economia / … | P1+ | Pendente | — | — |
+| P3-HUD | HUD Builder dirty/breakpoints/publish/CSS | P0 | Resolvido | 76 pass + admin build | (fase 3 commits) |
+| Fases 4–6 | Combate / economia / … | P1+ | Pendente | — | — |

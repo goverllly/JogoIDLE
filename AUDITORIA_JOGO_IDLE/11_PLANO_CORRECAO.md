@@ -2,7 +2,7 @@
 
 Branch de trabalho: **`main`** (sem branch de estabilização).  
 Commit de partida Fase 0/1: `90f51da` → integrado em `main` até `59dd861`.  
-Escopo concluído e **revalidado**: **Fases 0, 1 e 2 (auth)**. Fases 3–6 permanecem **Pendente**.  
+Escopo concluído e **revalidado**: **Fases 0, 1, 2 (auth) e 3 (HUD Builder)**. Fases 4–6 permanecem **Pendente**.  
 Detalhe Fase 2: `13_FASE2_AUTH.md`.
 
 ## Baseline (Fase 0) + revisão final
@@ -21,6 +21,9 @@ Detalhe Fase 2: `13_FASE2_AUTH.md`.
 | `save.json` no git | `.gitignore` | Ignorado + backups/tmp/evidence | Confirmado |
 | Fase 1 validada | revisão final | **Sim — pronta para Fase 2** | 2026-10-28 |
 | Fase 2 auth | `13_FASE2_AUTH.md` | Critérios de conclusão atendidos | 2026-10-28 |
+| `npm test` (pós Fase 3) | + HUD state/API | **76 pass / 0 fail** | 2026-10-28 |
+| `admin:build` (pós Fase 3) | `cd idle && npm run admin:build` | **OK** | 2026-10-28 |
+| Fase 3 HUD Builder | dirty/undo, breakpoints, publish, CSS | Critérios atendidos | 2026-10-28 |
 
 ## Itens
 
@@ -33,6 +36,7 @@ Detalhe Fase 2: `13_FASE2_AUTH.md`.
 | P0-STORE-04 | Sem backups versionados | P0 | `store-backup.ts` | Aba Backup disabled | Sem motor | Backups internos (sem HTTP) | Resolvido | backup/restore | Passou | ver log git |
 | P0-STORE-05 | Race lógica async + STALE | P0 | `store.ts` + local-service | Gaps async | Event loop ≠ transação lógica | updatedAt monotônico + STALE; doc limites | Resolvido | concurrent + STALE | Passou | ver log git |
 | P2-AUTH-01… | Auth local/protected, Admin gate, CSRF, isolamento | P0 | `idle/src/auth/*`, `server.ts` | Auditoria + plano Fase 2 | Identidade fixa standalone | Sessões + middleware + testes HTTP | Resolvido | npm test 57 / admin:build | Passou | ver log git |
+| P3-HUD-01… | Dirty/undo slice, breakpoints, bridge, draftRevision, publish atômico, CSS vars | P0 | `admin-hud-builder`, `hud-layout*`, `admin-service` | Plano Fase 3 | Dirty só components; gestos→desktop; Publicar disabled | Slice editável + concurrency + restore/CSS | Resolvido | npm test 76 / admin:build | Passou | ver log git |
 
 ## Limitações documentadas (concorrência)
 

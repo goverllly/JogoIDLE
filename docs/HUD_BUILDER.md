@@ -85,7 +85,7 @@ Não há reparent entre colunas nesta fase. Não converte a HUD inteira para abs
 | GET | `/api/jogo-idle/hud-layout` | Público (layout **publicado**) |
 | GET | `/api/jogo-idle/admin/hud-layout` | Admin |
 | PUT | `/api/jogo-idle/admin/hud-layout/draft` | Admin |
-| POST | `/api/jogo-idle/admin/hud-layout/publish` | Admin (UI até Fase 5) |
+| POST | `/api/jogo-idle/admin/hud-layout/publish` | Admin (UI Fase 3 — exige draft salvo + expected revisions) |
 | POST | `/api/jogo-idle/admin/hud-layout/restore` | Admin |
 | GET | `/api/jogo-idle/admin/hud-layout/history` | Admin |
 
@@ -113,4 +113,4 @@ Não há reparent entre colunas nesta fase. Não converte a HUD inteira para abs
 6. ESC cancela gesto  
 7. Salvar persiste `order` / `left`/`top`/`width`/`height`
 
-Publicação para jogadores: Fase 5.
+Publicação para jogadores: habilitada na Fase 3 (confirm + `expectedPublishedRevision` + `expectedDraftRevision`; rascunho nunca afeta play até publish).
