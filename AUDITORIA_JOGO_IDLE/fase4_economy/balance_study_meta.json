@@ -1,0 +1,265 @@
+{
+  "generatedAt": "2026-10-28T05:17:30.676Z",
+  "balanceDefaults": {
+    "kAtk": 2.2,
+    "kMagicAtk": 2.4,
+    "kHp": 14,
+    "kMp": 12,
+    "kDefCon": 1.2,
+    "kDefStr": 0.25,
+    "baseAttack": 6,
+    "baseHp": 90,
+    "baseMp": 45,
+    "baseDefense": 3,
+    "baseIntervalMs": 1450,
+    "minIntervalMs": 420,
+    "kSpeed": 7,
+    "levelHp": 6,
+    "levelMp": 3,
+    "critPerDex": 0.0025,
+    "maxCrit": 0.45,
+    "mobHitsToKill": 10,
+    "bossHitsToKill": 28,
+    "mobAtkHpPct": 0.11,
+    "bossAtkHpPct": 0.13,
+    "bossHpMult": 1,
+    "bossAtkMult": 1,
+    "bossDropMult": 2.5,
+    "refineDropChance": 0.012,
+    "sucoCelestialDropChance": 0.007,
+    "divindadeGoldCost": 10000000,
+    "pointsPerLevel": 5,
+    "celestialPointsPerLevel": 10,
+    "mobXpPerLevel": 20,
+    "mobGoldPerLevel": 5.5,
+    "defaultBossWaveMin": 8
+  },
+  "activeBalance": {
+    "kAtk": 2.2,
+    "kMagicAtk": 2.4,
+    "kHp": 14,
+    "kMp": 12,
+    "kDefCon": 1.2,
+    "kDefStr": 0.25,
+    "baseAttack": 6,
+    "baseHp": 90,
+    "baseMp": 45,
+    "baseDefense": 3,
+    "baseIntervalMs": 1450,
+    "minIntervalMs": 420,
+    "kSpeed": 7,
+    "levelHp": 6,
+    "levelMp": 3,
+    "critPerDex": 0.0025,
+    "maxCrit": 0.45,
+    "mobHitsToKill": 10,
+    "bossHitsToKill": 28,
+    "mobAtkHpPct": 0.11,
+    "bossAtkHpPct": 0.13,
+    "bossHpMult": 1,
+    "bossAtkMult": 1,
+    "bossDropMult": 2.5,
+    "refineDropChance": 0.012,
+    "sucoCelestialDropChance": 0.007,
+    "divindadeGoldCost": 10000000,
+    "pointsPerLevel": 5,
+    "celestialPointsPerLevel": 10,
+    "mobXpPerLevel": 20,
+    "mobGoldPerLevel": 5.5,
+    "defaultBossWaveMin": 8
+  },
+  "balanceOverridesInMemory": {},
+  "catalogMeta": {
+    "exists": true,
+    "path": "/Users/pedrohochsprung/Projetos/JogoIDLE/idle/data/save.json",
+    "balanceOverrides": {},
+    "dropChance": 0.016,
+    "note": "lido somente; estudo usa setBalanceOverrides(null) = DEFAULT_BALANCE"
+  },
+  "dropChanceCode": 0.11,
+  "offlineInterpretation": {
+    "maxCatchUpMsPerRequest": 7200000,
+    "finding": "Ausência 6h/24h: elegível total ≈2h. lastTickAt salta o buraco não pago. catchUpPending=true só se maxTicks corta a janela já limitada a 2h. Segunda call no mesmo now: ticks=0 se pending=false; ticks>0 se ainda há remaining da janela 2h.",
+    "measuredExample": "6h wall: call1 rewardedMs=6970000 pending=true; call2 same now +228616; soma≈2h. 4h do wall não retornam.",
+    "previousReportCorrection": "Chunks NÃO recuperam 6h/24h de ausência; no máximo fecham a janela de 2h se 5k ticks cortou a primeira call. Farm online contínuo com avanço real de relógio é outro caso (paga o novo elapsed)."
+  },
+  "offlineHighlights": [
+    {
+      "label": "offline_6h_call1",
+      "rewardedMs": 6970000,
+      "ticks": 5000,
+      "pending": true,
+      "elapsed": 21600000,
+      "lastTickAt": "2026-10-28T11:17:27.599Z"
+    },
+    {
+      "label": "offline_6h_call2_same_now",
+      "rewardedMs": 228616,
+      "ticks": 164,
+      "pending": false,
+      "elapsed": 230000,
+      "lastTickAt": "2026-10-28T11:17:27.599Z",
+      "note": "mesma now — esperado ticks=0 se sem pending da janela 2h"
+    },
+    {
+      "label": "offline_24h_call1",
+      "rewardedMs": 6970000,
+      "ticks": 5000,
+      "pending": true,
+      "elapsed": 86400000,
+      "lastTickAt": "2026-10-29T05:17:27.768Z"
+    },
+    {
+      "label": "maxTicks_5000_call2_same_wall_now",
+      "rewardedMs": 2100000,
+      "ticks": 5000,
+      "pending": true,
+      "elapsed": 5100000,
+      "lastTickAt": "2026-10-28T05:52:50.313Z",
+      "note": "mesma now da call1; se pending=true na call1, ainda há remaining na janela → pode ter ticks>0"
+    },
+    {
+      "label": "maxTicks_5000_call1_fresh",
+      "rewardedMs": 2100000,
+      "ticks": 5000,
+      "pending": true,
+      "elapsed": 7200000,
+      "lastTickAt": "2026-10-28T05:52:50.640Z"
+    },
+    {
+      "label": "6h_wall_then_10m_real_advance",
+      "rewardedMs": 599420,
+      "ticks": 430,
+      "pending": false,
+      "elapsed": 600000,
+      "lastTickAt": "2026-10-28T11:23:39.391Z",
+      "unrecoveredWallMs": 14630000,
+      "note": "após teto 2h, avanço real só paga o novo elapsed — buraco 4h não retorna"
+    }
+  ],
+  "impactExistingStrArcher": [
+    {
+      "level": 250,
+      "build": "str_heavy",
+      "gear": "mid_refine5",
+      "attackA": 1960,
+      "attackB": 1969,
+      "attackC": 1164,
+      "deltaAtkC_vs_A": -796,
+      "deltaAtkPctC_vs_A": -40.61,
+      "dpsA": 3206.3,
+      "dpsB": 3221.03,
+      "dpsC": 1904.15,
+      "ttkA": {
+        "hits": 3.14,
+        "seconds": 2.31,
+        "avgHit": 2128.7,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkC": {
+        "hits": 5.71,
+        "seconds": 4.2,
+        "avgHit": 1170.3,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "migrationNote": "C reduz ATK de builds STR-heavy — reset/redistribuição para DEX mitigaria, mas exige decisão de produto"
+    },
+    {
+      "level": 500,
+      "build": "str_heavy",
+      "gear": "mid_refine5",
+      "attackA": 3788,
+      "attackB": 3797,
+      "attackC": 2188,
+      "deltaAtkC_vs_A": -1600,
+      "deltaAtkPctC_vs_A": -42.24,
+      "dpsA": 9675.37,
+      "dpsB": 9698.36,
+      "dpsC": 5588.63,
+      "ttkA": {
+        "hits": 3.01,
+        "seconds": 1.5,
+        "avgHit": 4332.4,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkC": {
+        "hits": 5.69,
+        "seconds": 2.83,
+        "avgHit": 2297.2,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "migrationNote": "C reduz ATK de builds STR-heavy — reset/redistribuição para DEX mitigaria, mas exige decisão de produto"
+    }
+  ],
+  "ascensionCheck": {
+    "note": "attrs preservados pelo ritual; level→1; +20 unspent não redistribuídos nesta célula",
+    "attrsBefore": {
+      "str": 1628,
+      "int": 4,
+      "dex": 12,
+      "con": 880
+    },
+    "attrsAfter": {
+      "str": 1628,
+      "int": 4,
+      "dex": 12,
+      "con": 880
+    },
+    "attrsEqual": true,
+    "levelBefore": 500,
+    "levelAfter": 1,
+    "classification": "CELESTIAL",
+    "unspentAfter": 20,
+    "statsBefore": {
+      "attack": 3898,
+      "dps": 12622.1,
+      "maxHp": 21430
+    },
+    "statsAfterA": {
+      "attack": 3898,
+      "dps": 12622.1,
+      "maxHp": 18436
+    },
+    "formulasPostAscension": [
+      {
+        "formula": "A",
+        "attack": 3898,
+        "dpsBasicAnalytical": 12622.1,
+        "deltaAtkVsA": 0,
+        "deltaDpsVsA": 0
+      },
+      {
+        "formula": "B",
+        "attack": 3907,
+        "dpsBasicAnalytical": 12651.24,
+        "deltaAtkVsA": 9,
+        "deltaDpsVsA": 29.14
+      },
+      {
+        "formula": "C",
+        "attack": 2298,
+        "dpsBasicAnalytical": 7441.14,
+        "deltaAtkVsA": -1600,
+        "deltaDpsVsA": -5180.95
+      }
+    ]
+  },
+  "ttkGap": {
+    "expectedAtk": 1063,
+    "warriorNakedAtk": 1821,
+    "delta": 758,
+    "origins": [
+      "expected usa attrs médios 10+L*1.2 (~310 @250) em kAtk + bônus L*1.5",
+      "sim Guerreiro investe ~65% dos pontos em STR (~812 STR efetivo) → ATK muito acima",
+      "gear mid aumenta ainda mais o chip → TTK < mobHitsToKill",
+      "meta 8–12 hits calibra o monstro ao poder ESPERADO, não a builds otimizadas"
+    ]
+  },
+  "recommendationDraft": {
+    "note": "preenchido no markdown após leitura das tabelas — script não decide sozinho"
+  }
+}

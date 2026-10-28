@@ -2,83 +2,181 @@
 
 **Data:** 2026-10-28  
 **Escopo:** integridade técnica + relatório quantitativo **sem retune**.  
-**Dados:** `AUDITORIA_JOGO_IDLE/fase4_economy/` (gerados por `idle/scripts/balance-audit/phase4-economy-sim.mjs`).  
-**Não toca:** `idle/data/save.json`, `docs/balanceamento/`, fórmulas/preços/probs do motor.
+**Dados:** `AUDITORIA_JOGO_IDLE/fase4_economy/`  
+**Scripts:** `phase4-economy-sim.mjs`, `phase4-balance-study.mjs`  
+**Não toca:** fórmulas/preços/probs do motor; não muta `idle/data/save.json` de jogo; não escreve `docs/balanceamento/`.
 
-## Premissas da simulação
+---
 
-- Gear starter only; skills desligadas; engagement off.
-- Atributos: **65% no atr. primário da classe / 35% CON** (primário = STR para Guerreiro/Bárbaro, INT Mago, **DEX Arqueiro**).
-- Farm 1h: Lv.10, Bosque dos Sussurros, RNG seeded, chunks de 10 min.
-- Capas de poder Cap.I: start Lv.1 / mid Lv.250 / end Lv.500 nas zonas canônicas.
+## Validação pós-entrega (reexecução Agent Mode)
 
-## Integridade técnica (corrigido nesta fase)
+| Check | Resultado **desta** execução |
+|-------|------------------------------|
+| HEAD | `55492ba` (`55492baca5ad523f7e9fbda68bd21bfac6753c2e`) |
+| Branch | `main` ahead **17** de `origin/main` (docs Fase 4 **não** na main pública) |
+| Commits Fase 4 | `911a8f5` RNG · `f4ce4c5` progressão · `f62abc2` inventário · `91885ea` offline · `8ae5614` economia · `55492ba` HTTP/docs |
+| `npm test` | **130 pass / 0 fail** (reexecutado com permissões `all`; EPERM do sandbox anterior não se aplica) |
+| `admin:build` | **OK** (vite build ~485ms) |
 
-| Área | Achado | Correção |
-|------|--------|----------|
-| RNG PvE | `Math.random` espalhado; testes não determinísticos | `options.rng` em `processFarm` → pick/crit/block/gold/drops/skills/`createItem`/`rollDrop` |
-| HP/dano | `NaN` em `monsterHp`/`currentHp` podia propagar | Sanitização em `applyOutgoingDamage` e hit recebido |
-| Ascensão | Sem testes de consume-once / STALE | Cobertura 4.2 — disco intacto em STALE; replay não re-concede |
-| Offline | Teto 2h/request + 5k ticks sem matriz | Matriz 4.4; **produto:** chunks podem somar >2h |
-| Inventário | Sem invariantes sell/stack/Suco held | Cobertura 4.3 |
+### Problemas técnicos confirmados corrigidos
 
-## Relatório quantitativo por classe (Cap. I)
+| Item | Evidência no código / teste |
+|------|------------------------------|
+| RNG injetável | `resolveRng` / `options.rng` em `combat.ts`; defaults `Math.random` só como fallback |
+| NaN HP/dano | `Number.isFinite` em `applyOutgoingDamage` e hit recebido |
+| Idempotência sell/refine/ascend | `inventory.test`, `progression.test`, `gameplay-http.test` |
+| STALE | `progression.test` + `store.test` `STALE_CHARACTER` |
+| Offline matriz | `farm-offline.test` + estudo `balance_study_offline.json` |
 
-### DPS / HP / TTK (banda mid — Lv.250, Floresta Amaldiçoada)
+**Veredito integridade Fase 4:** confirmado por suite e greps nesta execução.  
+**Veredito balanceamento:** aberto — ver estudo complementar abaixo (sem mudança de motor).
 
-| Classe | maxHp | ATK | DPS | TTK mob (hits) | TTK boss (hits) |
-|--------|------:|----:|----:|---------------:|----------------:|
-| GUERREIRO | 7820 | 1821 | 1327 | 4.0 | 13.5 |
-| BARBARO | ~igual | ~igual | 1323 | ~4 | ~13 |
-| MAGO | — | — | 1419 | — | — |
-| ARQUEIRO | — | **26** | **84** | muito alto | muito alto |
+### Correção à linha antiga sobre offline
 
-**Achado de premissa (não retune):** ataque físico usa **STR**; a simulação investe DEX no Arqueiro → DPS artificialmente baixo. Em jogo real o jogador pode (e deve) gastar pontos em STR. Marcar para decisão conjunta de UX/balance (tooltip / primary attr), **fora** desta fase.
+A frase anterior (“chunks podem somar >2h” recuperando wall clock longo) estava **errada** para o retorno após ausência longa. Ver seção Offline revalidada.
 
-### Farm 1h Bosque (Lv.10 → …)
+---
 
-| Classe | kills | XP | ouro combat | nível final |
-|--------|------:|---:|------------:|------------:|
-| GUERREIRO | 632 | 39570 | 11695 | 19 |
-| BARBARO | 651 | 41880 | 12364 | 19 |
-| MAGO | 358 | 22925 | 6771 | 16 |
-| ARQUEIRO | 161 | 10175 | 3013 | 13 |
+## Premissas da simulação original (Fase 4.5) — limitações
 
-Ouro final Guerreiro > goldGained: auto-sell de drops (mochila). Conservação OK nos testes 4.3.
+- Gear starter; skills off; engagement off.
+- Atributos: 65% “primário de classe” / 35% CON — para Arqueiro usou **DEX**, enquanto ATK físico no motor usa **STR**.
+- Isso **não** prova que a classe está quebrada no jogo se o jogador investir em STR; prova dissonância UI (`primaryAttrForClass=dex`) vs fórmula.
 
-### Pré / pós ritual Celestial
+---
 
-- Consome **10_000_000** gold + 1 Suco; level → 1; Cap. → II; `unspentPoints` +20; attrs preservados.
-- HP cai (~levelHp×499); ATK/DPS de attrs permanece (mesmo investimento).
-- Replay sem requisitos falha (testes 4.2).
+## Offline — regra real (revalidada)
 
-### Offline (produto)
+### Mecânica medida
 
-| Parâmetro | Valor |
-|-----------|-------|
-| `maxCatchUpMs` | **2h por request** |
-| `maxTicks` | **5000** (default) |
-| Wall 6h/24h | 1ª call paga ≤2h (ou ≤5k ticks); resto via `catchUpPending` |
-| Manutenção | `maintenanceSkippedMs` zera progresso no intervalo travado |
-| Faint | encerra catch-up da sessão |
+1. `elapsed = min(wallClock − maintenance, 2h)`.
+2. Ticks só dentro dessa janela; `maxTicks=5000` pode cortá-la → `catchUpPending=true`.
+3. `lastTickAt = now − remaining` (salta o buraco não elegível).
+4. Wall além de 2h **não** fica armazenado para calls futuras.
 
-## Economia — sinks/fontes (sem mudança)
+### Distinção obrigatória (2ª call)
 
-Ver também `03_ECONOMIA_BALANCEAMENTO.md`. Nesta fase **não** alteramos:
+| Situação | 2ª call (mesmo `now`) | Resultado medido |
+|----------|----------------------|------------------|
+| Janela 2h **completa** (`pending=false`) | sem trabalho | `ticks=0`, `rewardedMs=0` |
+| Janela 2h **cortada por 5k ticks** (`pending=true`) | ainda há `remaining` | **ticks > 0** até fechar os ≤2h |
 
-- `DROP_CHANCE` 0.11, boss×2.5, refine 1.2%, Suco 0.7%+pity
-- `DIVINDADE_GOLD_COST` 10M, bag 150k, refinador 25k, reset 1M
-- Refine sem fail até +10
+### Matriz (`balance_study_offline.json`, tank Guerreiro, seed 2026)
 
-## Riscos remanescentes / decisões abertas
+| Caso | call1 rewardedMs | call1 pending | call2 same now | Soma ≤2h? |
+|------|-----------------:|:-------------:|----------------|:---------:|
+| 2h wall | 6 970 000 | sim (5k) | +228 616 ticks=164 | **7 198 616 ≈ 2h** |
+| 6h wall | 6 970 000 | sim | +228 616 | **≈ 2h** (4h perdidas) |
+| 24h wall | 6 970 000 | sim | +228 616 | **≈ 2h** (22h perdidas) |
+| Após 6h catch-up + 10 min reais | — | — | +599 420 (só os 10 min) | buraco antigo não volta |
+| Faint frágil @2h | 12 546 | não | — | catch-up encerrado |
 
-1. **Arqueiro primary attr** vs STR no `computeStats` — documentação/UX vs retune.
-2. **Faint mid catch-up** zera `farmZoneId` — jogador frágil “perde” restante offline até restart (produto atual).
-3. **Multi-instância** no mesmo save: ainda não suportado (Fase 1).
-4. **Balanceamento numérico** (TTK mid Cap.I ~4 hits vs alvo 8–12 em `DEFAULT_BALANCE.mobHitsToKill`) — gap de premissa (attrs altos / sem gear inimigo); **não** retuned aqui.
-5. Admin mapa publish / Backup tab ainda “Fase 4” no Admin Studio — **fora** do escopo de integridade gameplay desta entrega.
+**Conclusão produto:** o modelo atual já limita a recuperação acumulada de uma ausência longa a **≈2 horas** (possivelmente em 2+ requests se `maxTicks` cortar). Não é necessário “corrigir” um exploit de 6h/24h via múltiplas calls no mesmo retorno. Decisão aberta: manter como está vs comunicar melhor na UI.
 
-## Critério de conclusão Fase 4
+---
 
-- Integridade: RNG injetável, testes 4.1–4.4, HTTP 4.6, docs 11/12/14.
-- Balanceamento: **somente relatório** — aguarda decisão conjunta antes de qualquer retune.
+## Estudo Arqueiro A / B / C
+
+Dados: `balance_study_archer.json`.  
+Fórmulas B/C são **espelho analítico** (script); A usa `computeStats` do motor. Mesmos attrs/gear/seeds entre alternativas.
+
+### Alternativas (somente estudo)
+
+| Alt | Definição |
+|-----|-----------|
+| **A** | Motor atual: ATK = STR; DEX = velocidade + crit |
+| **B** | Mirror: ATK += DEX × kAtk × 0.35 (Arqueiro) |
+| **C** | Mirror: ATK = base + (0.55×STR + 0.45×DEX)×kAtk |
+
+### Lv.250 starter — analítico (básico)
+
+| Build | Fórmula | ATK | DPS básico | TTK mob hits | TTK mob s |
+|-------|---------|----:|----------:|-------------:|----------:|
+| DEX 65% | A | 26 | 84 | 4912 | 2063 |
+| DEX 65% | B | 659 | 2134 | 10.5 | 4.4 |
+| DEX 65% | C | 832 | 2694 | 7.7 | 3.2 |
+| STR 65% | A | 1806 | 1403 | 4.0 | 5.3 |
+| STR 65% | B | 1815 | 1410 | 4.0 | 5.3 |
+| STR 65% | C | 1010 | 785 | 7.9 | 10.5 |
+
+### Impacto em personagens STR-existing (gear mid +5)
+
+| Nível | ATK A | ATK C | ΔATK C vs A | ΔDPS |
+|------:|------:|------:|------------:|-----:|
+| 250 | 1960 | 1164 | **−40.6%** | 3206 → 1904 |
+| 500 | 3788 | 2188 | **−42.2%** | 9675 → 5589 |
+
+Pós-ascensão (ritual real, attrs preservados `attrsEqual=true`, +20 unspent não redistribuídos): C ainda **−1600 ATK / −5181 DPS** vs A no mesmo personagem STR-heavy.
+
+**B** nos STR-heavy: +9 ATK (~negligível). Em DEX-heavy: resgate grande (26→659).
+
+### Farm 1h **medido** (`processFarm`, 3 seeds) — só fórmula A
+
+| Build | avg kills | avg XP | avg gold | nível final típico |
+|-------|----------:|-------:|---------:|-------------------:|
+| STR heavy | 541.7 | 34602 | 10224 | 18 |
+| DEX heavy | 162.3 | 10113 | 2996 | 13 |
+
+(Analítico ≠ medido: XP/h nas células A/B/C do JSON estão marcadas `analytical_from_ttk`; farm acima é `processFarm_measured`.)
+
+### Skills
+
+Modelo `estimated_skill_model` (CD + custo MP + regen 2%/tick + prioridade) — **não** confundir com `processFarm`. Detalhes no JSON.
+
+---
+
+## TTK — modelo vs builds
+
+Dados: `balance_study_ttk.json`. Mob Cap.I mid: HP 6680, DEF 192.
+
+| Referência | ATK | TTK hits | TTK s |
+|------------|----:|---------:|------:|
+| `expectedPlayerPower(250)` | **1063** | ~calibra `mobHitsToKill=10` | — |
+| Guerreiro STR65 naked | 1821 | **4.04** | 5.63 |
+| Guerreiro + gear r5 | 2010 | 3.36 | 3.77 |
+| Arqueiro DEX65 naked | 26 | inviável | — |
+| Arqueiro STR65 naked | 1806 | **4.00** | 5.33 |
+
+**Origem do gap 1063 vs 1821:** calibrador usa attrs médios `10+L×1.2` (+ termo `L×1.5`); simulação investe ~65% dos pontos em STR. Não é bug de `scaleMonster`.  
+**Meta 8–12 hits** aplica-se ao poder **esperado/médio de calibração**, não a builds otimizadas com gear.
+
+---
+
+## Recomendação técnica (sem alterar o motor nesta etapa)
+
+| Opção | Prós | Contras | Migração |
+|-------|------|---------|----------|
+| **A + UX** | Zero risco a saves; Arqueiro STR já compete com Guerreiro | UI/`primaryAttr=dex` engana; DEX-dump sofre | Só copy/orientação (+ alinhar primaryAttr numa fase UX) |
+| **B** | Salva fantasy DEX com impacto mínimo em STR (~+0.5%) | Ainda é retune; precisa testes de regressão | Baixo — quase não fere existentes |
+| **C** | Híbrido “bonito” | **−40% ATK** em STR-heavy existentes | Alto — reset de pontos / compensação |
+
+**Recomendação:** priorizar **decisão de produto sobre identidade** (abaixo). Se a intenção de design for “DEX = velocidade/crit e STR = dano”, adotar **A + UX** (e corrigir `primaryAttrForClass`/tooltips numa entrega UX). Se a intenção for “DEX também alimenta o arco” **sem** punir quem já stackou STR, **B** é quantitativamente mais seguro que **C**. **Não** adotar C sem plano de migração.
+
+---
+
+## Decisões que exigem aprovação
+
+1. **Identidade do Arqueiro:** DEX só speed/crit, ou DEX também gera ATK (B), ou híbrido (C)?
+2. **Meta TTK 8–12:** vale para personagem esperado/médio, build otimizada, ou com gear on-level?
+3. **Offline:** confirmar comunicação ao jogador de que ausências longas recuperam **≈2h** (já é o comportamento medido)?
+
+Após essas decisões: pequena etapa de balanceamento **ou** seguir direto à **Fase 5 — Performance**.
+
+---
+
+## Riscos remanescentes
+
+- Faint no catch-up encerra a sessão (produto atual).
+- Multi-instância no mesmo `save.json` não suportada.
+- Dissonância `primaryAttrForClass(ARQUEIRO)=dex` vs ATK=STR permanece até decisão UX/fórmula.
+- Admin Backup/Map publish ainda disabled (fora deste escopo).
+
+---
+
+## Critério de conclusão
+
+| Camada | Status |
+|--------|--------|
+| Integridade Fase 4 | **Confirmada** (130 pass, build OK, greps) |
+| Estudo balanceamento | **Entregue** (números; sem retune) |
+| Retune / Fase 5 | **Aguarda** decisões 1–3 acima |

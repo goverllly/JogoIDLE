@@ -1,0 +1,7166 @@
+{
+  "cells": [
+    {
+      "level": 10,
+      "build": "dex_heavy",
+      "gear": "starter",
+      "formula": "A",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 41,
+        "con": 22
+      },
+      "stats": {
+        "maxHp": 458,
+        "attack": 26,
+        "defense": 32,
+        "attackIntervalMs": 1128,
+        "critChance": 0.115,
+        "source": "computeStats_motor"
+      },
+      "dpsBasicAnalytical": 25.17,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "premises": "priority by mult*hits/cd; MP cost+2% regen/tick; no monster DEF in skill path",
+        "horizonMs": 60000,
+        "dps": 27.19,
+        "skillsConsidered": [
+          "arq_rapido"
+        ]
+      },
+      "ttkMob": {
+        "hits": 11.55,
+        "seconds": 13.02,
+        "avgHit": 25.1,
+        "mitigation": 3,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 57.92,
+        "seconds": 65.34,
+        "avgHit": 13.1,
+        "mitigation": 14,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 5530,
+      "goldPerHourAnalytical": 1659,
+      "zoneId": "bosque_sussurros",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 10,
+      "build": "dex_heavy",
+      "gear": "starter",
+      "formula": "B",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 41,
+        "con": 22
+      },
+      "stats": {
+        "maxHp": 458,
+        "attack": 58,
+        "defense": 32,
+        "attackIntervalMs": 1128,
+        "critChance": 0.115,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 56.15,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 4.83,
+        "seconds": 5.45,
+        "avgHit": 60.1,
+        "mitigation": 3,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 15.8,
+        "seconds": 17.82,
+        "avgHit": 48,
+        "mitigation": 14,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 13211,
+      "goldPerHourAnalytical": 3963.3,
+      "zoneId": "bosque_sussurros",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 10,
+      "build": "dex_heavy",
+      "gear": "starter",
+      "formula": "C",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 41,
+        "con": 22
+      },
+      "stats": {
+        "maxHp": 458,
+        "attack": 60,
+        "defense": 32,
+        "attackIntervalMs": 1128,
+        "critChance": 0.115,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 58.09,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 4.66,
+        "seconds": 5.26,
+        "avgHit": 62.2,
+        "mitigation": 3,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 15.11,
+        "seconds": 17.04,
+        "avgHit": 50.2,
+        "mitigation": 14,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 13688.2,
+      "goldPerHourAnalytical": 4106.5,
+      "zoneId": "bosque_sussurros",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 10,
+      "build": "dex_heavy",
+      "gear": "mid",
+      "formula": "A",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 41,
+        "con": 22
+      },
+      "stats": {
+        "maxHp": 2908,
+        "attack": 149,
+        "defense": 256,
+        "attackIntervalMs": 715,
+        "critChance": 0.2625,
+        "source": "computeStats_motor"
+      },
+      "dpsBasicAnalytical": 252.15,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "premises": "priority by mult*hits/cd; MP cost+2% regen/tick; no monster DEF in skill path",
+        "horizonMs": 60000,
+        "dps": 264.3,
+        "skillsConsidered": [
+          "arq_rapido"
+        ]
+      },
+      "ttkMob": {
+        "hits": 1.64,
+        "seconds": 1.17,
+        "avgHit": 176.7,
+        "mitigation": 3,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 4.65,
+        "seconds": 3.32,
+        "avgHit": 163.3,
+        "mitigation": 14,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 61538.5,
+      "goldPerHourAnalytical": 18461.5,
+      "zoneId": "bosque_sussurros",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 10,
+      "build": "dex_heavy",
+      "gear": "mid",
+      "formula": "B",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 41,
+        "con": 22
+      },
+      "stats": {
+        "maxHp": 2908,
+        "attack": 181,
+        "defense": 256,
+        "attackIntervalMs": 715,
+        "critChance": 0.2625,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 306.31,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 1.35,
+        "seconds": 0.96,
+        "avgHit": 215.4,
+        "mitigation": 3,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 3.76,
+        "seconds": 2.69,
+        "avgHit": 202.1,
+        "mitigation": 14,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 75000,
+      "goldPerHourAnalytical": 22500,
+      "zoneId": "bosque_sussurros",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 10,
+      "build": "dex_heavy",
+      "gear": "mid",
+      "formula": "C",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 41,
+        "con": 22
+      },
+      "stats": {
+        "maxHp": 2908,
+        "attack": 183,
+        "defense": 256,
+        "attackIntervalMs": 715,
+        "critChance": 0.2625,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 309.69,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 1.33,
+        "seconds": 0.95,
+        "avgHit": 217.8,
+        "mitigation": 3,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 3.71,
+        "seconds": 2.65,
+        "avgHit": 204.5,
+        "mitigation": 14,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 75789.5,
+      "goldPerHourAnalytical": 22736.8,
+      "zoneId": "bosque_sussurros",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 10,
+      "build": "dex_heavy",
+      "gear": "end",
+      "formula": "A",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 41,
+        "con": 22
+      },
+      "stats": {
+        "maxHp": 458,
+        "attack": 26,
+        "defense": 32,
+        "attackIntervalMs": 1128,
+        "critChance": 0.115,
+        "source": "computeStats_motor"
+      },
+      "dpsBasicAnalytical": 25.17,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "premises": "priority by mult*hits/cd; MP cost+2% regen/tick; no monster DEF in skill path",
+        "horizonMs": 60000,
+        "dps": 27.19,
+        "skillsConsidered": [
+          "arq_rapido"
+        ]
+      },
+      "ttkMob": {
+        "hits": 11.55,
+        "seconds": 13.02,
+        "avgHit": 25.1,
+        "mitigation": 3,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 57.92,
+        "seconds": 65.34,
+        "avgHit": 13.1,
+        "mitigation": 14,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 5530,
+      "goldPerHourAnalytical": 1659,
+      "zoneId": "bosque_sussurros",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 10,
+      "build": "dex_heavy",
+      "gear": "end",
+      "formula": "B",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 41,
+        "con": 22
+      },
+      "stats": {
+        "maxHp": 458,
+        "attack": 58,
+        "defense": 32,
+        "attackIntervalMs": 1128,
+        "critChance": 0.115,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 56.15,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 4.83,
+        "seconds": 5.45,
+        "avgHit": 60.1,
+        "mitigation": 3,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 15.8,
+        "seconds": 17.82,
+        "avgHit": 48,
+        "mitigation": 14,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 13211,
+      "goldPerHourAnalytical": 3963.3,
+      "zoneId": "bosque_sussurros",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 10,
+      "build": "dex_heavy",
+      "gear": "end",
+      "formula": "C",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 41,
+        "con": 22
+      },
+      "stats": {
+        "maxHp": 458,
+        "attack": 60,
+        "defense": 32,
+        "attackIntervalMs": 1128,
+        "critChance": 0.115,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 58.09,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 4.66,
+        "seconds": 5.26,
+        "avgHit": 62.2,
+        "mitigation": 3,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 15.11,
+        "seconds": 17.04,
+        "avgHit": 50.2,
+        "mitigation": 14,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 13688.2,
+      "goldPerHourAnalytical": 4106.5,
+      "zoneId": "bosque_sussurros",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 10,
+      "build": "str_heavy",
+      "gear": "starter",
+      "formula": "A",
+      "attrs": {
+        "str": 36,
+        "int": 4,
+        "dex": 12,
+        "con": 22
+      },
+      "stats": {
+        "maxHp": 458,
+        "attack": 90,
+        "defense": 39,
+        "attackIntervalMs": 1331,
+        "critChance": 0.0425,
+        "source": "computeStats_motor"
+      },
+      "dpsBasicAnalytical": 69.92,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "premises": "priority by mult*hits/cd; MP cost+2% regen/tick; no monster DEF in skill path",
+        "horizonMs": 60000,
+        "dps": 77.21,
+        "skillsConsidered": [
+          "arq_rapido"
+        ]
+      },
+      "ttkMob": {
+        "hits": 3.22,
+        "seconds": 4.29,
+        "avgHit": 90,
+        "mitigation": 3,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 9.66,
+        "seconds": 12.86,
+        "avgHit": 78.6,
+        "mitigation": 14,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 16783.2,
+      "goldPerHourAnalytical": 5035,
+      "zoneId": "bosque_sussurros",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 10,
+      "build": "str_heavy",
+      "gear": "starter",
+      "formula": "B",
+      "attrs": {
+        "str": 36,
+        "int": 4,
+        "dex": 12,
+        "con": 22
+      },
+      "stats": {
+        "maxHp": 458,
+        "attack": 99,
+        "defense": 39,
+        "attackIntervalMs": 1331,
+        "critChance": 0.0425,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 76.91,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 2.92,
+        "seconds": 3.89,
+        "avgHit": 99.3,
+        "mitigation": 3,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 8.64,
+        "seconds": 11.49,
+        "avgHit": 87.9,
+        "mitigation": 14,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 18509,
+      "goldPerHourAnalytical": 5552.7,
+      "zoneId": "bosque_sussurros",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 10,
+      "build": "str_heavy",
+      "gear": "starter",
+      "formula": "C",
+      "attrs": {
+        "str": 36,
+        "int": 4,
+        "dex": 12,
+        "con": 22
+      },
+      "stats": {
+        "maxHp": 458,
+        "attack": 66,
+        "defense": 39,
+        "attackIntervalMs": 1331,
+        "critChance": 0.0425,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 51.27,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 4.45,
+        "seconds": 5.93,
+        "avgHit": 65.1,
+        "mitigation": 3,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 14.12,
+        "seconds": 18.79,
+        "avgHit": 53.8,
+        "mitigation": 14,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 12141.7,
+      "goldPerHourAnalytical": 3642.5,
+      "zoneId": "bosque_sussurros",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 10,
+      "build": "str_heavy",
+      "gear": "mid",
+      "formula": "A",
+      "attrs": {
+        "str": 36,
+        "int": 4,
+        "dex": 12,
+        "con": 22
+      },
+      "stats": {
+        "maxHp": 2908,
+        "attack": 213,
+        "defense": 263,
+        "attackIntervalMs": 918,
+        "critChance": 0.19,
+        "source": "computeStats_motor"
+      },
+      "dpsBasicAnalytical": 267.29,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "premises": "priority by mult*hits/cd; MP cost+2% regen/tick; no monster DEF in skill path",
+        "horizonMs": 60000,
+        "dps": 286.23,
+        "skillsConsidered": [
+          "arq_rapido"
+        ]
+      },
+      "ttkMob": {
+        "hits": 1.2,
+        "seconds": 1.1,
+        "avgHit": 241.9,
+        "mitigation": 3,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 3.31,
+        "seconds": 3.04,
+        "avgHit": 229.2,
+        "mitigation": 14,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 65454.5,
+      "goldPerHourAnalytical": 19636.4,
+      "zoneId": "bosque_sussurros",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 10,
+      "build": "str_heavy",
+      "gear": "mid",
+      "formula": "B",
+      "attrs": {
+        "str": 36,
+        "int": 4,
+        "dex": 12,
+        "con": 22
+      },
+      "stats": {
+        "maxHp": 2908,
+        "attack": 222,
+        "defense": 263,
+        "attackIntervalMs": 918,
+        "critChance": 0.19,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 278.59,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 1.15,
+        "seconds": 1.06,
+        "avgHit": 252.3,
+        "mitigation": 3,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 3.17,
+        "seconds": 2.91,
+        "avgHit": 239.6,
+        "mitigation": 14,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 67924.5,
+      "goldPerHourAnalytical": 20377.4,
+      "zoneId": "bosque_sussurros",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 10,
+      "build": "str_heavy",
+      "gear": "mid",
+      "formula": "C",
+      "attrs": {
+        "str": 36,
+        "int": 4,
+        "dex": 12,
+        "con": 22
+      },
+      "stats": {
+        "maxHp": 2908,
+        "attack": 189,
+        "defense": 263,
+        "attackIntervalMs": 918,
+        "critChance": 0.19,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 237.18,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 1.35,
+        "seconds": 1.24,
+        "avgHit": 214.3,
+        "mitigation": 3,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 3.76,
+        "seconds": 3.46,
+        "avgHit": 201.6,
+        "mitigation": 14,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 58064.5,
+      "goldPerHourAnalytical": 17419.4,
+      "zoneId": "bosque_sussurros",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 10,
+      "build": "str_heavy",
+      "gear": "end",
+      "formula": "A",
+      "attrs": {
+        "str": 36,
+        "int": 4,
+        "dex": 12,
+        "con": 22
+      },
+      "stats": {
+        "maxHp": 458,
+        "attack": 90,
+        "defense": 39,
+        "attackIntervalMs": 1331,
+        "critChance": 0.0425,
+        "source": "computeStats_motor"
+      },
+      "dpsBasicAnalytical": 69.92,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "premises": "priority by mult*hits/cd; MP cost+2% regen/tick; no monster DEF in skill path",
+        "horizonMs": 60000,
+        "dps": 77.21,
+        "skillsConsidered": [
+          "arq_rapido"
+        ]
+      },
+      "ttkMob": {
+        "hits": 3.22,
+        "seconds": 4.29,
+        "avgHit": 90,
+        "mitigation": 3,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 9.66,
+        "seconds": 12.86,
+        "avgHit": 78.6,
+        "mitigation": 14,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 16783.2,
+      "goldPerHourAnalytical": 5035,
+      "zoneId": "bosque_sussurros",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 10,
+      "build": "str_heavy",
+      "gear": "end",
+      "formula": "B",
+      "attrs": {
+        "str": 36,
+        "int": 4,
+        "dex": 12,
+        "con": 22
+      },
+      "stats": {
+        "maxHp": 458,
+        "attack": 99,
+        "defense": 39,
+        "attackIntervalMs": 1331,
+        "critChance": 0.0425,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 76.91,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 2.92,
+        "seconds": 3.89,
+        "avgHit": 99.3,
+        "mitigation": 3,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 8.64,
+        "seconds": 11.49,
+        "avgHit": 87.9,
+        "mitigation": 14,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 18509,
+      "goldPerHourAnalytical": 5552.7,
+      "zoneId": "bosque_sussurros",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 10,
+      "build": "str_heavy",
+      "gear": "end",
+      "formula": "C",
+      "attrs": {
+        "str": 36,
+        "int": 4,
+        "dex": 12,
+        "con": 22
+      },
+      "stats": {
+        "maxHp": 458,
+        "attack": 66,
+        "defense": 39,
+        "attackIntervalMs": 1331,
+        "critChance": 0.0425,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 51.27,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 4.45,
+        "seconds": 5.93,
+        "avgHit": 65.1,
+        "mitigation": 3,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 14.12,
+        "seconds": 18.79,
+        "avgHit": 53.8,
+        "mitigation": 14,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 12141.7,
+      "goldPerHourAnalytical": 3642.5,
+      "zoneId": "bosque_sussurros",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 10,
+      "build": "hybrid",
+      "gear": "starter",
+      "formula": "A",
+      "attrs": {
+        "str": 25,
+        "int": 4,
+        "dex": 27,
+        "con": 18
+      },
+      "stats": {
+        "maxHp": 402,
+        "attack": 65,
+        "defense": 31,
+        "attackIntervalMs": 1226,
+        "critChance": 0.08,
+        "source": "computeStats_motor"
+      },
+      "dpsBasicAnalytical": 56.41,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "premises": "priority by mult*hits/cd; MP cost+2% regen/tick; no monster DEF in skill path",
+        "horizonMs": 60000,
+        "dps": 60.91,
+        "skillsConsidered": [
+          "arq_rapido"
+        ]
+      },
+      "ttkMob": {
+        "hits": 4.4,
+        "seconds": 5.39,
+        "avgHit": 66,
+        "mitigation": 3,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 13.99,
+        "seconds": 17.15,
+        "avgHit": 54.3,
+        "mitigation": 14,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 13358.1,
+      "goldPerHourAnalytical": 4007.4,
+      "zoneId": "bosque_sussurros",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 10,
+      "build": "hybrid",
+      "gear": "starter",
+      "formula": "B",
+      "attrs": {
+        "str": 25,
+        "int": 4,
+        "dex": 27,
+        "con": 18
+      },
+      "stats": {
+        "maxHp": 402,
+        "attack": 86,
+        "defense": 31,
+        "attackIntervalMs": 1226,
+        "critChance": 0.08,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 74.64,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 3.28,
+        "seconds": 4.03,
+        "avgHit": 88.3,
+        "mitigation": 3,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 9.91,
+        "seconds": 12.15,
+        "avgHit": 76.6,
+        "mitigation": 14,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 17866,
+      "goldPerHourAnalytical": 5359.8,
+      "zoneId": "bosque_sussurros",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 10,
+      "build": "hybrid",
+      "gear": "starter",
+      "formula": "C",
+      "attrs": {
+        "str": 25,
+        "int": 4,
+        "dex": 27,
+        "con": 18
+      },
+      "stats": {
+        "maxHp": 402,
+        "attack": 67,
+        "defense": 31,
+        "attackIntervalMs": 1226,
+        "critChance": 0.08,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 58.15,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 4.26,
+        "seconds": 5.22,
+        "avgHit": 68.1,
+        "mitigation": 3,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 13.46,
+        "seconds": 16.5,
+        "avgHit": 56.4,
+        "mitigation": 14,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 13793.1,
+      "goldPerHourAnalytical": 4137.9,
+      "zoneId": "bosque_sussurros",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 10,
+      "build": "hybrid",
+      "gear": "mid",
+      "formula": "A",
+      "attrs": {
+        "str": 25,
+        "int": 4,
+        "dex": 27,
+        "con": 18
+      },
+      "stats": {
+        "maxHp": 2852,
+        "attack": 189,
+        "defense": 255,
+        "attackIntervalMs": 813,
+        "critChance": 0.2275,
+        "source": "computeStats_motor"
+      },
+      "dpsBasicAnalytical": 274.78,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "premises": "priority by mult*hits/cd; MP cost+2% regen/tick; no monster DEF in skill path",
+        "horizonMs": 60000,
+        "dps": 290.3,
+        "skillsConsidered": [
+          "arq_rapido"
+        ]
+      },
+      "ttkMob": {
+        "hits": 1.32,
+        "seconds": 1.07,
+        "avgHit": 219.9,
+        "mitigation": 3,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 3.67,
+        "seconds": 2.98,
+        "avgHit": 206.8,
+        "mitigation": 14,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 67289.7,
+      "goldPerHourAnalytical": 20186.9,
+      "zoneId": "bosque_sussurros",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 10,
+      "build": "hybrid",
+      "gear": "mid",
+      "formula": "B",
+      "attrs": {
+        "str": 25,
+        "int": 4,
+        "dex": 27,
+        "con": 18
+      },
+      "stats": {
+        "maxHp": 2852,
+        "attack": 210,
+        "defense": 255,
+        "attackIntervalMs": 813,
+        "critChance": 0.2275,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 305.31,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 1.19,
+        "seconds": 0.96,
+        "avgHit": 244.7,
+        "mitigation": 3,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 3.28,
+        "seconds": 2.66,
+        "avgHit": 231.7,
+        "mitigation": 14,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 75000,
+      "goldPerHourAnalytical": 22500,
+      "zoneId": "bosque_sussurros",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 10,
+      "build": "hybrid",
+      "gear": "mid",
+      "formula": "C",
+      "attrs": {
+        "str": 25,
+        "int": 4,
+        "dex": 27,
+        "con": 18
+      },
+      "stats": {
+        "maxHp": 2852,
+        "attack": 191,
+        "defense": 255,
+        "attackIntervalMs": 813,
+        "critChance": 0.2275,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 277.69,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 1.31,
+        "seconds": 1.06,
+        "avgHit": 222.2,
+        "mitigation": 3,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 3.63,
+        "seconds": 2.95,
+        "avgHit": 209.2,
+        "mitigation": 14,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 67924.5,
+      "goldPerHourAnalytical": 20377.4,
+      "zoneId": "bosque_sussurros",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 10,
+      "build": "hybrid",
+      "gear": "end",
+      "formula": "A",
+      "attrs": {
+        "str": 25,
+        "int": 4,
+        "dex": 27,
+        "con": 18
+      },
+      "stats": {
+        "maxHp": 402,
+        "attack": 65,
+        "defense": 31,
+        "attackIntervalMs": 1226,
+        "critChance": 0.08,
+        "source": "computeStats_motor"
+      },
+      "dpsBasicAnalytical": 56.41,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "premises": "priority by mult*hits/cd; MP cost+2% regen/tick; no monster DEF in skill path",
+        "horizonMs": 60000,
+        "dps": 60.91,
+        "skillsConsidered": [
+          "arq_rapido"
+        ]
+      },
+      "ttkMob": {
+        "hits": 4.4,
+        "seconds": 5.39,
+        "avgHit": 66,
+        "mitigation": 3,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 13.99,
+        "seconds": 17.15,
+        "avgHit": 54.3,
+        "mitigation": 14,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 13358.1,
+      "goldPerHourAnalytical": 4007.4,
+      "zoneId": "bosque_sussurros",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 10,
+      "build": "hybrid",
+      "gear": "end",
+      "formula": "B",
+      "attrs": {
+        "str": 25,
+        "int": 4,
+        "dex": 27,
+        "con": 18
+      },
+      "stats": {
+        "maxHp": 402,
+        "attack": 86,
+        "defense": 31,
+        "attackIntervalMs": 1226,
+        "critChance": 0.08,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 74.64,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 3.28,
+        "seconds": 4.03,
+        "avgHit": 88.3,
+        "mitigation": 3,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 9.91,
+        "seconds": 12.15,
+        "avgHit": 76.6,
+        "mitigation": 14,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 17866,
+      "goldPerHourAnalytical": 5359.8,
+      "zoneId": "bosque_sussurros",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 10,
+      "build": "hybrid",
+      "gear": "end",
+      "formula": "C",
+      "attrs": {
+        "str": 25,
+        "int": 4,
+        "dex": 27,
+        "con": 18
+      },
+      "stats": {
+        "maxHp": 402,
+        "attack": 67,
+        "defense": 31,
+        "attackIntervalMs": 1226,
+        "critChance": 0.08,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 58.15,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 4.26,
+        "seconds": 5.22,
+        "avgHit": 68.1,
+        "mitigation": 3,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 13.46,
+        "seconds": 16.5,
+        "avgHit": 56.4,
+        "mitigation": 14,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 13793.1,
+      "goldPerHourAnalytical": 4137.9,
+      "zoneId": "bosque_sussurros",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 10,
+      "build": "under_caps",
+      "gear": "starter",
+      "formula": "A",
+      "attrs": {
+        "str": 27,
+        "int": 4,
+        "dex": 25,
+        "con": 18
+      },
+      "stats": {
+        "maxHp": 402,
+        "attack": 70,
+        "defense": 32,
+        "attackIntervalMs": 1240,
+        "critChance": 0.075,
+        "source": "computeStats_motor"
+      },
+      "dpsBasicAnalytical": 59.84,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "premises": "priority by mult*hits/cd; MP cost+2% regen/tick; no monster DEF in skill path",
+        "horizonMs": 60000,
+        "dps": 65.54,
+        "skillsConsidered": [
+          "arq_rapido"
+        ]
+      },
+      "ttkMob": {
+        "hits": 4.08,
+        "seconds": 5.06,
+        "avgHit": 71,
+        "mitigation": 3,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 12.79,
+        "seconds": 15.86,
+        "avgHit": 59.4,
+        "mitigation": 14,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 14229.2,
+      "goldPerHourAnalytical": 4268.8,
+      "zoneId": "bosque_sussurros",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 10,
+      "build": "under_caps",
+      "gear": "starter",
+      "formula": "B",
+      "attrs": {
+        "str": 27,
+        "int": 4,
+        "dex": 25,
+        "con": 18
+      },
+      "stats": {
+        "maxHp": 402,
+        "attack": 90,
+        "defense": 32,
+        "attackIntervalMs": 1240,
+        "critChance": 0.075,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 76.94,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 3.14,
+        "seconds": 3.9,
+        "avgHit": 92.2,
+        "mitigation": 3,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 9.42,
+        "seconds": 11.68,
+        "avgHit": 80.6,
+        "mitigation": 14,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 18461.5,
+      "goldPerHourAnalytical": 5538.5,
+      "zoneId": "bosque_sussurros",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 10,
+      "build": "under_caps",
+      "gear": "starter",
+      "formula": "C",
+      "attrs": {
+        "str": 27,
+        "int": 4,
+        "dex": 25,
+        "con": 18
+      },
+      "stats": {
+        "maxHp": 402,
+        "attack": 68,
+        "defense": 32,
+        "attackIntervalMs": 1240,
+        "critChance": 0.075,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 58.13,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 4.21,
+        "seconds": 5.22,
+        "avgHit": 68.9,
+        "mitigation": 3,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 13.26,
+        "seconds": 16.44,
+        "avgHit": 57.2,
+        "mitigation": 14,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 13793.1,
+      "goldPerHourAnalytical": 4137.9,
+      "zoneId": "bosque_sussurros",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 10,
+      "build": "under_caps",
+      "gear": "mid",
+      "formula": "A",
+      "attrs": {
+        "str": 27,
+        "int": 4,
+        "dex": 25,
+        "con": 18
+      },
+      "stats": {
+        "maxHp": 2852,
+        "attack": 193,
+        "defense": 256,
+        "attackIntervalMs": 827,
+        "critChance": 0.2225,
+        "source": "computeStats_motor"
+      },
+      "dpsBasicAnalytical": 274.91,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "premises": "priority by mult*hits/cd; MP cost+2% regen/tick; no monster DEF in skill path",
+        "horizonMs": 60000,
+        "dps": 291.73,
+        "skillsConsidered": [
+          "arq_rapido"
+        ]
+      },
+      "ttkMob": {
+        "hits": 1.3,
+        "seconds": 1.07,
+        "avgHit": 223.8,
+        "mitigation": 3,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 3.6,
+        "seconds": 2.98,
+        "avgHit": 210.9,
+        "mitigation": 14,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 67289.7,
+      "goldPerHourAnalytical": 20186.9,
+      "zoneId": "bosque_sussurros",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 10,
+      "build": "under_caps",
+      "gear": "mid",
+      "formula": "B",
+      "attrs": {
+        "str": 27,
+        "int": 4,
+        "dex": 25,
+        "con": 18
+      },
+      "stats": {
+        "maxHp": 2852,
+        "attack": 213,
+        "defense": 256,
+        "attackIntervalMs": 827,
+        "critChance": 0.2225,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 303.4,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 1.17,
+        "seconds": 0.97,
+        "avgHit": 247.4,
+        "mitigation": 3,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 3.24,
+        "seconds": 2.68,
+        "avgHit": 234.4,
+        "mitigation": 14,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 74226.8,
+      "goldPerHourAnalytical": 22268,
+      "zoneId": "bosque_sussurros",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 10,
+      "build": "under_caps",
+      "gear": "mid",
+      "formula": "C",
+      "attrs": {
+        "str": 27,
+        "int": 4,
+        "dex": 25,
+        "con": 18
+      },
+      "stats": {
+        "maxHp": 2852,
+        "attack": 191,
+        "defense": 256,
+        "attackIntervalMs": 827,
+        "critChance": 0.2225,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 272.07,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 1.31,
+        "seconds": 1.08,
+        "avgHit": 221.5,
+        "mitigation": 3,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 3.64,
+        "seconds": 3.01,
+        "avgHit": 208.5,
+        "mitigation": 14,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 66666.7,
+      "goldPerHourAnalytical": 20000,
+      "zoneId": "bosque_sussurros",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 10,
+      "build": "under_caps",
+      "gear": "end",
+      "formula": "A",
+      "attrs": {
+        "str": 27,
+        "int": 4,
+        "dex": 25,
+        "con": 18
+      },
+      "stats": {
+        "maxHp": 402,
+        "attack": 70,
+        "defense": 32,
+        "attackIntervalMs": 1240,
+        "critChance": 0.075,
+        "source": "computeStats_motor"
+      },
+      "dpsBasicAnalytical": 59.84,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "premises": "priority by mult*hits/cd; MP cost+2% regen/tick; no monster DEF in skill path",
+        "horizonMs": 60000,
+        "dps": 65.54,
+        "skillsConsidered": [
+          "arq_rapido"
+        ]
+      },
+      "ttkMob": {
+        "hits": 4.08,
+        "seconds": 5.06,
+        "avgHit": 71,
+        "mitigation": 3,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 12.79,
+        "seconds": 15.86,
+        "avgHit": 59.4,
+        "mitigation": 14,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 14229.2,
+      "goldPerHourAnalytical": 4268.8,
+      "zoneId": "bosque_sussurros",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 10,
+      "build": "under_caps",
+      "gear": "end",
+      "formula": "B",
+      "attrs": {
+        "str": 27,
+        "int": 4,
+        "dex": 25,
+        "con": 18
+      },
+      "stats": {
+        "maxHp": 402,
+        "attack": 90,
+        "defense": 32,
+        "attackIntervalMs": 1240,
+        "critChance": 0.075,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 76.94,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 3.14,
+        "seconds": 3.9,
+        "avgHit": 92.2,
+        "mitigation": 3,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 9.42,
+        "seconds": 11.68,
+        "avgHit": 80.6,
+        "mitigation": 14,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 18461.5,
+      "goldPerHourAnalytical": 5538.5,
+      "zoneId": "bosque_sussurros",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 10,
+      "build": "under_caps",
+      "gear": "end",
+      "formula": "C",
+      "attrs": {
+        "str": 27,
+        "int": 4,
+        "dex": 25,
+        "con": 18
+      },
+      "stats": {
+        "maxHp": 402,
+        "attack": 68,
+        "defense": 32,
+        "attackIntervalMs": 1240,
+        "critChance": 0.075,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 58.13,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 4.21,
+        "seconds": 5.22,
+        "avgHit": 68.9,
+        "mitigation": 3,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 13.26,
+        "seconds": 16.44,
+        "avgHit": 57.2,
+        "mitigation": 14,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 13793.1,
+      "goldPerHourAnalytical": 4137.9,
+      "zoneId": "bosque_sussurros",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 10,
+      "build": "dex_overcap",
+      "gear": "starter",
+      "formula": "A",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 52,
+        "con": 11
+      },
+      "stats": {
+        "maxHp": 304,
+        "attack": 26,
+        "defense": 18,
+        "attackIntervalMs": 1051,
+        "critChance": 0.14250000000000002,
+        "source": "computeStats_motor"
+      },
+      "dpsBasicAnalytical": 27.56,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "premises": "priority by mult*hits/cd; MP cost+2% regen/tick; no monster DEF in skill path",
+        "horizonMs": 60000,
+        "dps": 29.86,
+        "skillsConsidered": [
+          "arq_rapido"
+        ]
+      },
+      "ttkMob": {
+        "hits": 11.32,
+        "seconds": 11.9,
+        "avgHit": 25.6,
+        "mitigation": 3,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 56.78,
+        "seconds": 59.67,
+        "avgHit": 13.4,
+        "mitigation": 14,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 6050.4,
+      "goldPerHourAnalytical": 1815.1,
+      "zoneId": "bosque_sussurros",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 10,
+      "build": "dex_overcap",
+      "gear": "starter",
+      "formula": "B",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 52,
+        "con": 11
+      },
+      "stats": {
+        "maxHp": 304,
+        "attack": 66,
+        "defense": 18,
+        "attackIntervalMs": 1051,
+        "critChance": 0.14250000000000002,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 69.96,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 4.13,
+        "seconds": 4.34,
+        "avgHit": 70.2,
+        "mitigation": 3,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 13.1,
+        "seconds": 13.77,
+        "avgHit": 57.9,
+        "mitigation": 14,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 16589.9,
+      "goldPerHourAnalytical": 4977,
+      "zoneId": "bosque_sussurros",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 10,
+      "build": "dex_overcap",
+      "gear": "starter",
+      "formula": "C",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 52,
+        "con": 11
+      },
+      "stats": {
+        "maxHp": 304,
+        "attack": 71,
+        "defense": 18,
+        "attackIntervalMs": 1051,
+        "critChance": 0.14250000000000002,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 75.26,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 3.83,
+        "seconds": 4.02,
+        "avgHit": 75.8,
+        "mitigation": 3,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 11.95,
+        "seconds": 12.56,
+        "avgHit": 63.5,
+        "mitigation": 14,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 17910.4,
+      "goldPerHourAnalytical": 5373.1,
+      "zoneId": "bosque_sussurros",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 10,
+      "build": "dex_overcap",
+      "gear": "mid",
+      "formula": "A",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 52,
+        "con": 11
+      },
+      "stats": {
+        "maxHp": 2754,
+        "attack": 149,
+        "defense": 242,
+        "attackIntervalMs": 638,
+        "critChance": 0.29,
+        "source": "computeStats_motor"
+      },
+      "dpsBasicAnalytical": 287.72,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "premises": "priority by mult*hits/cd; MP cost+2% regen/tick; no monster DEF in skill path",
+        "horizonMs": 60000,
+        "dps": 302.76,
+        "skillsConsidered": [
+          "arq_rapido"
+        ]
+      },
+      "ttkMob": {
+        "hits": 1.61,
+        "seconds": 1.03,
+        "avgHit": 179.9,
+        "mitigation": 3,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 4.56,
+        "seconds": 2.91,
+        "avgHit": 166.3,
+        "mitigation": 14,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 69902.9,
+      "goldPerHourAnalytical": 20970.9,
+      "zoneId": "bosque_sussurros",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 10,
+      "build": "dex_overcap",
+      "gear": "mid",
+      "formula": "B",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 52,
+        "con": 11
+      },
+      "stats": {
+        "maxHp": 2754,
+        "attack": 189,
+        "defense": 242,
+        "attackIntervalMs": 638,
+        "critChance": 0.29,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 364.97,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 1.27,
+        "seconds": 0.81,
+        "avgHit": 229.2,
+        "mitigation": 3,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 3.52,
+        "seconds": 2.25,
+        "avgHit": 215.6,
+        "mitigation": 14,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 88888.9,
+      "goldPerHourAnalytical": 26666.7,
+      "zoneId": "bosque_sussurros",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 10,
+      "build": "dex_overcap",
+      "gear": "mid",
+      "formula": "C",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 52,
+        "con": 11
+      },
+      "stats": {
+        "maxHp": 2754,
+        "attack": 194,
+        "defense": 242,
+        "attackIntervalMs": 638,
+        "critChance": 0.29,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 374.62,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 1.23,
+        "seconds": 0.79,
+        "avgHit": 235.3,
+        "mitigation": 3,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 3.42,
+        "seconds": 2.18,
+        "avgHit": 221.8,
+        "mitigation": 14,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 91139.2,
+      "goldPerHourAnalytical": 27341.8,
+      "zoneId": "bosque_sussurros",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 10,
+      "build": "dex_overcap",
+      "gear": "end",
+      "formula": "A",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 52,
+        "con": 11
+      },
+      "stats": {
+        "maxHp": 304,
+        "attack": 26,
+        "defense": 18,
+        "attackIntervalMs": 1051,
+        "critChance": 0.14250000000000002,
+        "source": "computeStats_motor"
+      },
+      "dpsBasicAnalytical": 27.56,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "premises": "priority by mult*hits/cd; MP cost+2% regen/tick; no monster DEF in skill path",
+        "horizonMs": 60000,
+        "dps": 29.86,
+        "skillsConsidered": [
+          "arq_rapido"
+        ]
+      },
+      "ttkMob": {
+        "hits": 11.32,
+        "seconds": 11.9,
+        "avgHit": 25.6,
+        "mitigation": 3,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 56.78,
+        "seconds": 59.67,
+        "avgHit": 13.4,
+        "mitigation": 14,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 6050.4,
+      "goldPerHourAnalytical": 1815.1,
+      "zoneId": "bosque_sussurros",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 10,
+      "build": "dex_overcap",
+      "gear": "end",
+      "formula": "B",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 52,
+        "con": 11
+      },
+      "stats": {
+        "maxHp": 304,
+        "attack": 66,
+        "defense": 18,
+        "attackIntervalMs": 1051,
+        "critChance": 0.14250000000000002,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 69.96,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 4.13,
+        "seconds": 4.34,
+        "avgHit": 70.2,
+        "mitigation": 3,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 13.1,
+        "seconds": 13.77,
+        "avgHit": 57.9,
+        "mitigation": 14,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 16589.9,
+      "goldPerHourAnalytical": 4977,
+      "zoneId": "bosque_sussurros",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 10,
+      "build": "dex_overcap",
+      "gear": "end",
+      "formula": "C",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 52,
+        "con": 11
+      },
+      "stats": {
+        "maxHp": 304,
+        "attack": 71,
+        "defense": 18,
+        "attackIntervalMs": 1051,
+        "critChance": 0.14250000000000002,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 75.26,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 3.83,
+        "seconds": 4.02,
+        "avgHit": 75.8,
+        "mitigation": 3,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 11.95,
+        "seconds": 12.56,
+        "avgHit": 63.5,
+        "mitigation": 14,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 17910.4,
+      "goldPerHourAnalytical": 5373.1,
+      "zoneId": "bosque_sussurros",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 250,
+      "build": "dex_heavy",
+      "gear": "starter",
+      "formula": "A",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 821,
+        "con": 442
+      },
+      "stats": {
+        "maxHp": 7778,
+        "attack": 26,
+        "defense": 536,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "computeStats_motor"
+      },
+      "dpsBasicAnalytical": 84.19,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "premises": "priority by mult*hits/cd; MP cost+2% regen/tick; no monster DEF in skill path",
+        "horizonMs": 60000,
+        "dps": 99.23,
+        "skillsConsidered": [
+          "arq_rapido",
+          "arq_presa_pantera",
+          "arq_perfurante",
+          "arq_chuva",
+          "arq_armadilha_espinho"
+        ]
+      },
+      "ttkMob": {
+        "hits": 4911.76,
+        "seconds": 2062.94,
+        "avgHit": 1.4,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 11161.76,
+        "seconds": 4687.94,
+        "avgHit": 1.4,
+        "mitigation": 716,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 7015.2,
+      "goldPerHourAnalytical": 1930.1,
+      "zoneId": "floresta_amaldicoada",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 250,
+      "build": "dex_heavy",
+      "gear": "starter",
+      "formula": "B",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 821,
+        "con": 442
+      },
+      "stats": {
+        "maxHp": 7778,
+        "attack": 659,
+        "defense": 536,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 2133.9,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 10.52,
+        "seconds": 4.42,
+        "avgHit": 635.1,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 11161.76,
+        "seconds": 4687.94,
+        "avgHit": 1.4,
+        "mitigation": 716,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 3274208.1,
+      "goldPerHourAnalytical": 900814.5,
+      "zoneId": "floresta_amaldicoada",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 250,
+      "build": "dex_heavy",
+      "gear": "starter",
+      "formula": "C",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 821,
+        "con": 442
+      },
+      "stats": {
+        "maxHp": 7778,
+        "attack": 832,
+        "defense": 536,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 2694.1,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 7.67,
+        "seconds": 3.22,
+        "avgHit": 870.4,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 96.22,
+        "seconds": 40.41,
+        "avgHit": 157.8,
+        "mitigation": 716,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 4494409.9,
+      "goldPerHourAnalytical": 1236521.7,
+      "zoneId": "floresta_amaldicoada",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 250,
+      "build": "dex_heavy",
+      "gear": "mid",
+      "formula": "A",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 821,
+        "con": 442
+      },
+      "stats": {
+        "maxHp": 10886,
+        "attack": 180,
+        "defense": 820,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "computeStats_motor"
+      },
+      "dpsBasicAnalytical": 582.86,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "premises": "priority by mult*hits/cd; MP cost+2% regen/tick; no monster DEF in skill path",
+        "horizonMs": 60000,
+        "dps": 688.45,
+        "skillsConsidered": [
+          "arq_rapido",
+          "arq_presa_pantera",
+          "arq_perfurante",
+          "arq_chuva",
+          "arq_armadilha_espinho"
+        ]
+      },
+      "ttkMob": {
+        "hits": 4911.76,
+        "seconds": 2062.94,
+        "avgHit": 1.4,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 11161.76,
+        "seconds": 4687.94,
+        "avgHit": 1.4,
+        "mitigation": 716,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 7015.2,
+      "goldPerHourAnalytical": 1930.1,
+      "zoneId": "floresta_amaldicoada",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 250,
+      "build": "dex_heavy",
+      "gear": "mid",
+      "formula": "B",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 821,
+        "con": 442
+      },
+      "stats": {
+        "maxHp": 10886,
+        "attack": 813,
+        "defense": 820,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 2632.57,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 7.91,
+        "seconds": 3.32,
+        "avgHit": 844.6,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 115.07,
+        "seconds": 48.33,
+        "avgHit": 131.9,
+        "mitigation": 716,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 4359036.1,
+      "goldPerHourAnalytical": 1199277.1,
+      "zoneId": "floresta_amaldicoada",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 250,
+      "build": "dex_heavy",
+      "gear": "mid",
+      "formula": "C",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 821,
+        "con": 442
+      },
+      "stats": {
+        "maxHp": 10886,
+        "attack": 986,
+        "defense": 820,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 3192.76,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 6.19,
+        "seconds": 2.6,
+        "avgHit": 1079.8,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 41.34,
+        "seconds": 17.36,
+        "avgHit": 367.2,
+        "mitigation": 716,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 5566153.8,
+      "goldPerHourAnalytical": 1531384.6,
+      "zoneId": "floresta_amaldicoada",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 250,
+      "build": "dex_heavy",
+      "gear": "end",
+      "formula": "A",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 821,
+        "con": 442
+      },
+      "stats": {
+        "maxHp": 13798,
+        "attack": 332,
+        "defense": 1086,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "computeStats_motor"
+      },
+      "dpsBasicAnalytical": 1075.05,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "premises": "priority by mult*hits/cd; MP cost+2% regen/tick; no monster DEF in skill path",
+        "horizonMs": 60000,
+        "dps": 1270.22,
+        "skillsConsidered": [
+          "arq_rapido",
+          "arq_presa_pantera",
+          "arq_perfurante",
+          "arq_chuva",
+          "arq_armadilha_espinho"
+        ]
+      },
+      "ttkMob": {
+        "hits": 35.08,
+        "seconds": 14.74,
+        "avgHit": 190.4,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 11161.76,
+        "seconds": 4687.94,
+        "avgHit": 1.4,
+        "mitigation": 716,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 981818.2,
+      "goldPerHourAnalytical": 270122.1,
+      "zoneId": "floresta_amaldicoada",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 250,
+      "build": "dex_heavy",
+      "gear": "end",
+      "formula": "B",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 821,
+        "con": 442
+      },
+      "stats": {
+        "maxHp": 13798,
+        "attack": 965,
+        "defense": 1086,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 3124.76,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 6.35,
+        "seconds": 2.67,
+        "avgHit": 1051.3,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 44.83,
+        "seconds": 18.83,
+        "avgHit": 338.6,
+        "mitigation": 716,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 5420224.7,
+      "goldPerHourAnalytical": 1491236,
+      "zoneId": "floresta_amaldicoada",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 250,
+      "build": "dex_heavy",
+      "gear": "end",
+      "formula": "C",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 821,
+        "con": 442
+      },
+      "stats": {
+        "maxHp": 13798,
+        "attack": 1138,
+        "defense": 1086,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 3684.95,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 5.19,
+        "seconds": 2.18,
+        "avgHit": 1286.6,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 26.45,
+        "seconds": 11.11,
+        "avgHit": 573.9,
+        "mitigation": 716,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 6638532.1,
+      "goldPerHourAnalytical": 1826422,
+      "zoneId": "floresta_amaldicoada",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 250,
+      "build": "str_heavy",
+      "gear": "starter",
+      "formula": "A",
+      "attrs": {
+        "str": 816,
+        "int": 4,
+        "dex": 12,
+        "con": 442
+      },
+      "stats": {
+        "maxHp": 7778,
+        "attack": 1806,
+        "defense": 738,
+        "attackIntervalMs": 1331,
+        "critChance": 0.0425,
+        "source": "computeStats_motor"
+      },
+      "dpsBasicAnalytical": 1403.01,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "premises": "priority by mult*hits/cd; MP cost+2% regen/tick; no monster DEF in skill path",
+        "horizonMs": 60000,
+        "dps": 2184.67,
+        "skillsConsidered": [
+          "arq_rapido",
+          "arq_presa_pantera",
+          "arq_perfurante",
+          "arq_chuva",
+          "arq_armadilha_espinho"
+        ]
+      },
+      "ttkMob": {
+        "hits": 4,
+        "seconds": 5.33,
+        "avgHit": 1668.9,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 13.47,
+        "seconds": 17.93,
+        "avgHit": 1127.1,
+        "mitigation": 716,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 2715197,
+      "goldPerHourAnalytical": 747016.9,
+      "zoneId": "floresta_amaldicoada",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 250,
+      "build": "str_heavy",
+      "gear": "starter",
+      "formula": "B",
+      "attrs": {
+        "str": 816,
+        "int": 4,
+        "dex": 12,
+        "con": 442
+      },
+      "stats": {
+        "maxHp": 7778,
+        "attack": 1815,
+        "defense": 738,
+        "attackIntervalMs": 1331,
+        "critChance": 0.0425,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 1410,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 3.98,
+        "seconds": 5.3,
+        "avgHit": 1678.2,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 13.36,
+        "seconds": 17.78,
+        "avgHit": 1136.4,
+        "mitigation": 716,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 2730566,
+      "goldPerHourAnalytical": 751245.3,
+      "zoneId": "floresta_amaldicoada",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 250,
+      "build": "str_heavy",
+      "gear": "starter",
+      "formula": "C",
+      "attrs": {
+        "str": 816,
+        "int": 4,
+        "dex": 12,
+        "con": 442
+      },
+      "stats": {
+        "maxHp": 7778,
+        "attack": 1010,
+        "defense": 738,
+        "attackIntervalMs": 1331,
+        "critChance": 0.0425,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 784.63,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 7.9,
+        "seconds": 10.51,
+        "avgHit": 845.8,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 49.93,
+        "seconds": 66.46,
+        "avgHit": 304,
+        "mitigation": 716,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 1376974.3,
+      "goldPerHourAnalytical": 378839.2,
+      "zoneId": "floresta_amaldicoada",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 250,
+      "build": "str_heavy",
+      "gear": "mid",
+      "formula": "A",
+      "attrs": {
+        "str": 816,
+        "int": 4,
+        "dex": 12,
+        "con": 442
+      },
+      "stats": {
+        "maxHp": 10886,
+        "attack": 1960,
+        "defense": 1022,
+        "attackIntervalMs": 736,
+        "critChance": 0.255,
+        "source": "computeStats_motor"
+      },
+      "dpsBasicAnalytical": 3206.3,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "premises": "priority by mult*hits/cd; MP cost+2% regen/tick; no monster DEF in skill path",
+        "horizonMs": 60000,
+        "dps": 4241.81,
+        "skillsConsidered": [
+          "arq_rapido",
+          "arq_presa_pantera",
+          "arq_perfurante",
+          "arq_chuva",
+          "arq_armadilha_espinho"
+        ]
+      },
+      "ttkMob": {
+        "hits": 3.14,
+        "seconds": 2.31,
+        "avgHit": 2128.7,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 10.14,
+        "seconds": 7.46,
+        "avgHit": 1497.8,
+        "mitigation": 716,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 6264935.1,
+      "goldPerHourAnalytical": 1723636.4,
+      "zoneId": "floresta_amaldicoada",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 250,
+      "build": "str_heavy",
+      "gear": "mid",
+      "formula": "B",
+      "attrs": {
+        "str": 816,
+        "int": 4,
+        "dex": 12,
+        "con": 442
+      },
+      "stats": {
+        "maxHp": 10886,
+        "attack": 1969,
+        "defense": 1022,
+        "attackIntervalMs": 736,
+        "critChance": 0.255,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 3221.03,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 3.12,
+        "seconds": 2.3,
+        "avgHit": 2139.5,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 10.06,
+        "seconds": 7.41,
+        "avgHit": 1508.6,
+        "mitigation": 716,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 6292173.9,
+      "goldPerHourAnalytical": 1731130.4,
+      "zoneId": "floresta_amaldicoada",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 250,
+      "build": "str_heavy",
+      "gear": "mid",
+      "formula": "C",
+      "attrs": {
+        "str": 816,
+        "int": 4,
+        "dex": 12,
+        "con": 442
+      },
+      "stats": {
+        "maxHp": 10886,
+        "attack": 1164,
+        "defense": 1022,
+        "attackIntervalMs": 736,
+        "critChance": 0.255,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 1904.15,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 5.71,
+        "seconds": 4.2,
+        "avgHit": 1170.3,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 28.14,
+        "seconds": 20.71,
+        "avgHit": 539.4,
+        "mitigation": 716,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 3445714.3,
+      "goldPerHourAnalytical": 948000,
+      "zoneId": "floresta_amaldicoada",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 250,
+      "build": "str_heavy",
+      "gear": "end",
+      "formula": "A",
+      "attrs": {
+        "str": 816,
+        "int": 4,
+        "dex": 12,
+        "con": 442
+      },
+      "stats": {
+        "maxHp": 13798,
+        "attack": 2111,
+        "defense": 1289,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "computeStats_motor"
+      },
+      "dpsBasicAnalytical": 6835.62,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "premises": "priority by mult*hits/cd; MP cost+2% regen/tick; no monster DEF in skill path",
+        "horizonMs": 60000,
+        "dps": 8078.81,
+        "skillsConsidered": [
+          "arq_rapido",
+          "arq_presa_pantera",
+          "arq_perfurante",
+          "arq_chuva",
+          "arq_armadilha_espinho"
+        ]
+      },
+      "ttkMob": {
+        "hits": 2.56,
+        "seconds": 1.08,
+        "avgHit": 2609.8,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 8,
+        "seconds": 3.36,
+        "avgHit": 1897.2,
+        "mitigation": 716,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 13400000,
+      "goldPerHourAnalytical": 3686666.7,
+      "zoneId": "floresta_amaldicoada",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 250,
+      "build": "str_heavy",
+      "gear": "end",
+      "formula": "B",
+      "attrs": {
+        "str": 816,
+        "int": 4,
+        "dex": 12,
+        "con": 442
+      },
+      "stats": {
+        "maxHp": 13798,
+        "attack": 2120,
+        "defense": 1289,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 6864.76,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 2.55,
+        "seconds": 1.07,
+        "avgHit": 2622.1,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 7.95,
+        "seconds": 3.34,
+        "avgHit": 1909.4,
+        "mitigation": 716,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 13525233.6,
+      "goldPerHourAnalytical": 3721121.5,
+      "zoneId": "floresta_amaldicoada",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 250,
+      "build": "str_heavy",
+      "gear": "end",
+      "formula": "C",
+      "attrs": {
+        "str": 816,
+        "int": 4,
+        "dex": 12,
+        "con": 442
+      },
+      "stats": {
+        "maxHp": 13798,
+        "attack": 1315,
+        "defense": 1289,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 4258.1,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 4.37,
+        "seconds": 1.84,
+        "avgHit": 1527.3,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 18.63,
+        "seconds": 7.83,
+        "avgHit": 814.6,
+        "mitigation": 716,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 7865217.4,
+      "goldPerHourAnalytical": 2163913,
+      "zoneId": "floresta_amaldicoada",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 250,
+      "build": "hybrid",
+      "gear": "starter",
+      "formula": "A",
+      "attrs": {
+        "str": 505,
+        "int": 4,
+        "dex": 447,
+        "con": 318
+      },
+      "stats": {
+        "maxHp": 6042,
+        "attack": 1121,
+        "defense": 511,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "computeStats_motor"
+      },
+      "dpsBasicAnalytical": 3629.9,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "premises": "priority by mult*hits/cd; MP cost+2% regen/tick; no monster DEF in skill path",
+        "horizonMs": 60000,
+        "dps": 4289.62,
+        "skillsConsidered": [
+          "arq_rapido",
+          "arq_presa_pantera",
+          "arq_perfurante",
+          "arq_chuva",
+          "arq_armadilha_espinho"
+        ]
+      },
+      "ttkMob": {
+        "hits": 5.29,
+        "seconds": 2.22,
+        "avgHit": 1263.4,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 27.56,
+        "seconds": 11.58,
+        "avgHit": 550.8,
+        "mitigation": 716,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 6518918.9,
+      "goldPerHourAnalytical": 1793513.5,
+      "zoneId": "floresta_amaldicoada",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 250,
+      "build": "hybrid",
+      "gear": "starter",
+      "formula": "B",
+      "attrs": {
+        "str": 505,
+        "int": 4,
+        "dex": 447,
+        "con": 318
+      },
+      "stats": {
+        "maxHp": 6042,
+        "attack": 1465,
+        "defense": 511,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 4743.81,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 3.86,
+        "seconds": 1.62,
+        "avgHit": 1731.3,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 14.9,
+        "seconds": 6.26,
+        "avgHit": 1018.6,
+        "mitigation": 716,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 8933333.3,
+      "goldPerHourAnalytical": 2457777.8,
+      "zoneId": "floresta_amaldicoada",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 250,
+      "build": "hybrid",
+      "gear": "starter",
+      "formula": "C",
+      "attrs": {
+        "str": 505,
+        "int": 4,
+        "dex": 447,
+        "con": 318
+      },
+      "stats": {
+        "maxHp": 6042,
+        "attack": 1064,
+        "defense": 511,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 3445.33,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 5.63,
+        "seconds": 2.37,
+        "avgHit": 1185.9,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 32.07,
+        "seconds": 13.47,
+        "avgHit": 473.3,
+        "mitigation": 716,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 6106329.1,
+      "goldPerHourAnalytical": 1680000,
+      "zoneId": "floresta_amaldicoada",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 250,
+      "build": "hybrid",
+      "gear": "mid",
+      "formula": "A",
+      "attrs": {
+        "str": 505,
+        "int": 4,
+        "dex": 447,
+        "con": 318
+      },
+      "stats": {
+        "maxHp": 9150,
+        "attack": 1275,
+        "defense": 795,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "computeStats_motor"
+      },
+      "dpsBasicAnalytical": 4128.57,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "premises": "priority by mult*hits/cd; MP cost+2% regen/tick; no monster DEF in skill path",
+        "horizonMs": 60000,
+        "dps": 4879.18,
+        "skillsConsidered": [
+          "arq_rapido",
+          "arq_presa_pantera",
+          "arq_perfurante",
+          "arq_chuva",
+          "arq_armadilha_espinho"
+        ]
+      },
+      "ttkMob": {
+        "hits": 4.54,
+        "seconds": 1.9,
+        "avgHit": 1472.9,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 19.97,
+        "seconds": 8.39,
+        "avgHit": 760.2,
+        "mitigation": 716,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 7616842.1,
+      "goldPerHourAnalytical": 2095578.9,
+      "zoneId": "floresta_amaldicoada",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 250,
+      "build": "hybrid",
+      "gear": "mid",
+      "formula": "B",
+      "attrs": {
+        "str": 505,
+        "int": 4,
+        "dex": 447,
+        "con": 318
+      },
+      "stats": {
+        "maxHp": 9150,
+        "attack": 1619,
+        "defense": 795,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 5242.48,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 3.44,
+        "seconds": 1.45,
+        "avgHit": 1940.7,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 12.36,
+        "seconds": 5.19,
+        "avgHit": 1228.1,
+        "mitigation": 716,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 9980689.7,
+      "goldPerHourAnalytical": 2745931,
+      "zoneId": "floresta_amaldicoada",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 250,
+      "build": "hybrid",
+      "gear": "mid",
+      "formula": "C",
+      "attrs": {
+        "str": 505,
+        "int": 4,
+        "dex": 447,
+        "con": 318
+      },
+      "stats": {
+        "maxHp": 9150,
+        "attack": 1218,
+        "defense": 795,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 3944,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 4.79,
+        "seconds": 2.01,
+        "avgHit": 1395.4,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 22.23,
+        "seconds": 9.34,
+        "avgHit": 682.7,
+        "mitigation": 716,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 7200000,
+      "goldPerHourAnalytical": 1980895.5,
+      "zoneId": "floresta_amaldicoada",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 250,
+      "build": "hybrid",
+      "gear": "end",
+      "formula": "A",
+      "attrs": {
+        "str": 505,
+        "int": 4,
+        "dex": 447,
+        "con": 318
+      },
+      "stats": {
+        "maxHp": 12062,
+        "attack": 1427,
+        "defense": 1062,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "computeStats_motor"
+      },
+      "dpsBasicAnalytical": 4620.76,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "premises": "priority by mult*hits/cd; MP cost+2% regen/tick; no monster DEF in skill path",
+        "horizonMs": 60000,
+        "dps": 5460.74,
+        "skillsConsidered": [
+          "arq_rapido",
+          "arq_presa_pantera",
+          "arq_perfurante",
+          "arq_chuva",
+          "arq_armadilha_espinho"
+        ]
+      },
+      "ttkMob": {
+        "hits": 3.98,
+        "seconds": 1.67,
+        "avgHit": 1679.6,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 15.7,
+        "seconds": 6.59,
+        "avgHit": 967,
+        "mitigation": 716,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 8665868.3,
+      "goldPerHourAnalytical": 2384191.6,
+      "zoneId": "floresta_amaldicoada",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 250,
+      "build": "hybrid",
+      "gear": "end",
+      "formula": "B",
+      "attrs": {
+        "str": 505,
+        "int": 4,
+        "dex": 447,
+        "con": 318
+      },
+      "stats": {
+        "maxHp": 12062,
+        "attack": 1771,
+        "defense": 1062,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 5734.67,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 3.11,
+        "seconds": 1.31,
+        "avgHit": 2147.4,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 10.58,
+        "seconds": 4.44,
+        "avgHit": 1434.8,
+        "mitigation": 716,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 11047328.2,
+      "goldPerHourAnalytical": 3039389.3,
+      "zoneId": "floresta_amaldicoada",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 250,
+      "build": "hybrid",
+      "gear": "end",
+      "formula": "C",
+      "attrs": {
+        "str": 505,
+        "int": 4,
+        "dex": 447,
+        "con": 318
+      },
+      "stats": {
+        "maxHp": 12062,
+        "attack": 1370,
+        "defense": 1062,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 4436.19,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 4.17,
+        "seconds": 1.75,
+        "avgHit": 1602.1,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 17.07,
+        "seconds": 7.17,
+        "avgHit": 889.4,
+        "mitigation": 716,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 8269714.3,
+      "goldPerHourAnalytical": 2275200,
+      "zoneId": "floresta_amaldicoada",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 250,
+      "build": "under_caps",
+      "gear": "starter",
+      "formula": "A",
+      "attrs": {
+        "str": 567,
+        "int": 4,
+        "dex": 385,
+        "con": 318
+      },
+      "stats": {
+        "maxHp": 6042,
+        "attack": 1258,
+        "defense": 527,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "computeStats_motor"
+      },
+      "dpsBasicAnalytical": 4073.52,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "premises": "priority by mult*hits/cd; MP cost+2% regen/tick; no monster DEF in skill path",
+        "horizonMs": 60000,
+        "dps": 4814.24,
+        "skillsConsidered": [
+          "arq_rapido",
+          "arq_presa_pantera",
+          "arq_perfurante",
+          "arq_chuva",
+          "arq_armadilha_espinho"
+        ]
+      },
+      "ttkMob": {
+        "hits": 4.61,
+        "seconds": 1.94,
+        "avgHit": 1449.8,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 20.59,
+        "seconds": 8.65,
+        "avgHit": 737.1,
+        "mitigation": 716,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 7459793.8,
+      "goldPerHourAnalytical": 2052371.1,
+      "zoneId": "floresta_amaldicoada",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 250,
+      "build": "under_caps",
+      "gear": "starter",
+      "formula": "B",
+      "attrs": {
+        "str": 567,
+        "int": 4,
+        "dex": 385,
+        "con": 318
+      },
+      "stats": {
+        "maxHp": 6042,
+        "attack": 1555,
+        "defense": 527,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 5035.24,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 3.6,
+        "seconds": 1.51,
+        "avgHit": 1853.7,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 13.3,
+        "seconds": 5.59,
+        "avgHit": 1141,
+        "mitigation": 716,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 9584106,
+      "goldPerHourAnalytical": 2636821.2,
+      "zoneId": "floresta_amaldicoada",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 250,
+      "build": "under_caps",
+      "gear": "starter",
+      "formula": "C",
+      "attrs": {
+        "str": 567,
+        "int": 4,
+        "dex": 385,
+        "con": 318
+      },
+      "stats": {
+        "maxHp": 6042,
+        "attack": 1078,
+        "defense": 527,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 3490.67,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 5.54,
+        "seconds": 2.33,
+        "avgHit": 1205,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 30.83,
+        "seconds": 12.95,
+        "avgHit": 492.3,
+        "mitigation": 716,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 6211158.8,
+      "goldPerHourAnalytical": 1708841.2,
+      "zoneId": "floresta_amaldicoada",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 250,
+      "build": "under_caps",
+      "gear": "mid",
+      "formula": "A",
+      "attrs": {
+        "str": 567,
+        "int": 4,
+        "dex": 385,
+        "con": 318
+      },
+      "stats": {
+        "maxHp": 9150,
+        "attack": 1412,
+        "defense": 811,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "computeStats_motor"
+      },
+      "dpsBasicAnalytical": 4572.19,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "premises": "priority by mult*hits/cd; MP cost+2% regen/tick; no monster DEF in skill path",
+        "horizonMs": 60000,
+        "dps": 5403.67,
+        "skillsConsidered": [
+          "arq_rapido",
+          "arq_presa_pantera",
+          "arq_perfurante",
+          "arq_chuva",
+          "arq_armadilha_espinho"
+        ]
+      },
+      "ttkMob": {
+        "hits": 4.03,
+        "seconds": 1.69,
+        "avgHit": 1659.2,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 16.04,
+        "seconds": 6.74,
+        "avgHit": 946.6,
+        "mitigation": 716,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 8563313.6,
+      "goldPerHourAnalytical": 2355976.3,
+      "zoneId": "floresta_amaldicoada",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 250,
+      "build": "under_caps",
+      "gear": "mid",
+      "formula": "B",
+      "attrs": {
+        "str": 567,
+        "int": 4,
+        "dex": 385,
+        "con": 318
+      },
+      "stats": {
+        "maxHp": 9150,
+        "attack": 1709,
+        "defense": 811,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 5533.9,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 3.24,
+        "seconds": 1.36,
+        "avgHit": 2063.1,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 11.24,
+        "seconds": 4.72,
+        "avgHit": 1350.5,
+        "mitigation": 716,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 10641176.5,
+      "goldPerHourAnalytical": 2927647.1,
+      "zoneId": "floresta_amaldicoada",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 250,
+      "build": "under_caps",
+      "gear": "mid",
+      "formula": "C",
+      "attrs": {
+        "str": 567,
+        "int": 4,
+        "dex": 385,
+        "con": 318
+      },
+      "stats": {
+        "maxHp": 9150,
+        "attack": 1232,
+        "defense": 811,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 3989.33,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 4.72,
+        "seconds": 1.98,
+        "avgHit": 1414.4,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 21.63,
+        "seconds": 9.09,
+        "avgHit": 701.8,
+        "mitigation": 716,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 7309090.9,
+      "goldPerHourAnalytical": 2010909.1,
+      "zoneId": "floresta_amaldicoada",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 250,
+      "build": "under_caps",
+      "gear": "end",
+      "formula": "A",
+      "attrs": {
+        "str": 567,
+        "int": 4,
+        "dex": 385,
+        "con": 318
+      },
+      "stats": {
+        "maxHp": 12062,
+        "attack": 1564,
+        "defense": 1078,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "computeStats_motor"
+      },
+      "dpsBasicAnalytical": 5064.38,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "premises": "priority by mult*hits/cd; MP cost+2% regen/tick; no monster DEF in skill path",
+        "horizonMs": 60000,
+        "dps": 5985.22,
+        "skillsConsidered": [
+          "arq_rapido",
+          "arq_presa_pantera",
+          "arq_perfurante",
+          "arq_chuva",
+          "arq_armadilha_espinho"
+        ]
+      },
+      "ttkMob": {
+        "hits": 3.58,
+        "seconds": 1.5,
+        "avgHit": 1865.9,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 13.16,
+        "seconds": 5.53,
+        "avgHit": 1153.3,
+        "mitigation": 716,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 9648000,
+      "goldPerHourAnalytical": 2654400,
+      "zoneId": "floresta_amaldicoada",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 250,
+      "build": "under_caps",
+      "gear": "end",
+      "formula": "B",
+      "attrs": {
+        "str": 567,
+        "int": 4,
+        "dex": 385,
+        "con": 318
+      },
+      "stats": {
+        "maxHp": 12062,
+        "attack": 1861,
+        "defense": 1078,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 6026.1,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 2.94,
+        "seconds": 1.24,
+        "avgHit": 2269.8,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 9.75,
+        "seconds": 4.09,
+        "avgHit": 1557.2,
+        "mitigation": 716,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 11670967.7,
+      "goldPerHourAnalytical": 3210967.7,
+      "zoneId": "floresta_amaldicoada",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 250,
+      "build": "under_caps",
+      "gear": "end",
+      "formula": "C",
+      "attrs": {
+        "str": 567,
+        "int": 4,
+        "dex": 385,
+        "con": 318
+      },
+      "stats": {
+        "maxHp": 12062,
+        "attack": 1384,
+        "defense": 1078,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 4481.52,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 4.12,
+        "seconds": 1.73,
+        "avgHit": 1621.1,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 16.71,
+        "seconds": 7.02,
+        "avgHit": 908.5,
+        "mitigation": 716,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 8365317.9,
+      "goldPerHourAnalytical": 2301502.9,
+      "zoneId": "floresta_amaldicoada",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 250,
+      "build": "dex_overcap",
+      "gear": "starter",
+      "formula": "A",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 1132,
+        "con": 131
+      },
+      "stats": {
+        "maxHp": 3424,
+        "attack": 26,
+        "defense": 162,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "computeStats_motor"
+      },
+      "dpsBasicAnalytical": 84.19,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "premises": "priority by mult*hits/cd; MP cost+2% regen/tick; no monster DEF in skill path",
+        "horizonMs": 60000,
+        "dps": 99.23,
+        "skillsConsidered": [
+          "arq_rapido",
+          "arq_presa_pantera",
+          "arq_perfurante",
+          "arq_chuva",
+          "arq_armadilha_espinho"
+        ]
+      },
+      "ttkMob": {
+        "hits": 4911.76,
+        "seconds": 2062.94,
+        "avgHit": 1.4,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 11161.76,
+        "seconds": 4687.94,
+        "avgHit": 1.4,
+        "mitigation": 716,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 7015.2,
+      "goldPerHourAnalytical": 1930.1,
+      "zoneId": "floresta_amaldicoada",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 250,
+      "build": "dex_overcap",
+      "gear": "starter",
+      "formula": "B",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 1132,
+        "con": 131
+      },
+      "stats": {
+        "maxHp": 3424,
+        "attack": 898,
+        "defense": 162,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 2907.81,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 6.96,
+        "seconds": 2.92,
+        "avgHit": 960.2,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 61.33,
+        "seconds": 25.76,
+        "avgHit": 247.5,
+        "mitigation": 716,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 4956164.4,
+      "goldPerHourAnalytical": 1363561.6,
+      "zoneId": "floresta_amaldicoada",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 250,
+      "build": "dex_overcap",
+      "gear": "starter",
+      "formula": "C",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 1132,
+        "con": 131
+      },
+      "stats": {
+        "maxHp": 3424,
+        "attack": 1140,
+        "defense": 162,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 3691.43,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 5.18,
+        "seconds": 2.18,
+        "avgHit": 1289.3,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 26.32,
+        "seconds": 11.06,
+        "avgHit": 576.6,
+        "mitigation": 716,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 6638532.1,
+      "goldPerHourAnalytical": 1826422,
+      "zoneId": "floresta_amaldicoada",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 250,
+      "build": "dex_overcap",
+      "gear": "mid",
+      "formula": "A",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 1132,
+        "con": 131
+      },
+      "stats": {
+        "maxHp": 6532,
+        "attack": 180,
+        "defense": 446,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "computeStats_motor"
+      },
+      "dpsBasicAnalytical": 582.86,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "premises": "priority by mult*hits/cd; MP cost+2% regen/tick; no monster DEF in skill path",
+        "horizonMs": 60000,
+        "dps": 688.45,
+        "skillsConsidered": [
+          "arq_rapido",
+          "arq_presa_pantera",
+          "arq_perfurante",
+          "arq_chuva",
+          "arq_armadilha_espinho"
+        ]
+      },
+      "ttkMob": {
+        "hits": 4911.76,
+        "seconds": 2062.94,
+        "avgHit": 1.4,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 11161.76,
+        "seconds": 4687.94,
+        "avgHit": 1.4,
+        "mitigation": 716,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 7015.2,
+      "goldPerHourAnalytical": 1930.1,
+      "zoneId": "floresta_amaldicoada",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 250,
+      "build": "dex_overcap",
+      "gear": "mid",
+      "formula": "B",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 1132,
+        "con": 131
+      },
+      "stats": {
+        "maxHp": 6532,
+        "attack": 1052,
+        "defense": 446,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 3406.48,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 5.71,
+        "seconds": 2.4,
+        "avgHit": 1169.6,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 33.22,
+        "seconds": 13.95,
+        "avgHit": 457,
+        "mitigation": 716,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 6030000,
+      "goldPerHourAnalytical": 1659000,
+      "zoneId": "floresta_amaldicoada",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 250,
+      "build": "dex_overcap",
+      "gear": "mid",
+      "formula": "C",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 1132,
+        "con": 131
+      },
+      "stats": {
+        "maxHp": 6532,
+        "attack": 1294,
+        "defense": 446,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 4190.1,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 4.46,
+        "seconds": 1.87,
+        "avgHit": 1498.7,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 19.31,
+        "seconds": 8.11,
+        "avgHit": 786.1,
+        "mitigation": 716,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 7739037.4,
+      "goldPerHourAnalytical": 2129197.9,
+      "zoneId": "floresta_amaldicoada",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 250,
+      "build": "dex_overcap",
+      "gear": "end",
+      "formula": "A",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 1132,
+        "con": 131
+      },
+      "stats": {
+        "maxHp": 9444,
+        "attack": 332,
+        "defense": 713,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "computeStats_motor"
+      },
+      "dpsBasicAnalytical": 1075.05,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "premises": "priority by mult*hits/cd; MP cost+2% regen/tick; no monster DEF in skill path",
+        "horizonMs": 60000,
+        "dps": 1270.22,
+        "skillsConsidered": [
+          "arq_rapido",
+          "arq_presa_pantera",
+          "arq_perfurante",
+          "arq_chuva",
+          "arq_armadilha_espinho"
+        ]
+      },
+      "ttkMob": {
+        "hits": 35.08,
+        "seconds": 14.74,
+        "avgHit": 190.4,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 11161.76,
+        "seconds": 4687.94,
+        "avgHit": 1.4,
+        "mitigation": 716,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 981818.2,
+      "goldPerHourAnalytical": 270122.1,
+      "zoneId": "floresta_amaldicoada",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 250,
+      "build": "dex_overcap",
+      "gear": "end",
+      "formula": "B",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 1132,
+        "con": 131
+      },
+      "stats": {
+        "maxHp": 9444,
+        "attack": 1204,
+        "defense": 713,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 3898.67,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 4.85,
+        "seconds": 2.04,
+        "avgHit": 1376.3,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 22.87,
+        "seconds": 9.61,
+        "avgHit": 663.7,
+        "mitigation": 716,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 7094117.6,
+      "goldPerHourAnalytical": 1951764.7,
+      "zoneId": "floresta_amaldicoada",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 250,
+      "build": "dex_overcap",
+      "gear": "end",
+      "formula": "C",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 1132,
+        "con": 131
+      },
+      "stats": {
+        "maxHp": 9444,
+        "attack": 1446,
+        "defense": 713,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 4682.29,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 3.92,
+        "seconds": 1.65,
+        "avgHit": 1705.4,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 15.29,
+        "seconds": 6.42,
+        "avgHit": 992.8,
+        "mitigation": 716,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 8770909.1,
+      "goldPerHourAnalytical": 2413090.9,
+      "zoneId": "floresta_amaldicoada",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 500,
+      "build": "dex_heavy",
+      "gear": "starter",
+      "formula": "A",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 1633,
+        "con": 880
+      },
+      "stats": {
+        "maxHp": 15410,
+        "attack": 26,
+        "defense": 1061,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "computeStats_motor"
+      },
+      "dpsBasicAnalytical": 84.19,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "premises": "priority by mult*hits/cd; MP cost+2% regen/tick; no monster DEF in skill path",
+        "horizonMs": 60000,
+        "dps": 115,
+        "skillsConsidered": [
+          "arq_rapido",
+          "arq_presa_pantera",
+          "arq_perfurante",
+          "arq_arco_lunar",
+          "arq_espirito_lobo",
+          "arq_raio_solar",
+          "arq_chuva",
+          "arq_armadilha_espinho",
+          "arq_pedra_desenraizada"
+        ]
+      },
+      "ttkMob": {
+        "hits": 9602.94,
+        "seconds": 4033.24,
+        "avgHit": 1.4,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 21619.85,
+        "seconds": 9080.34,
+        "avgHit": 1.4,
+        "mitigation": 1408,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 7158.5,
+      "goldPerHourAnalytical": 1969,
+      "zoneId": "coracao_floresta",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 500,
+      "build": "dex_heavy",
+      "gear": "starter",
+      "formula": "B",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 1633,
+        "con": 880
+      },
+      "stats": {
+        "maxHp": 15410,
+        "attack": 1284,
+        "defense": 1061,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 4157.71,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 10.65,
+        "seconds": 4.47,
+        "avgHit": 1226.7,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 21619.85,
+        "seconds": 9080.34,
+        "avgHit": 1.4,
+        "mitigation": 1408,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 6459060.4,
+      "goldPerHourAnalytical": 1776644.3,
+      "zoneId": "coracao_floresta",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 500,
+      "build": "dex_heavy",
+      "gear": "starter",
+      "formula": "C",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 1633,
+        "con": 880
+      },
+      "stats": {
+        "maxHp": 15410,
+        "attack": 1636,
+        "defense": 1061,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 5297.52,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 7.66,
+        "seconds": 3.22,
+        "avgHit": 1705.4,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 94.82,
+        "seconds": 39.83,
+        "avgHit": 310.1,
+        "mitigation": 1408,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 8966459.6,
+      "goldPerHourAnalytical": 2466335.4,
+      "zoneId": "coracao_floresta",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 500,
+      "build": "dex_heavy",
+      "gear": "mid",
+      "formula": "A",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 1633,
+        "con": 880
+      },
+      "stats": {
+        "maxHp": 19330,
+        "attack": 222,
+        "defense": 1420,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "computeStats_motor"
+      },
+      "dpsBasicAnalytical": 718.86,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "premises": "priority by mult*hits/cd; MP cost+2% regen/tick; no monster DEF in skill path",
+        "horizonMs": 60000,
+        "dps": 984.91,
+        "skillsConsidered": [
+          "arq_rapido",
+          "arq_presa_pantera",
+          "arq_perfurante",
+          "arq_arco_lunar",
+          "arq_espirito_lobo",
+          "arq_raio_solar",
+          "arq_chuva",
+          "arq_armadilha_espinho",
+          "arq_pedra_desenraizada"
+        ]
+      },
+      "ttkMob": {
+        "hits": 9602.94,
+        "seconds": 4033.24,
+        "avgHit": 1.4,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 21619.85,
+        "seconds": 9080.34,
+        "avgHit": 1.4,
+        "mitigation": 1408,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 7158.5,
+      "goldPerHourAnalytical": 1969,
+      "zoneId": "coracao_floresta",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 500,
+      "build": "dex_heavy",
+      "gear": "mid",
+      "formula": "B",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 1633,
+        "con": 880
+      },
+      "stats": {
+        "maxHp": 19330,
+        "attack": 1480,
+        "defense": 1420,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 4792.38,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 8.75,
+        "seconds": 3.67,
+        "avgHit": 1493.3,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 300.28,
+        "seconds": 126.12,
+        "avgHit": 97.9,
+        "mitigation": 1408,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 7867030,
+      "goldPerHourAnalytical": 2163923.7,
+      "zoneId": "coracao_floresta",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 500,
+      "build": "dex_heavy",
+      "gear": "mid",
+      "formula": "C",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 1633,
+        "con": 880
+      },
+      "stats": {
+        "maxHp": 19330,
+        "attack": 1832,
+        "defense": 1420,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 5932.19,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 6.62,
+        "seconds": 2.78,
+        "avgHit": 1972,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 50.99,
+        "seconds": 21.42,
+        "avgHit": 576.6,
+        "mitigation": 1408,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 10385611.5,
+      "goldPerHourAnalytical": 2856690.6,
+      "zoneId": "coracao_floresta",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 500,
+      "build": "dex_heavy",
+      "gear": "end",
+      "formula": "A",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 1633,
+        "con": 880
+      },
+      "stats": {
+        "maxHp": 21430,
+        "attack": 332,
+        "defense": 1612,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "computeStats_motor"
+      },
+      "dpsBasicAnalytical": 1075.05,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "premises": "priority by mult*hits/cd; MP cost+2% regen/tick; no monster DEF in skill path",
+        "horizonMs": 60000,
+        "dps": 1473.27,
+        "skillsConsidered": [
+          "arq_rapido",
+          "arq_presa_pantera",
+          "arq_perfurante",
+          "arq_arco_lunar",
+          "arq_espirito_lobo",
+          "arq_raio_solar",
+          "arq_chuva",
+          "arq_armadilha_espinho",
+          "arq_pedra_desenraizada"
+        ]
+      },
+      "ttkMob": {
+        "hits": 9602.94,
+        "seconds": 4033.24,
+        "avgHit": 1.4,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 21619.85,
+        "seconds": 9080.34,
+        "avgHit": 1.4,
+        "mitigation": 1408,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 7158.5,
+      "goldPerHourAnalytical": 1969,
+      "zoneId": "coracao_floresta",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 500,
+      "build": "dex_heavy",
+      "gear": "end",
+      "formula": "B",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 1633,
+        "con": 880
+      },
+      "stats": {
+        "maxHp": 21430,
+        "attack": 1590,
+        "defense": 1612,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 5148.57,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 7.95,
+        "seconds": 3.34,
+        "avgHit": 1642.9,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 118.79,
+        "seconds": 49.89,
+        "avgHit": 247.5,
+        "mitigation": 1408,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 8644311.4,
+      "goldPerHourAnalytical": 2377724.6,
+      "zoneId": "coracao_floresta",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 500,
+      "build": "dex_heavy",
+      "gear": "end",
+      "formula": "C",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 1633,
+        "con": 880
+      },
+      "stats": {
+        "maxHp": 21430,
+        "attack": 1942,
+        "defense": 1612,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 6288.38,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 6.16,
+        "seconds": 2.59,
+        "avgHit": 2121.6,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 40.49,
+        "seconds": 17,
+        "avgHit": 726.2,
+        "mitigation": 1408,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 11147490.3,
+      "goldPerHourAnalytical": 3066254.8,
+      "zoneId": "coracao_floresta",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 500,
+      "build": "str_heavy",
+      "gear": "starter",
+      "formula": "A",
+      "attrs": {
+        "str": 1628,
+        "int": 4,
+        "dex": 12,
+        "con": 880
+      },
+      "stats": {
+        "maxHp": 15410,
+        "attack": 3592,
+        "defense": 1467,
+        "attackIntervalMs": 1331,
+        "critChance": 0.0425,
+        "source": "computeStats_motor"
+      },
+      "dpsBasicAnalytical": 2790.48,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "premises": "priority by mult*hits/cd; MP cost+2% regen/tick; no monster DEF in skill path",
+        "horizonMs": 60000,
+        "dps": 5531.92,
+        "skillsConsidered": [
+          "arq_rapido",
+          "arq_presa_pantera",
+          "arq_perfurante",
+          "arq_arco_lunar",
+          "arq_espirito_lobo",
+          "arq_raio_solar",
+          "arq_chuva",
+          "arq_armadilha_espinho",
+          "arq_pedra_desenraizada"
+        ]
+      },
+      "ttkMob": {
+        "hits": 3.93,
+        "seconds": 5.24,
+        "avgHit": 3319.1,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 13.02,
+        "seconds": 17.33,
+        "avgHit": 2258.3,
+        "mitigation": 1408,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 5509923.7,
+      "goldPerHourAnalytical": 1515572.5,
+      "zoneId": "coracao_floresta",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 500,
+      "build": "str_heavy",
+      "gear": "starter",
+      "formula": "B",
+      "attrs": {
+        "str": 1628,
+        "int": 4,
+        "dex": 12,
+        "con": 880
+      },
+      "stats": {
+        "maxHp": 15410,
+        "attack": 3601,
+        "defense": 1467,
+        "attackIntervalMs": 1331,
+        "critChance": 0.0425,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 2797.47,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 3.92,
+        "seconds": 5.22,
+        "avgHit": 3328.4,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 12.97,
+        "seconds": 17.26,
+        "avgHit": 2267.6,
+        "mitigation": 1408,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 5531034.5,
+      "goldPerHourAnalytical": 1521379.3,
+      "zoneId": "coracao_floresta",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 500,
+      "build": "str_heavy",
+      "gear": "starter",
+      "formula": "C",
+      "attrs": {
+        "str": 1628,
+        "int": 4,
+        "dex": 12,
+        "con": 880
+      },
+      "stats": {
+        "maxHp": 15410,
+        "attack": 1992,
+        "defense": 1467,
+        "attackIntervalMs": 1331,
+        "critChance": 0.0425,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 1547.5,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 7.85,
+        "seconds": 10.44,
+        "avgHit": 1664.7,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 48.69,
+        "seconds": 64.81,
+        "avgHit": 603.9,
+        "mitigation": 1408,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 2765517.2,
+      "goldPerHourAnalytical": 760689.7,
+      "zoneId": "coracao_floresta",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 500,
+      "build": "str_heavy",
+      "gear": "mid",
+      "formula": "A",
+      "attrs": {
+        "str": 1628,
+        "int": 4,
+        "dex": 12,
+        "con": 880
+      },
+      "stats": {
+        "maxHp": 19330,
+        "attack": 3788,
+        "defense": 1825,
+        "attackIntervalMs": 498,
+        "critChance": 0.34,
+        "source": "computeStats_motor"
+      },
+      "dpsBasicAnalytical": 9675.37,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "premises": "priority by mult*hits/cd; MP cost+2% regen/tick; no monster DEF in skill path",
+        "horizonMs": 60000,
+        "dps": 13936.28,
+        "skillsConsidered": [
+          "arq_rapido",
+          "arq_presa_pantera",
+          "arq_perfurante",
+          "arq_arco_lunar",
+          "arq_espirito_lobo",
+          "arq_raio_solar",
+          "arq_chuva",
+          "arq_armadilha_espinho",
+          "arq_pedra_desenraizada"
+        ]
+      },
+      "ttkMob": {
+        "hits": 3.01,
+        "seconds": 1.5,
+        "avgHit": 4332.4,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 9.71,
+        "seconds": 4.84,
+        "avgHit": 3027.4,
+        "mitigation": 1408,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 19248000,
+      "goldPerHourAnalytical": 5294400,
+      "zoneId": "coracao_floresta",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 500,
+      "build": "str_heavy",
+      "gear": "mid",
+      "formula": "B",
+      "attrs": {
+        "str": 1628,
+        "int": 4,
+        "dex": 12,
+        "con": 880
+      },
+      "stats": {
+        "maxHp": 19330,
+        "attack": 3797,
+        "defense": 1825,
+        "attackIntervalMs": 498,
+        "critChance": 0.34,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 9698.36,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 3.01,
+        "seconds": 1.5,
+        "avgHit": 4343.9,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 9.68,
+        "seconds": 4.82,
+        "avgHit": 3038.8,
+        "mitigation": 1408,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 19248000,
+      "goldPerHourAnalytical": 5294400,
+      "zoneId": "coracao_floresta",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 500,
+      "build": "str_heavy",
+      "gear": "mid",
+      "formula": "C",
+      "attrs": {
+        "str": 1628,
+        "int": 4,
+        "dex": 12,
+        "con": 880
+      },
+      "stats": {
+        "maxHp": 19330,
+        "attack": 2188,
+        "defense": 1825,
+        "attackIntervalMs": 498,
+        "critChance": 0.34,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 5588.63,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 5.69,
+        "seconds": 2.83,
+        "avgHit": 2297.2,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 29.64,
+        "seconds": 14.76,
+        "avgHit": 992.2,
+        "mitigation": 1408,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 10202120.1,
+      "goldPerHourAnalytical": 2806219.1,
+      "zoneId": "coracao_floresta",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 500,
+      "build": "str_heavy",
+      "gear": "end",
+      "formula": "A",
+      "attrs": {
+        "str": 1628,
+        "int": 4,
+        "dex": 12,
+        "con": 880
+      },
+      "stats": {
+        "maxHp": 21430,
+        "attack": 3898,
+        "defense": 2017,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "computeStats_motor"
+      },
+      "dpsBasicAnalytical": 12622.1,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "premises": "priority by mult*hits/cd; MP cost+2% regen/tick; no monster DEF in skill path",
+        "horizonMs": 60000,
+        "dps": 17304.95,
+        "skillsConsidered": [
+          "arq_rapido",
+          "arq_presa_pantera",
+          "arq_perfurante",
+          "arq_arco_lunar",
+          "arq_espirito_lobo",
+          "arq_raio_solar",
+          "arq_chuva",
+          "arq_armadilha_espinho",
+          "arq_pedra_desenraizada"
+        ]
+      },
+      "ttkMob": {
+        "hits": 2.73,
+        "seconds": 1.15,
+        "avgHit": 4781.8,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 8.68,
+        "seconds": 3.65,
+        "avgHit": 3386.4,
+        "mitigation": 1408,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 25106087,
+      "goldPerHourAnalytical": 6905739.1,
+      "zoneId": "coracao_floresta",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 500,
+      "build": "str_heavy",
+      "gear": "end",
+      "formula": "B",
+      "attrs": {
+        "str": 1628,
+        "int": 4,
+        "dex": 12,
+        "con": 880
+      },
+      "stats": {
+        "maxHp": 21430,
+        "attack": 3907,
+        "defense": 2017,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 12651.24,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 2.72,
+        "seconds": 1.14,
+        "avgHit": 4794,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 8.65,
+        "seconds": 3.63,
+        "avgHit": 3398.6,
+        "mitigation": 1408,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 25326315.8,
+      "goldPerHourAnalytical": 6966315.8,
+      "zoneId": "coracao_floresta",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 500,
+      "build": "str_heavy",
+      "gear": "end",
+      "formula": "C",
+      "attrs": {
+        "str": 1628,
+        "int": 4,
+        "dex": 12,
+        "con": 880
+      },
+      "stats": {
+        "maxHp": 21430,
+        "attack": 2298,
+        "defense": 2017,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 7441.14,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 5.01,
+        "seconds": 2.11,
+        "avgHit": 2605.8,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 24.29,
+        "seconds": 10.2,
+        "avgHit": 1210.4,
+        "mitigation": 1408,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 13683412.3,
+      "goldPerHourAnalytical": 3763791.5,
+      "zoneId": "coracao_floresta",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 500,
+      "build": "hybrid",
+      "gear": "starter",
+      "formula": "A",
+      "attrs": {
+        "str": 1005,
+        "int": 4,
+        "dex": 885,
+        "con": 630
+      },
+      "stats": {
+        "maxHp": 11910,
+        "attack": 2221,
+        "defense": 1011,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "computeStats_motor"
+      },
+      "dpsBasicAnalytical": 7191.81,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "premises": "priority by mult*hits/cd; MP cost+2% regen/tick; no monster DEF in skill path",
+        "horizonMs": 60000,
+        "dps": 9859.56,
+        "skillsConsidered": [
+          "arq_rapido",
+          "arq_presa_pantera",
+          "arq_perfurante",
+          "arq_arco_lunar",
+          "arq_espirito_lobo",
+          "arq_raio_solar",
+          "arq_chuva",
+          "arq_armadilha_espinho",
+          "arq_pedra_desenraizada"
+        ]
+      },
+      "ttkMob": {
+        "hits": 5.22,
+        "seconds": 2.19,
+        "avgHit": 2501,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 26.59,
+        "seconds": 11.17,
+        "avgHit": 1105.7,
+        "mitigation": 1408,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 13183561.6,
+      "goldPerHourAnalytical": 3626301.4,
+      "zoneId": "coracao_floresta",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 500,
+      "build": "hybrid",
+      "gear": "starter",
+      "formula": "B",
+      "attrs": {
+        "str": 1005,
+        "int": 4,
+        "dex": 885,
+        "con": 630
+      },
+      "stats": {
+        "maxHp": 11910,
+        "attack": 2902,
+        "defense": 1011,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 9396.95,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 3.81,
+        "seconds": 1.6,
+        "avgHit": 3427.2,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 14.47,
+        "seconds": 6.08,
+        "avgHit": 2031.8,
+        "mitigation": 1408,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 18045000,
+      "goldPerHourAnalytical": 4963500,
+      "zoneId": "coracao_floresta",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 500,
+      "build": "hybrid",
+      "gear": "starter",
+      "formula": "C",
+      "attrs": {
+        "str": 1005,
+        "int": 4,
+        "dex": 885,
+        "con": 630
+      },
+      "stats": {
+        "maxHp": 11910,
+        "attack": 2102,
+        "defense": 1011,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 6806.48,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 5.58,
+        "seconds": 2.34,
+        "avgHit": 2339.2,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 31.15,
+        "seconds": 13.08,
+        "avgHit": 943.8,
+        "mitigation": 1408,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 12338461.5,
+      "goldPerHourAnalytical": 3393846.2,
+      "zoneId": "coracao_floresta",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 500,
+      "build": "hybrid",
+      "gear": "mid",
+      "formula": "A",
+      "attrs": {
+        "str": 1005,
+        "int": 4,
+        "dex": 885,
+        "con": 630
+      },
+      "stats": {
+        "maxHp": 15830,
+        "attack": 2417,
+        "defense": 1369,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "computeStats_motor"
+      },
+      "dpsBasicAnalytical": 7826.48,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "premises": "priority by mult*hits/cd; MP cost+2% regen/tick; no monster DEF in skill path",
+        "horizonMs": 60000,
+        "dps": 10729.75,
+        "skillsConsidered": [
+          "arq_rapido",
+          "arq_presa_pantera",
+          "arq_perfurante",
+          "arq_arco_lunar",
+          "arq_espirito_lobo",
+          "arq_raio_solar",
+          "arq_chuva",
+          "arq_armadilha_espinho",
+          "arq_pedra_desenraizada"
+        ]
+      },
+      "ttkMob": {
+        "hits": 4.72,
+        "seconds": 1.98,
+        "avgHit": 2767.6,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 21.43,
+        "seconds": 9,
+        "avgHit": 1372.2,
+        "mitigation": 1408,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 14581818.2,
+      "goldPerHourAnalytical": 4010909.1,
+      "zoneId": "coracao_floresta",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 500,
+      "build": "hybrid",
+      "gear": "mid",
+      "formula": "B",
+      "attrs": {
+        "str": 1005,
+        "int": 4,
+        "dex": 885,
+        "con": 630
+      },
+      "stats": {
+        "maxHp": 15830,
+        "attack": 3098,
+        "defense": 1369,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 10031.62,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 3.54,
+        "seconds": 1.48,
+        "avgHit": 3693.8,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 12.79,
+        "seconds": 5.37,
+        "avgHit": 2298.4,
+        "mitigation": 1408,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 19508108.1,
+      "goldPerHourAnalytical": 5365945.9,
+      "zoneId": "coracao_floresta",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 500,
+      "build": "hybrid",
+      "gear": "mid",
+      "formula": "C",
+      "attrs": {
+        "str": 1005,
+        "int": 4,
+        "dex": 885,
+        "con": 630
+      },
+      "stats": {
+        "maxHp": 15830,
+        "attack": 2298,
+        "defense": 1369,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 7441.14,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 5.01,
+        "seconds": 2.11,
+        "avgHit": 2605.8,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 24.29,
+        "seconds": 10.2,
+        "avgHit": 1210.4,
+        "mitigation": 1408,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 13683412.3,
+      "goldPerHourAnalytical": 3763791.5,
+      "zoneId": "coracao_floresta",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 500,
+      "build": "hybrid",
+      "gear": "end",
+      "formula": "A",
+      "attrs": {
+        "str": 1005,
+        "int": 4,
+        "dex": 885,
+        "con": 630
+      },
+      "stats": {
+        "maxHp": 17930,
+        "attack": 2527,
+        "defense": 1562,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "computeStats_motor"
+      },
+      "dpsBasicAnalytical": 8182.67,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "premises": "priority by mult*hits/cd; MP cost+2% regen/tick; no monster DEF in skill path",
+        "horizonMs": 60000,
+        "dps": 11217.97,
+        "skillsConsidered": [
+          "arq_rapido",
+          "arq_presa_pantera",
+          "arq_perfurante",
+          "arq_arco_lunar",
+          "arq_espirito_lobo",
+          "arq_raio_solar",
+          "arq_chuva",
+          "arq_armadilha_espinho",
+          "arq_pedra_desenraizada"
+        ]
+      },
+      "ttkMob": {
+        "hits": 4.48,
+        "seconds": 1.88,
+        "avgHit": 2917.2,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 19.32,
+        "seconds": 8.11,
+        "avgHit": 1521.8,
+        "mitigation": 1408,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 15357446.8,
+      "goldPerHourAnalytical": 4224255.3,
+      "zoneId": "coracao_floresta",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 500,
+      "build": "hybrid",
+      "gear": "end",
+      "formula": "B",
+      "attrs": {
+        "str": 1005,
+        "int": 4,
+        "dex": 885,
+        "con": 630
+      },
+      "stats": {
+        "maxHp": 17930,
+        "attack": 3208,
+        "defense": 1562,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 10387.81,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 3.4,
+        "seconds": 1.43,
+        "avgHit": 3843.4,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 12.01,
+        "seconds": 5.04,
+        "avgHit": 2448,
+        "mitigation": 1408,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 20190209.8,
+      "goldPerHourAnalytical": 5553566.4,
+      "zoneId": "coracao_floresta",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 500,
+      "build": "hybrid",
+      "gear": "end",
+      "formula": "C",
+      "attrs": {
+        "str": 1005,
+        "int": 4,
+        "dex": 885,
+        "con": 630
+      },
+      "stats": {
+        "maxHp": 17930,
+        "attack": 2408,
+        "defense": 1562,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 7797.33,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 4.74,
+        "seconds": 1.99,
+        "avgHit": 2755.4,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 21.62,
+        "seconds": 9.08,
+        "avgHit": 1360,
+        "mitigation": 1408,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 14508542.7,
+      "goldPerHourAnalytical": 3990753.8,
+      "zoneId": "coracao_floresta",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 500,
+      "build": "under_caps",
+      "gear": "starter",
+      "formula": "A",
+      "attrs": {
+        "str": 1129,
+        "int": 4,
+        "dex": 760,
+        "con": 631
+      },
+      "stats": {
+        "maxHp": 11924,
+        "attack": 2494,
+        "defense": 1043,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "computeStats_motor"
+      },
+      "dpsBasicAnalytical": 8075.81,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "premises": "priority by mult*hits/cd; MP cost+2% regen/tick; no monster DEF in skill path",
+        "horizonMs": 60000,
+        "dps": 11071.46,
+        "skillsConsidered": [
+          "arq_rapido",
+          "arq_presa_pantera",
+          "arq_perfurante",
+          "arq_arco_lunar",
+          "arq_espirito_lobo",
+          "arq_raio_solar",
+          "arq_chuva",
+          "arq_armadilha_espinho",
+          "arq_pedra_desenraizada"
+        ]
+      },
+      "ttkMob": {
+        "hits": 4.55,
+        "seconds": 1.91,
+        "avgHit": 2872.3,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 19.91,
+        "seconds": 8.36,
+        "avgHit": 1477,
+        "mitigation": 1408,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 15116230.4,
+      "goldPerHourAnalytical": 4157905.8,
+      "zoneId": "coracao_floresta",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 500,
+      "build": "under_caps",
+      "gear": "starter",
+      "formula": "B",
+      "attrs": {
+        "str": 1129,
+        "int": 4,
+        "dex": 760,
+        "con": 631
+      },
+      "stats": {
+        "maxHp": 11924,
+        "attack": 3079,
+        "defense": 1043,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 9970.1,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 3.56,
+        "seconds": 1.5,
+        "avgHit": 3667.9,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 12.94,
+        "seconds": 5.43,
+        "avgHit": 2272.6,
+        "mitigation": 1408,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 19248000,
+      "goldPerHourAnalytical": 5294400,
+      "zoneId": "coracao_floresta",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 500,
+      "build": "under_caps",
+      "gear": "starter",
+      "formula": "C",
+      "attrs": {
+        "str": 1129,
+        "int": 4,
+        "dex": 760,
+        "con": 631
+      },
+      "stats": {
+        "maxHp": 11924,
+        "attack": 2128,
+        "defense": 1043,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 6890.67,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 5.5,
+        "seconds": 2.31,
+        "avgHit": 2374.6,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 30.03,
+        "seconds": 12.61,
+        "avgHit": 979.2,
+        "mitigation": 1408,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 12498701.3,
+      "goldPerHourAnalytical": 3437922.1,
+      "zoneId": "coracao_floresta",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 500,
+      "build": "under_caps",
+      "gear": "mid",
+      "formula": "A",
+      "attrs": {
+        "str": 1129,
+        "int": 4,
+        "dex": 760,
+        "con": 631
+      },
+      "stats": {
+        "maxHp": 15844,
+        "attack": 2690,
+        "defense": 1401,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "computeStats_motor"
+      },
+      "dpsBasicAnalytical": 8710.48,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "premises": "priority by mult*hits/cd; MP cost+2% regen/tick; no monster DEF in skill path",
+        "horizonMs": 60000,
+        "dps": 11941.68,
+        "skillsConsidered": [
+          "arq_rapido",
+          "arq_presa_pantera",
+          "arq_perfurante",
+          "arq_arco_lunar",
+          "arq_espirito_lobo",
+          "arq_raio_solar",
+          "arq_chuva",
+          "arq_armadilha_espinho",
+          "arq_pedra_desenraizada"
+        ]
+      },
+      "ttkMob": {
+        "hits": 4.16,
+        "seconds": 1.75,
+        "avgHit": 3138.9,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 16.86,
+        "seconds": 7.08,
+        "avgHit": 1743.5,
+        "mitigation": 1408,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 16498285.7,
+      "goldPerHourAnalytical": 4538057.1,
+      "zoneId": "coracao_floresta",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 500,
+      "build": "under_caps",
+      "gear": "mid",
+      "formula": "B",
+      "attrs": {
+        "str": 1129,
+        "int": 4,
+        "dex": 760,
+        "con": 631
+      },
+      "stats": {
+        "maxHp": 15844,
+        "attack": 3275,
+        "defense": 1401,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 10604.76,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 3.32,
+        "seconds": 1.39,
+        "avgHit": 3934.5,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 11.58,
+        "seconds": 4.86,
+        "avgHit": 2539.1,
+        "mitigation": 1408,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 20771223,
+      "goldPerHourAnalytical": 5713381.3,
+      "zoneId": "coracao_floresta",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 500,
+      "build": "under_caps",
+      "gear": "mid",
+      "formula": "C",
+      "attrs": {
+        "str": 1129,
+        "int": 4,
+        "dex": 760,
+        "con": 631
+      },
+      "stats": {
+        "maxHp": 15844,
+        "attack": 2324,
+        "defense": 1401,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 7525.33,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 4.94,
+        "seconds": 2.08,
+        "avgHit": 2641.1,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 23.6,
+        "seconds": 9.91,
+        "avgHit": 1245.8,
+        "mitigation": 1408,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 13880769.2,
+      "goldPerHourAnalytical": 3818076.9,
+      "zoneId": "coracao_floresta",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 500,
+      "build": "under_caps",
+      "gear": "end",
+      "formula": "A",
+      "attrs": {
+        "str": 1129,
+        "int": 4,
+        "dex": 760,
+        "con": 631
+      },
+      "stats": {
+        "maxHp": 17944,
+        "attack": 2800,
+        "defense": 1594,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "computeStats_motor"
+      },
+      "dpsBasicAnalytical": 9066.67,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "premises": "priority by mult*hits/cd; MP cost+2% regen/tick; no monster DEF in skill path",
+        "horizonMs": 60000,
+        "dps": 12430.43,
+        "skillsConsidered": [
+          "arq_rapido",
+          "arq_presa_pantera",
+          "arq_perfurante",
+          "arq_arco_lunar",
+          "arq_espirito_lobo",
+          "arq_raio_solar",
+          "arq_chuva",
+          "arq_armadilha_espinho",
+          "arq_pedra_desenraizada"
+        ]
+      },
+      "ttkMob": {
+        "hits": 3.97,
+        "seconds": 1.67,
+        "avgHit": 3288.5,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 15.53,
+        "seconds": 6.52,
+        "avgHit": 1893.1,
+        "mitigation": 1408,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 17288622.8,
+      "goldPerHourAnalytical": 4755449.1,
+      "zoneId": "coracao_floresta",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 500,
+      "build": "under_caps",
+      "gear": "end",
+      "formula": "B",
+      "attrs": {
+        "str": 1129,
+        "int": 4,
+        "dex": 760,
+        "con": 631
+      },
+      "stats": {
+        "maxHp": 17944,
+        "attack": 3385,
+        "defense": 1594,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 10960.95,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 3.2,
+        "seconds": 1.34,
+        "avgHit": 4084.1,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 10.94,
+        "seconds": 4.59,
+        "avgHit": 2688.7,
+        "mitigation": 1408,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 21546268.7,
+      "goldPerHourAnalytical": 5926567.2,
+      "zoneId": "coracao_floresta",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 500,
+      "build": "under_caps",
+      "gear": "end",
+      "formula": "C",
+      "attrs": {
+        "str": 1129,
+        "int": 4,
+        "dex": 760,
+        "con": 631
+      },
+      "stats": {
+        "maxHp": 17944,
+        "attack": 2434,
+        "defense": 1594,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 7881.52,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 4.68,
+        "seconds": 1.97,
+        "avgHit": 2790.7,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 21.07,
+        "seconds": 8.85,
+        "avgHit": 1395.4,
+        "mitigation": 1408,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 14655837.6,
+      "goldPerHourAnalytical": 4031269,
+      "zoneId": "coracao_floresta",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 500,
+      "build": "dex_overcap",
+      "gear": "starter",
+      "formula": "A",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 2257,
+        "con": 256
+      },
+      "stats": {
+        "maxHp": 6674,
+        "attack": 26,
+        "defense": 312,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "computeStats_motor"
+      },
+      "dpsBasicAnalytical": 84.19,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "premises": "priority by mult*hits/cd; MP cost+2% regen/tick; no monster DEF in skill path",
+        "horizonMs": 60000,
+        "dps": 115,
+        "skillsConsidered": [
+          "arq_rapido",
+          "arq_presa_pantera",
+          "arq_perfurante",
+          "arq_arco_lunar",
+          "arq_espirito_lobo",
+          "arq_raio_solar",
+          "arq_chuva",
+          "arq_armadilha_espinho",
+          "arq_pedra_desenraizada"
+        ]
+      },
+      "ttkMob": {
+        "hits": 9602.94,
+        "seconds": 4033.24,
+        "avgHit": 1.4,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 21619.85,
+        "seconds": 9080.34,
+        "avgHit": 1.4,
+        "mitigation": 1408,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 7158.5,
+      "goldPerHourAnalytical": 1969,
+      "zoneId": "coracao_floresta",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 500,
+      "build": "dex_overcap",
+      "gear": "starter",
+      "formula": "B",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 2257,
+        "con": 256
+      },
+      "stats": {
+        "maxHp": 6674,
+        "attack": 1764,
+        "defense": 312,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 5712,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 6.95,
+        "seconds": 2.92,
+        "avgHit": 1879.5,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 60.73,
+        "seconds": 25.51,
+        "avgHit": 484.2,
+        "mitigation": 1408,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 9887671.2,
+      "goldPerHourAnalytical": 2719726,
+      "zoneId": "coracao_floresta",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 500,
+      "build": "dex_overcap",
+      "gear": "starter",
+      "formula": "C",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 2257,
+        "con": 256
+      },
+      "stats": {
+        "maxHp": 6674,
+        "attack": 2254,
+        "defense": 312,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 7298.67,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 5.13,
+        "seconds": 2.15,
+        "avgHit": 2545.9,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 25.56,
+        "seconds": 10.73,
+        "avgHit": 1150.6,
+        "mitigation": 1408,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 13428837.2,
+      "goldPerHourAnalytical": 3693767.4,
+      "zoneId": "coracao_floresta",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 500,
+      "build": "dex_overcap",
+      "gear": "mid",
+      "formula": "A",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 2257,
+        "con": 256
+      },
+      "stats": {
+        "maxHp": 10594,
+        "attack": 222,
+        "defense": 671,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "computeStats_motor"
+      },
+      "dpsBasicAnalytical": 718.86,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "premises": "priority by mult*hits/cd; MP cost+2% regen/tick; no monster DEF in skill path",
+        "horizonMs": 60000,
+        "dps": 984.91,
+        "skillsConsidered": [
+          "arq_rapido",
+          "arq_presa_pantera",
+          "arq_perfurante",
+          "arq_arco_lunar",
+          "arq_espirito_lobo",
+          "arq_raio_solar",
+          "arq_chuva",
+          "arq_armadilha_espinho",
+          "arq_pedra_desenraizada"
+        ]
+      },
+      "ttkMob": {
+        "hits": 9602.94,
+        "seconds": 4033.24,
+        "avgHit": 1.4,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 21619.85,
+        "seconds": 9080.34,
+        "avgHit": 1.4,
+        "mitigation": 1408,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 7158.5,
+      "goldPerHourAnalytical": 1969,
+      "zoneId": "coracao_floresta",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 500,
+      "build": "dex_overcap",
+      "gear": "mid",
+      "formula": "B",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 2257,
+        "con": 256
+      },
+      "stats": {
+        "maxHp": 10594,
+        "attack": 1960,
+        "defense": 671,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 6346.67,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 6.09,
+        "seconds": 2.56,
+        "avgHit": 2146.1,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 39.17,
+        "seconds": 16.45,
+        "avgHit": 750.7,
+        "mitigation": 1408,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 11278125,
+      "goldPerHourAnalytical": 3102187.5,
+      "zoneId": "coracao_floresta",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 500,
+      "build": "dex_overcap",
+      "gear": "mid",
+      "formula": "C",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 2257,
+        "con": 256
+      },
+      "stats": {
+        "maxHp": 10594,
+        "attack": 2450,
+        "defense": 671,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 7933.33,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 4.64,
+        "seconds": 1.95,
+        "avgHit": 2812.5,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 20.75,
+        "seconds": 8.71,
+        "avgHit": 1417.1,
+        "mitigation": 1408,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 14806153.8,
+      "goldPerHourAnalytical": 4072615.4,
+      "zoneId": "coracao_floresta",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 500,
+      "build": "dex_overcap",
+      "gear": "end",
+      "formula": "A",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 2257,
+        "con": 256
+      },
+      "stats": {
+        "maxHp": 12694,
+        "attack": 332,
+        "defense": 863,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "computeStats_motor"
+      },
+      "dpsBasicAnalytical": 1075.05,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "premises": "priority by mult*hits/cd; MP cost+2% regen/tick; no monster DEF in skill path",
+        "horizonMs": 60000,
+        "dps": 1473.27,
+        "skillsConsidered": [
+          "arq_rapido",
+          "arq_presa_pantera",
+          "arq_perfurante",
+          "arq_arco_lunar",
+          "arq_espirito_lobo",
+          "arq_raio_solar",
+          "arq_chuva",
+          "arq_armadilha_espinho",
+          "arq_pedra_desenraizada"
+        ]
+      },
+      "ttkMob": {
+        "hits": 9602.94,
+        "seconds": 4033.24,
+        "avgHit": 1.4,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 21619.85,
+        "seconds": 9080.34,
+        "avgHit": 1.4,
+        "mitigation": 1408,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 7158.5,
+      "goldPerHourAnalytical": 1969,
+      "zoneId": "coracao_floresta",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 500,
+      "build": "dex_overcap",
+      "gear": "end",
+      "formula": "B",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 2257,
+        "con": 256
+      },
+      "stats": {
+        "maxHp": 12694,
+        "attack": 2070,
+        "defense": 863,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 6702.86,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 5.69,
+        "seconds": 2.39,
+        "avgHit": 2295.7,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 32.66,
+        "seconds": 13.72,
+        "avgHit": 900.3,
+        "mitigation": 1408,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 12080334.7,
+      "goldPerHourAnalytical": 3322845.2,
+      "zoneId": "coracao_floresta",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    },
+    {
+      "level": 500,
+      "build": "dex_overcap",
+      "gear": "end",
+      "formula": "C",
+      "attrs": {
+        "str": 7,
+        "int": 4,
+        "dex": 2257,
+        "con": 256
+      },
+      "stats": {
+        "maxHp": 12694,
+        "attack": 2560,
+        "defense": 863,
+        "attackIntervalMs": 420,
+        "critChance": 0.45,
+        "source": "mirror_formula_attrs_plus_gearFlat_from_A"
+      },
+      "dpsBasicAnalytical": 8289.52,
+      "skillModel": {
+        "kind": "estimated_skill_model",
+        "note": "só sob A (motor)",
+        "dps": null
+      },
+      "ttkMob": {
+        "hits": 4.41,
+        "seconds": 1.85,
+        "avgHit": 2962.1,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkBoss": {
+        "hits": 18.77,
+        "seconds": 7.88,
+        "avgHit": 1566.7,
+        "mitigation": 1408,
+        "kind": "analytical_basic_attack"
+      },
+      "xpPerHourAnalytical": 15606486.5,
+      "goldPerHourAnalytical": 4292756.8,
+      "zoneId": "coracao_floresta",
+      "metricKinds": {
+        "dpsBasic": "analytical",
+        "skillDps": "estimated_skill_model",
+        "ttk": "analytical_basic_attack",
+        "xpGoldPerHour": "analytical_from_ttk"
+      }
+    }
+  ],
+  "ascension": {
+    "note": "attrs preservados pelo ritual; level→1; +20 unspent não redistribuídos nesta célula",
+    "attrsBefore": {
+      "str": 1628,
+      "int": 4,
+      "dex": 12,
+      "con": 880
+    },
+    "attrsAfter": {
+      "str": 1628,
+      "int": 4,
+      "dex": 12,
+      "con": 880
+    },
+    "attrsEqual": true,
+    "levelBefore": 500,
+    "levelAfter": 1,
+    "classification": "CELESTIAL",
+    "unspentAfter": 20,
+    "statsBefore": {
+      "attack": 3898,
+      "dps": 12622.1,
+      "maxHp": 21430
+    },
+    "statsAfterA": {
+      "attack": 3898,
+      "dps": 12622.1,
+      "maxHp": 18436
+    },
+    "formulasPostAscension": [
+      {
+        "formula": "A",
+        "attack": 3898,
+        "dpsBasicAnalytical": 12622.1,
+        "deltaAtkVsA": 0,
+        "deltaDpsVsA": 0
+      },
+      {
+        "formula": "B",
+        "attack": 3907,
+        "dpsBasicAnalytical": 12651.24,
+        "deltaAtkVsA": 9,
+        "deltaDpsVsA": 29.14
+      },
+      {
+        "formula": "C",
+        "attack": 2298,
+        "dpsBasicAnalytical": 7441.14,
+        "deltaAtkVsA": -1600,
+        "deltaDpsVsA": -5180.95
+      }
+    ]
+  },
+  "impactExisting": [
+    {
+      "level": 250,
+      "build": "str_heavy",
+      "gear": "mid_refine5",
+      "attackA": 1960,
+      "attackB": 1969,
+      "attackC": 1164,
+      "deltaAtkC_vs_A": -796,
+      "deltaAtkPctC_vs_A": -40.61,
+      "dpsA": 3206.3,
+      "dpsB": 3221.03,
+      "dpsC": 1904.15,
+      "ttkA": {
+        "hits": 3.14,
+        "seconds": 2.31,
+        "avgHit": 2128.7,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkC": {
+        "hits": 5.71,
+        "seconds": 4.2,
+        "avgHit": 1170.3,
+        "mitigation": 192,
+        "kind": "analytical_basic_attack"
+      },
+      "migrationNote": "C reduz ATK de builds STR-heavy — reset/redistribuição para DEX mitigaria, mas exige decisão de produto"
+    },
+    {
+      "level": 500,
+      "build": "str_heavy",
+      "gear": "mid_refine5",
+      "attackA": 3788,
+      "attackB": 3797,
+      "attackC": 2188,
+      "deltaAtkC_vs_A": -1600,
+      "deltaAtkPctC_vs_A": -42.24,
+      "dpsA": 9675.37,
+      "dpsB": 9698.36,
+      "dpsC": 5588.63,
+      "ttkA": {
+        "hits": 3.01,
+        "seconds": 1.5,
+        "avgHit": 4332.4,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "ttkC": {
+        "hits": 5.69,
+        "seconds": 2.83,
+        "avgHit": 2297.2,
+        "mitigation": 382,
+        "kind": "analytical_basic_attack"
+      },
+      "migrationNote": "C reduz ATK de builds STR-heavy — reset/redistribuição para DEX mitigaria, mas exige decisão de produto"
+    }
+  ],
+  "farmMeasured": [
+    {
+      "build": "str_heavy",
+      "formula": "A",
+      "window": "1h_chunks_10m",
+      "kind": "processFarm_measured",
+      "seeds": [
+        11,
+        22,
+        33
+      ],
+      "runs": [
+        {
+          "seed": 11,
+          "kills": 539,
+          "xp": 34985,
+          "gold": 10294,
+          "levelEnd": 18
+        },
+        {
+          "seed": 22,
+          "kills": 546,
+          "xp": 33900,
+          "gold": 10051,
+          "levelEnd": 18
+        },
+        {
+          "seed": 33,
+          "kills": 540,
+          "xp": 34920,
+          "gold": 10328,
+          "levelEnd": 18
+        }
+      ],
+      "avgKills": 541.7,
+      "avgXp": 34601.7,
+      "avgGold": 10224.3
+    },
+    {
+      "build": "dex_heavy",
+      "formula": "A",
+      "window": "1h_chunks_10m",
+      "kind": "processFarm_measured",
+      "seeds": [
+        11,
+        22,
+        33
+      ],
+      "runs": [
+        {
+          "seed": 11,
+          "kills": 161,
+          "xp": 10355,
+          "gold": 3062,
+          "levelEnd": 13
+        },
+        {
+          "seed": 22,
+          "kills": 165,
+          "xp": 9870,
+          "gold": 2928,
+          "levelEnd": 13
+        },
+        {
+          "seed": 33,
+          "kills": 161,
+          "xp": 10115,
+          "gold": 2999,
+          "levelEnd": 13
+        }
+      ],
+      "avgKills": 162.3,
+      "avgXp": 10113.3,
+      "avgGold": 2996.3
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "level": 250,
+  "zoneId": "floresta_amaldicoada",
+  "mob": {
+    "hp": 6680,
+    "attack": 636,
+    "defense": 192,
+    "xp": 4020,
+    "gold": 1106
+  },
+  "balanceTargets": {
+    "mobHitsToKill": 10,
+    "bossHitsToKill": 28
+  },
+  "expectedPlayerPower": {
+    "attack": 1063,
+    "maxHp": 5930,
+    "defense": 375
+  },
+  "expectedFormula": "attack = baseAttack + (10+L*1.2)*kAtk + L*1.5; NÃO usa computeStats nem pontos reais",
+  "warriorNaked": {
+    "label": "guerreiro_str65_naked",
+    "attack": 1821,
+    "defense": 744,
+    "intervalMs": 1394,
+    "crit": 0.02,
+    "maxHp": 7834,
+    "ttkHits": 4.04,
+    "ttkSeconds": 5.63,
+    "avgHit": 1655.1,
+    "vsExpectedAtkRatio": 1.713
+  },
+  "warriorGeared": {
+    "label": "guerreiro_str65_gear_r5",
+    "attack": 2010,
+    "defense": 1055,
+    "intervalMs": 1121,
+    "crit": 0.1175,
+    "maxHp": 11208,
+    "ttkHits": 3.36,
+    "ttkSeconds": 3.77,
+    "avgHit": 1988.9,
+    "vsExpectedAtkRatio": 1.891
+  },
+  "archerDexNaked": {
+    "label": "arqueiro_dex65_naked",
+    "attack": 26,
+    "defense": 536,
+    "intervalMs": 420,
+    "crit": 0.45,
+    "maxHp": 7778,
+    "ttkHits": 4911.76,
+    "ttkSeconds": 2062.94,
+    "avgHit": 1.4,
+    "vsExpectedAtkRatio": 0.024
+  },
+  "archerStrNaked": {
+    "label": "arqueiro_str65_naked",
+    "attack": 1806,
+    "defense": 738,
+    "intervalMs": 1331,
+    "crit": 0.0425,
+    "maxHp": 7778,
+    "ttkHits": 4,
+    "ttkSeconds": 5.33,
+    "avgHit": 1668.9,
+    "vsExpectedAtkRatio": 1.699
+  },
+  "gapAnalysis": {
+    "expectedAtk": 1063,
+    "warriorNakedAtk": 1821,
+    "delta": 758,
+    "origins": [
+      "expected usa attrs médios 10+L*1.2 (~310 @250) em kAtk + bônus L*1.5",
+      "sim Guerreiro investe ~65% dos pontos em STR (~812 STR efetivo) → ATK muito acima",
+      "gear mid aumenta ainda mais o chip → TTK < mobHitsToKill",
+      "meta 8–12 hits calibra o monstro ao poder ESPERADO, não a builds otimizadas"
+    ]
+  }
+}
