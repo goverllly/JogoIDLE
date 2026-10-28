@@ -1,5 +1,7 @@
 # 07 — Matriz de funcionalidades
 
+**Atualização Fase 6.1 (2026-10-28):** a matriz vigente de prontidão (local vs protected, beta, bloqueadores) está em [`16_AUDITORIA_FUNCIONALIDADES_LANCAMENTO.md`](16_AUDITORIA_FUNCIONALIDADES_LANCAMENTO.md). A tabela abaixo é inventário histórico e pode estar desatualizada (ex.: HUD Publicar e auth protected já existem no código).
+
 Legenda: ver [README.md](README.md). Runtime = standalone `idle/`.
 
 | Funcionalidade | Status | Arquivos principais | Dependências | Problemas conhecidos |

@@ -254,7 +254,8 @@ Somente relatório (`14_AUDITORIA_GAMEPLAY.md`). Nenhum preço/prob/fórmula mud
 | P3-HUD | HUD Builder dirty/breakpoints/publish/CSS | P0 | Resolvido | 76 pass + admin build | (fase 3 commits) |
 | P4-GAMEPLAY | Combate/farm/inv/ascensão/HTTP + auditoria | P0 | Resolvido | suite Fase 4 + admin build | (fase 4 commits) |
 | P5-PERF | Probe + sync /me + suspend + 5.7 | P1 | Implementação OK; GPU % N/A | ≥151 pass; HTTP/CDP em `15_*.md` | ver commits perf |
-| Fase 6 | Auditoria funcional / lançamento | P1+ | Pendente | — | — |
+| Fase 6.1 | Auditoria funcional / beta | P1 | Documentada | 154 pass; ver `16_*.md` | commit docs |
+| Fase 6.2+ | CSRF client, Arena UI, restore | P0 | Pendente | — | — |
 
 ---
 

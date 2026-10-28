@@ -1,5 +1,7 @@
 # 08 — Problemas conhecidos
 
+**Fase 6.1:** bloqueadores de beta fechada (CSRF ausente no cliente protected, Arena 501 clicável, restore ops não ensaiado, `frame-ancestors` ainda não aplicado) estão em [`16_AUDITORIA_FUNCIONALIDADES_LANCAMENTO.md`](16_AUDITORIA_FUNCIONALIDADES_LANCAMENTO.md). Não corrigidos nesta auditoria.
+
 Só itens com evidência (código, UI disabled, stub HTTP, roadmap no repo). Sem inventar bugs de jogabilidade sem prova.
 
 ## A. Comprovados no código / UI

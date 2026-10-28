@@ -2,7 +2,7 @@
 
 Branch de trabalho: **`main`** (sem branch de estabilização).  
 Commit de partida Fase 0/1: `90f51da` → integrado em `main` até `59dd861`.  
-Escopo concluído e **revalidado**: **Fases 0–4** + **UX pós-4**. Fase 5 (performance) **implementação concluída; validação GPU/FPS manual parcial** — ver `15_AUDITORIA_PERFORMANCE.md` (inclui 5.7). Fase 6 permanece **Pendente**.  
+Escopo concluído e **revalidado**: **Fases 0–4** + **UX pós-4**. Fase 5 **implementação concluída; GPU/FPS parcial** (`15_`). **Fase 6.1 auditoria entregue** (`16_`) — correções 6.2+ **não** iniciadas.  
 Detalhe Fase 2: `13_FASE2_AUTH.md`. Detalhe Fase 4: `14_AUDITORIA_GAMEPLAY.md`. Detalhe Fase 5: `15_AUDITORIA_PERFORMANCE.md`.
 
 ## Baseline (Fase 0) + revisão final
@@ -31,6 +31,8 @@ Detalhe Fase 2: `13_FASE2_AUTH.md`. Detalhe Fase 4: `14_AUDITORIA_GAMEPLAY.md`. 
 | `npm test` (Fase 5 parcial) | + client-sync + perf gate + farm bench | **149 pass / 0 fail** | 2026-10-28 |
 | `npm test` (Fase 5.7) | + ISO#2/#10 + suspend source | **≥151 pass / 0 fail** | 2026-10-28 |
 | Fase 5 performance | probe, sync, suspend + 5.7 HTTP/CDP | Implementação OK; FPS/GPU % não declarado | 2026-10-28 |
+| `npm test` (Fase 6.1) | auditoria, sem mudança de código de jogo | **154 pass / 0 fail** + admin:build OK | 2026-10-28 |
+| Fase 6.1 funcionalidades | matriz local/protected + beta | Relatório `16_`; sem correções | 2026-10-28 |
 
 ## Itens
 
