@@ -16,6 +16,8 @@ dist-ssr
 .env.*
 !.env.example
 idle/data/save.json
+idle/data/auth-users.json
+idle/data/auth-sessions.json
 idle/data/backups/
 idle/data/*.tmp
 idle/data/*.bak
