@@ -1,8 +1,22 @@
 import express from "express";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { resolveBootConfig, bootBanner, BootConfigError } from "./auth/mode.ts";
 import {
-  LOCAL_USER_ID,
+  attachBootConfig,
+  attachPrincipal,
+  localHostGuard,
+  requireAdmin,
+  requireAdminPage,
+  requireAuth,
+  requireCsrf,
+  securityHeaders,
+} from "./auth/middleware.ts";
+import { registerAuthRoutes } from "./auth/routes.ts";
+import { adminAuthAls } from "./auth/admin-context.ts";
+import { configureSessions } from "./auth/sessions.ts";
+import type { BootConfig } from "./auth/mode.ts";
+import {
   activateActiveSkill,
   allocateActiveAttributes,
   applyItemOp,
@@ -60,11 +74,6 @@ import {
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const PUBLIC = join(ROOT, "public");
-const PORT = Number(process.env.PORT || 8787);
-
-const app = express();
-app.disable("x-powered-by");
-app.use(express.json({ limit: "2mb" }));
 
 function ok(res: express.Response, body: unknown, status = 200) {
   res.status(status).set("Cache-Control", "no-store").json(body);
@@ -76,9 +85,83 @@ function fail(res: express.Response, error: unknown) {
   ok(res, { success: false, error: errorMessage(error), ...(code ? { code } : {}) }, status);
 }
 
-const uid = () => LOCAL_USER_ID;
+function uid(req: express.Request): number {
+  if (!req.principal) {
+    const err = new Error("Authentication required");
+    (err as { status?: number }).status = 401;
+    throw err;
+  }
+  return req.principal.userId;
+}
 
-app.get("/api/jogo-idle/meta", async (_req, res) => {
+function isPublicApi(req: express.Request): boolean {
+  const u = (req.originalUrl || req.url || "").split("?")[0] || "";
+  if (u === "/api/jogo-idle/meta") return true;
+  if (u === "/api/jogo-idle/announcements") return true;
+  if (u === "/api/jogo-idle/ranking") return true;
+  if (u === "/api/jogo-idle/seasons") return true;
+  if (u === "/api/jogo-idle/hud-layout") return true;
+  if (u === "/api/jogo-idle/auth/login") return true;
+  if (u === "/api/jogo-idle/auth/me") return true;
+  if (u === "/api/jogo-idle/engagement/claim") return true;
+  if (u.startsWith("/api/jogo-idle/arena/")) return true;
+  return false;
+}
+
+function isAdminApi(req: express.Request): boolean {
+  const u = (req.originalUrl || req.url || "").split("?")[0] || "";
+  return u.startsWith("/api/jogo-idle/admin/");
+}
+
+export function createApp(bootConfig: BootConfig) {
+  // TTL only — paths may already be pointed at test fixtures via configure* helpers.
+  configureSessions({ ttlSec: bootConfig.sessionTtlSec });
+
+  const app = express();
+  app.disable("x-powered-by");
+  app.use(express.json({ limit: "2mb" }));
+  app.use(securityHeaders);
+  app.use(attachBootConfig(bootConfig));
+  app.use(localHostGuard(bootConfig));
+  // Never honor client-supplied forwarding headers unless boot listed trusted proxies.
+  // (We do not enable express "trust proxy"; remoteAddress stays the TCP peer.)
+  app.use((req, _res, next) => {
+    if (bootConfig.trustedProxies.length === 0) {
+      delete req.headers["x-forwarded-for"];
+      delete req.headers["x-forwarded-proto"];
+      delete req.headers["x-forwarded-host"];
+    }
+    next();
+  });
+  app.use(attachPrincipal(bootConfig));
+
+  app.use("/api/jogo-idle", (req, res, next) => {
+    if (isPublicApi(req)) return next();
+    if (isAdminApi(req)) return requireAdmin(req, res, next);
+    return requireAuth(req, res, next);
+  });
+
+  const csrfGuard = requireCsrf(bootConfig);
+  app.use("/api/jogo-idle", (req, res, next) => {
+    if (isPublicApi(req)) return next();
+    return csrfGuard(req, res, next);
+  });
+
+  // Propagate principal into admin-service assertIdleAdmin via ALS (async-safe for handlers started in this turn).
+  app.use("/api/jogo-idle/admin", (req, res, next) => {
+    if (!req.principal) return next();
+    adminAuthAls.run(req.principal, () => next());
+  });
+
+  registerAuthRoutes(app, bootConfig);
+
+  registerGameRoutes(app, bootConfig);
+  return app;
+}
+
+function registerGameRoutes(app: express.Express, bootConfig: BootConfig) {
+
+app.get("/api/jogo-idle/meta", async (req, res) => {
   try {
     ok(res, { success: true, ...(await getMeta()) });
   } catch (error) {
@@ -86,9 +169,9 @@ app.get("/api/jogo-idle/meta", async (_req, res) => {
   }
 });
 
-app.get("/api/jogo-idle/characters", async (_req, res) => {
+app.get("/api/jogo-idle/characters", async (req, res) => {
   try {
-    ok(res, { success: true, characters: await listCharacters(uid()) });
+    ok(res, { success: true, characters: await listCharacters(uid(req)) });
   } catch (error) {
     fail(res, error);
   }
@@ -97,7 +180,7 @@ app.get("/api/jogo-idle/characters", async (_req, res) => {
 app.post("/api/jogo-idle/characters", async (req, res) => {
   try {
     const character = await createCharacterForUser(
-      uid(),
+      uid(req),
       String(req.body?.name || ""),
       String(req.body?.classId || ""),
       req.body?.appearance,
@@ -111,7 +194,7 @@ app.post("/api/jogo-idle/characters", async (req, res) => {
 /** Bloqueio explícito: aparência só na criação. */
 app.post("/api/jogo-idle/me/appearance", async (req, res) => {
   try {
-    await updateAppearance(uid(), req.body);
+    await updateAppearance(uid(req), req.body);
     ok(res, { success: true });
   } catch (error) {
     fail(res, error);
@@ -120,7 +203,7 @@ app.post("/api/jogo-idle/me/appearance", async (req, res) => {
 
 app.patch("/api/jogo-idle/me/appearance", async (req, res) => {
   try {
-    await updateAppearance(uid(), req.body);
+    await updateAppearance(uid(req), req.body);
     ok(res, { success: true });
   } catch (error) {
     fail(res, error);
@@ -129,7 +212,7 @@ app.patch("/api/jogo-idle/me/appearance", async (req, res) => {
 
 app.put("/api/jogo-idle/characters/:id/appearance", async (req, res) => {
   try {
-    await updateAppearance(uid(), req.body);
+    await updateAppearance(uid(req), req.body);
     ok(res, { success: true });
   } catch (error) {
     fail(res, error);
@@ -138,7 +221,7 @@ app.put("/api/jogo-idle/characters/:id/appearance", async (req, res) => {
 
 app.post("/api/jogo-idle/characters/:id/select", async (req, res) => {
   try {
-    const character = await selectCharacter(uid(), String(req.params.id));
+    const character = await selectCharacter(uid(req), String(req.params.id));
     ok(res, { success: true, character });
   } catch (error) {
     fail(res, error);
@@ -147,16 +230,16 @@ app.post("/api/jogo-idle/characters/:id/select", async (req, res) => {
 
 app.delete("/api/jogo-idle/characters/:id", async (req, res) => {
   try {
-    await deleteCharacter(uid(), String(req.params.id));
+    await deleteCharacter(uid(req), String(req.params.id));
     ok(res, { success: true });
   } catch (error) {
     fail(res, error);
   }
 });
 
-app.get("/api/jogo-idle/me", async (_req, res) => {
+app.get("/api/jogo-idle/me", async (req, res) => {
   try {
-    ok(res, { success: true, ...(await getActiveState(uid())) });
+    ok(res, { success: true, ...(await getActiveState(uid(req))) });
   } catch (error) {
     fail(res, error);
   }
@@ -164,15 +247,15 @@ app.get("/api/jogo-idle/me", async (_req, res) => {
 
 app.post("/api/jogo-idle/farm/start", async (req, res) => {
   try {
-    ok(res, { success: true, ...(await startActiveFarm(uid(), String(req.body?.zoneId || ""))) });
+    ok(res, { success: true, ...(await startActiveFarm(uid(req), String(req.body?.zoneId || ""))) });
   } catch (error) {
     fail(res, error);
   }
 });
 
-app.post("/api/jogo-idle/farm/stop", async (_req, res) => {
+app.post("/api/jogo-idle/farm/stop", async (req, res) => {
   try {
-    ok(res, { success: true, ...(await stopActiveFarm(uid())) });
+    ok(res, { success: true, ...(await stopActiveFarm(uid(req))) });
   } catch (error) {
     fail(res, error);
   }
@@ -180,7 +263,7 @@ app.post("/api/jogo-idle/farm/stop", async (_req, res) => {
 
 app.post("/api/jogo-idle/farm/auto-restart", async (req, res) => {
   try {
-    ok(res, { success: true, ...(await setAutoRestartFarm(uid(), Boolean(req.body?.enabled))) });
+    ok(res, { success: true, ...(await setAutoRestartFarm(uid(req), Boolean(req.body?.enabled))) });
   } catch (error) {
     fail(res, error);
   }
@@ -188,7 +271,7 @@ app.post("/api/jogo-idle/farm/auto-restart", async (req, res) => {
 
 app.post("/api/jogo-idle/items/:op", async (req, res) => {
   try {
-    ok(res, { success: true, ok: true, ...(await applyItemOp(uid(), String(req.params.op), req.body || {})) });
+    ok(res, { success: true, ok: true, ...(await applyItemOp(uid(req), String(req.params.op), req.body || {})) });
   } catch (error) {
     fail(res, error);
   }
@@ -196,7 +279,7 @@ app.post("/api/jogo-idle/items/:op", async (req, res) => {
 
 app.post("/api/jogo-idle/merchant/buy", async (req, res) => {
   try {
-    ok(res, { success: true, ...(await buyMerchantOffering(uid(), String(req.body?.sku || ""))) });
+    ok(res, { success: true, ...(await buyMerchantOffering(uid(req), String(req.body?.sku || ""))) });
   } catch (error) {
     fail(res, error);
   }
@@ -204,7 +287,7 @@ app.post("/api/jogo-idle/merchant/buy", async (req, res) => {
 
 app.post("/api/jogo-idle/me/attributes", async (req, res) => {
   try {
-    ok(res, { success: true, ...(await allocateActiveAttributes(uid(), req.body?.allocations || req.body || {})) });
+    ok(res, { success: true, ...(await allocateActiveAttributes(uid(req), req.body?.allocations || req.body || {})) });
   } catch (error) {
     fail(res, error);
   }
@@ -212,7 +295,7 @@ app.post("/api/jogo-idle/me/attributes", async (req, res) => {
 
 app.post("/api/jogo-idle/me/skills/unlock", async (req, res) => {
   try {
-    ok(res, { success: true, ...(await unlockActiveSkill(uid(), String(req.body?.skillId || ""))) });
+    ok(res, { success: true, ...(await unlockActiveSkill(uid(req), String(req.body?.skillId || ""))) });
   } catch (error) {
     fail(res, error);
   }
@@ -220,7 +303,7 @@ app.post("/api/jogo-idle/me/skills/unlock", async (req, res) => {
 
 app.post("/api/jogo-idle/me/skills/activate", async (req, res) => {
   try {
-    ok(res, { success: true, ...(await activateActiveSkill(uid(), String(req.body?.skillId || ""))) });
+    ok(res, { success: true, ...(await activateActiveSkill(uid(req), String(req.body?.skillId || ""))) });
   } catch (error) {
     fail(res, error);
   }
@@ -228,7 +311,7 @@ app.post("/api/jogo-idle/me/skills/activate", async (req, res) => {
 
 app.post("/api/jogo-idle/me/combat-skills/cast", async (req, res) => {
   try {
-    ok(res, { success: true, ...(await castCombatSkill(uid(), String(req.body?.skillId || ""))) });
+    ok(res, { success: true, ...(await castCombatSkill(uid(req), String(req.body?.skillId || ""))) });
   } catch (error) {
     fail(res, error);
   }
@@ -236,7 +319,7 @@ app.post("/api/jogo-idle/me/combat-skills/cast", async (req, res) => {
 
 app.post("/api/jogo-idle/me/combat-skills/auto-cast", async (req, res) => {
   try {
-    ok(res, { success: true, ...(await setCombatAutoCast(uid(), Boolean(req.body?.enabled))) });
+    ok(res, { success: true, ...(await setCombatAutoCast(uid(req), Boolean(req.body?.enabled))) });
   } catch (error) {
     fail(res, error);
   }
@@ -248,7 +331,7 @@ app.post("/api/jogo-idle/me/auto-hp-potion", async (req, res) => {
       res,
       {
         success: true,
-        ...(await setAutoHpPotion(uid(), Boolean(req.body?.enabled), req.body?.thresholdPct)),
+        ...(await setAutoHpPotion(uid(req), Boolean(req.body?.enabled), req.body?.thresholdPct)),
       },
     );
   } catch (error) {
@@ -258,7 +341,7 @@ app.post("/api/jogo-idle/me/auto-hp-potion", async (req, res) => {
 
 app.post("/api/jogo-idle/me/pets", async (req, res) => {
   try {
-    ok(res, { success: true, ...(await updateActivePet(uid(), req.body?.petId ?? null)) });
+    ok(res, { success: true, ...(await updateActivePet(uid(req), req.body?.petId ?? null)) });
   } catch (error) {
     fail(res, error);
   }
@@ -266,21 +349,21 @@ app.post("/api/jogo-idle/me/pets", async (req, res) => {
 
 app.post("/api/jogo-idle/me/inventory-automation", async (req, res) => {
   try {
-    ok(res, { success: true, ...(await updateInventoryAutomationPrefs(uid(), req.body || {})) });
+    ok(res, { success: true, ...(await updateInventoryAutomationPrefs(uid(req), req.body || {})) });
   } catch (error) {
     fail(res, error);
   }
 });
 
-app.post("/api/jogo-idle/me/hunt-perf/reset", async (_req, res) => {
+app.post("/api/jogo-idle/me/hunt-perf/reset", async (req, res) => {
   try {
-    ok(res, { success: true, ...(await resetActiveHuntPerf(uid())) });
+    ok(res, { success: true, ...(await resetActiveHuntPerf(uid(req))) });
   } catch (error) {
     fail(res, error);
   }
 });
 
-app.get("/api/jogo-idle/announcements", async (_req, res) => {
+app.get("/api/jogo-idle/announcements", async (req, res) => {
   try {
     ok(res, { success: true, ...(await getAnnouncements()) });
   } catch (error) {
@@ -289,11 +372,13 @@ app.get("/api/jogo-idle/announcements", async (_req, res) => {
 });
 
 /** Missões de engajamento desligadas no standalone. */
-app.post("/api/jogo-idle/engagement/claim", (_req, res) => {
+app.post("/api/jogo-idle/engagement/claim", (req, res) => {
   ok(res, { success: false, error: "Missões de engajamento não estão disponíveis neste jogo standalone." }, 410);
 });
 
-const adminEmail = () => LOCAL_USER_EMAIL;
+function adminEmail(req: express.Request): string {
+  return req.principal?.email || LOCAL_USER_EMAIL;
+}
 
 app.post("/api/jogo-idle/admin/config", async (req, res) => {
   try {
@@ -302,7 +387,7 @@ app.post("/api/jogo-idle/admin/config", async (req, res) => {
       res,
       {
         success: true,
-        ...(await adminUpdateConfig(adminEmail(), {
+        ...(await adminUpdateConfig(adminEmail(req), {
           dropChance: body.dropChance != null ? Number(body.dropChance) : undefined,
           bagUpgradePrice: body.bagUpgradePrice != null ? body.bagUpgradePrice : undefined,
           refinerPrice: body.refinerPrice != null ? body.refinerPrice : undefined,
@@ -387,7 +472,7 @@ app.post("/api/jogo-idle/admin/config", async (req, res) => {
 
 app.post("/api/jogo-idle/admin/grant", async (req, res) => {
   try {
-    ok(res, { success: true, ...(await adminGrantItem(uid(), adminEmail(), req.body || {})) });
+    ok(res, { success: true, ...(await adminGrantItem(uid(req), adminEmail(req), req.body || {})) });
   } catch (error) {
     fail(res, error);
   }
@@ -399,7 +484,7 @@ app.post("/api/jogo-idle/admin/catalog", async (req, res) => {
     const creating = body.creating != null ? Boolean(body.creating) : !body.id;
     ok(
       res,
-      { success: true, ...(await adminUpsertCatalogItem(uid(), adminEmail(), { ...body, creating })) },
+      { success: true, ...(await adminUpsertCatalogItem(uid(req), adminEmail(req), { ...body, creating })) },
       creating ? 201 : 200,
     );
   } catch (error) {
@@ -413,7 +498,7 @@ app.post("/api/jogo-idle/admin/catalog/delete", async (req, res) => {
       res,
       {
         success: true,
-        ...(await adminDeleteCatalogItem(adminEmail(), String(req.body?.templateId || req.body?.id || ""))),
+        ...(await adminDeleteCatalogItem(adminEmail(req), String(req.body?.templateId || req.body?.id || ""))),
       },
     );
   } catch (error) {
@@ -427,7 +512,7 @@ app.post("/api/jogo-idle/admin/catalog/reset", async (req, res) => {
       res,
       {
         success: true,
-        ...(await adminResetCatalogItem(adminEmail(), String(req.body?.templateId || req.body?.id || ""))),
+        ...(await adminResetCatalogItem(adminEmail(req), String(req.body?.templateId || req.body?.id || ""))),
       },
     );
   } catch (error) {
@@ -442,7 +527,7 @@ app.post("/api/jogo-idle/admin/character", async (req, res) => {
       res,
       {
         success: true,
-        ...(await adminUpdateActiveCharacter(uid(), adminEmail(), {
+        ...(await adminUpdateActiveCharacter(uid(req), adminEmail(req), {
           characterId: body.characterId ? String(body.characterId) : undefined,
           addGold: body.addGold != null ? Number(body.addGold) : undefined,
           setLevel: body.setLevel != null ? Number(body.setLevel) : undefined,
@@ -463,7 +548,7 @@ app.post("/api/jogo-idle/admin/character/delete", async (req, res) => {
       res,
       {
         success: true,
-        ...(await adminDeleteCharacter(adminEmail(), String(req.body?.characterId || ""))),
+        ...(await adminDeleteCharacter(adminEmail(req), String(req.body?.characterId || ""))),
       },
     );
   } catch (error) {
@@ -473,7 +558,7 @@ app.post("/api/jogo-idle/admin/character/delete", async (req, res) => {
 
 app.post("/api/jogo-idle/admin/season/end", async (req, res) => {
   try {
-    ok(res, { success: true, ...(await adminEndSeason(adminEmail(), req.body || {})) });
+    ok(res, { success: true, ...(await adminEndSeason(adminEmail(req), req.body || {})) });
   } catch (error) {
     fail(res, error);
   }
@@ -482,15 +567,15 @@ app.post("/api/jogo-idle/admin/season/end", async (req, res) => {
 app.get("/api/jogo-idle/admin/actions", async (req, res) => {
   try {
     const limit = req.query.limit != null ? Number(req.query.limit) : 50;
-    ok(res, { success: true, ...(await listAdminActions(adminEmail(), limit)) });
+    ok(res, { success: true, ...(await listAdminActions(adminEmail(req), limit)) });
   } catch (error) {
     fail(res, error);
   }
 });
 
-app.get("/api/jogo-idle/admin/engagement-metrics", async (_req, res) => {
+app.get("/api/jogo-idle/admin/engagement-metrics", async (req, res) => {
   try {
-    ok(res, { success: true, ...(await getAdminEngagementMetrics(adminEmail())) });
+    ok(res, { success: true, ...(await getAdminEngagementMetrics(adminEmail(req))) });
   } catch (error) {
     fail(res, error);
   }
@@ -498,21 +583,21 @@ app.get("/api/jogo-idle/admin/engagement-metrics", async (_req, res) => {
 
 app.post("/api/jogo-idle/admin/simulate", async (req, res) => {
   try {
-    ok(res, { success: true, ...(await adminSimulate(adminEmail(), req.body || {})) });
+    ok(res, { success: true, ...(await adminSimulate(adminEmail(req), req.body || {})) });
   } catch (error) {
     fail(res, error);
   }
 });
 
-app.get("/api/jogo-idle/admin/world-snapshot", async (_req, res) => {
+app.get("/api/jogo-idle/admin/world-snapshot", async (req, res) => {
   try {
-    ok(res, { success: true, ...(await adminWorldSnapshot(adminEmail())) });
+    ok(res, { success: true, ...(await adminWorldSnapshot(adminEmail(req))) });
   } catch (error) {
     fail(res, error);
   }
 });
 
-app.get("/api/jogo-idle/hud-layout", async (_req, res) => {
+app.get("/api/jogo-idle/hud-layout", async (req, res) => {
   try {
     ok(res, { success: true, ...(await getPublishedHudLayout()) });
   } catch (error) {
@@ -520,9 +605,9 @@ app.get("/api/jogo-idle/hud-layout", async (_req, res) => {
   }
 });
 
-app.get("/api/jogo-idle/admin/hud-layout", async (_req, res) => {
+app.get("/api/jogo-idle/admin/hud-layout", async (req, res) => {
   try {
-    ok(res, { success: true, ...(await adminGetHudLayout(adminEmail())) });
+    ok(res, { success: true, ...(await adminGetHudLayout(adminEmail(req))) });
   } catch (error) {
     fail(res, error);
   }
@@ -530,15 +615,15 @@ app.get("/api/jogo-idle/admin/hud-layout", async (_req, res) => {
 
 app.put("/api/jogo-idle/admin/hud-layout/draft", async (req, res) => {
   try {
-    ok(res, { success: true, ...(await adminSaveHudDraft(adminEmail(), req.body || {})) });
+    ok(res, { success: true, ...(await adminSaveHudDraft(adminEmail(req), req.body || {})) });
   } catch (error) {
     fail(res, error);
   }
 });
 
-app.post("/api/jogo-idle/admin/hud-layout/publish", async (_req, res) => {
+app.post("/api/jogo-idle/admin/hud-layout/publish", async (req, res) => {
   try {
-    ok(res, { success: true, ...(await adminPublishHudLayout(adminEmail())) });
+    ok(res, { success: true, ...(await adminPublishHudLayout(adminEmail(req))) });
   } catch (error) {
     fail(res, error);
   }
@@ -546,40 +631,40 @@ app.post("/api/jogo-idle/admin/hud-layout/publish", async (_req, res) => {
 
 app.post("/api/jogo-idle/admin/hud-layout/restore", async (req, res) => {
   try {
-    ok(res, { success: true, ...(await adminRestoreHudLayout(adminEmail(), req.body || {})) });
+    ok(res, { success: true, ...(await adminRestoreHudLayout(adminEmail(req), req.body || {})) });
   } catch (error) {
     fail(res, error);
   }
 });
 
-app.get("/api/jogo-idle/admin/hud-layout/history", async (_req, res) => {
+app.get("/api/jogo-idle/admin/hud-layout/history", async (req, res) => {
   try {
-    const data = await adminGetHudLayout(adminEmail());
+    const data = await adminGetHudLayout(adminEmail(req));
     ok(res, { success: true, history: data.history, publishedRevision: data.publishedRevision });
   } catch (error) {
     fail(res, error);
   }
 });
 
-app.get("/api/jogo-idle/ranking", (_req, res) => {
+app.get("/api/jogo-idle/ranking", (req, res) => {
   ok(res, { success: true, ranking: [], season: null });
 });
 
-app.get("/api/jogo-idle/seasons", (_req, res) => {
+app.get("/api/jogo-idle/seasons", (req, res) => {
   ok(res, { success: true, seasons: [] });
 });
 
-app.post("/api/jogo-idle/me/ascend", async (_req, res) => {
+app.post("/api/jogo-idle/me/ascend", async (req, res) => {
   try {
-    ok(res, { success: true, ...(await ascendActiveCharacter(uid())) });
+    ok(res, { success: true, ...(await ascendActiveCharacter(uid(req))) });
   } catch (error) {
     fail(res, error);
   }
 });
 
-app.get("/api/jogo-idle/chapters", async (_req, res) => {
+app.get("/api/jogo-idle/chapters", async (req, res) => {
   try {
-    ok(res, { success: true, ...(await getActiveChapters(uid())) });
+    ok(res, { success: true, ...(await getActiveChapters(uid(req))) });
   } catch (error) {
     fail(res, error);
   }
@@ -589,7 +674,7 @@ app.post("/api/jogo-idle/chapters/enter", async (req, res) => {
   try {
     ok(res, {
       success: true,
-      ...(await enterActiveChapter(uid(), String(req.body?.chapterId || req.body?.id || ""))),
+      ...(await enterActiveChapter(uid(req), String(req.body?.chapterId || req.body?.id || ""))),
     });
   } catch (error) {
     const missing = (error as { missingRequirements?: string[] })?.missingRequirements;
@@ -613,7 +698,7 @@ app.get("/api/jogo-idle/journey", async (req, res) => {
   try {
     ok(res, {
       success: true,
-      ...(await getActiveJourney(uid(), String(req.query.period || "all"))),
+      ...(await getActiveJourney(uid(req), String(req.query.period || "all"))),
     });
   } catch (error) {
     fail(res, error);
@@ -624,16 +709,16 @@ app.patch("/api/jogo-idle/journey/privacy", async (req, res) => {
   try {
     ok(res, {
       success: true,
-      ...(await patchJourneyPrivacy(uid(), Boolean(req.body?.hideFromPublicRankings))),
+      ...(await patchJourneyPrivacy(uid(req), Boolean(req.body?.hideFromPublicRankings))),
     });
   } catch (error) {
     fail(res, error);
   }
 });
 
-app.get("/api/jogo-idle/fame/overview", async (_req, res) => {
+app.get("/api/jogo-idle/fame/overview", async (req, res) => {
   try {
-    ok(res, { success: true, ...(await getFameOverview(uid())) });
+    ok(res, { success: true, ...(await getFameOverview(uid(req))) });
   } catch (error) {
     fail(res, error);
   }
@@ -643,7 +728,7 @@ app.get("/api/jogo-idle/fame/rankings", async (req, res) => {
   try {
     ok(res, {
       success: true,
-      ...(await getFameRankings(uid(), {
+      ...(await getFameRankings(uid(req), {
         category: String(req.query.category || ""),
         period: String(req.query.period || "lifetime"),
         page: Number(req.query.page) || 1,
@@ -659,14 +744,14 @@ app.get("/api/jogo-idle/fame/compare", async (req, res) => {
   try {
     ok(res, {
       success: true,
-      ...(await compareFameCharacters(uid(), req.query.a, req.query.b)),
+      ...(await compareFameCharacters(uid(req), req.query.a, req.query.b)),
     });
   } catch (error) {
     fail(res, error);
   }
 });
 
-app.post("/api/jogo-idle/fame/reconcile", async (_req, res) => {
+app.post("/api/jogo-idle/fame/reconcile", async (req, res) => {
   try {
     ok(res, { success: true, ...(await reconcileFameStore()) });
   } catch (error) {
@@ -682,19 +767,21 @@ for (const path of [
   "/api/jogo-idle/arena/respond",
   "/api/jogo-idle/arena/forfeit",
 ]) {
-  app.all(path, (_req, res) => {
+  app.all(path, (req, res) => {
     ok(res, { success: false, error: "Arena PvP desligada neste standalone." }, 501);
   });
 }
+
+const ADMIN_DIST = join(PUBLIC, "jogo-idle", "admin");
+
+/** Admin Studio gate MUST run before any static that can serve /jogo-idle/admin*. */
+app.use(requireAdminPage(bootConfig));
 
 /** Link legado do lobby apontava para admin.html (404); Studio vive em /admin/. */
 app.get("/jogo-idle/admin.html", (_req, res) => {
   res.redirect(302, "/jogo-idle/admin/");
 });
 
-app.use("/jogo-idle", express.static(join(PUBLIC, "jogo-idle")));
-
-const ADMIN_DIST = join(PUBLIC, "jogo-idle", "admin");
 app.use(
   "/jogo-idle/admin",
   express.static(ADMIN_DIST, { index: "index.html", fallthrough: true }),
@@ -711,6 +798,9 @@ app.use("/jogo-idle/admin", (req, res, next) => {
   });
 });
 
+/** Game public assets AFTER admin gate (so /admin is not leaked by parent static). */
+app.use("/jogo-idle", express.static(join(PUBLIC, "jogo-idle")));
+
 app.get("/", (_req, res) => {
   res.redirect(302, "/jogo-idle/lobby.html");
 });
@@ -718,10 +808,24 @@ app.get("/", (_req, res) => {
 app.get("/jogo-idle", (_req, res) => {
   res.redirect(302, "/jogo-idle/lobby.html");
 });
+} // end registerGameRoutes
 
-app.listen(PORT, () => {
-  console.log(`Jogo IDLE standalone em http://localhost:${PORT}`);
-  console.log(`Lobby: http://localhost:${PORT}/jogo-idle/lobby.html`);
-  console.log(`Jogo:  http://localhost:${PORT}/jogo-idle/play.html`);
-  console.log(`Admin: http://localhost:${PORT}/jogo-idle/admin/`);
-});
+if (process.env.IDLE_SKIP_LISTEN !== "1") {
+  let bootConfig: BootConfig;
+  try {
+    bootConfig = resolveBootConfig(process.env);
+  } catch (err) {
+    if (err instanceof BootConfigError) {
+      console.error(`[boot] ${err.message}`);
+      process.exit(1);
+    }
+    throw err;
+  }
+  const app = createApp(bootConfig);
+  app.listen(bootConfig.port, bootConfig.bindHost, () => {
+    for (const line of bootBanner(bootConfig)) console.log(line);
+    console.log(`Lobby: http://${bootConfig.bindHost}:${bootConfig.port}/jogo-idle/lobby.html`);
+    console.log(`Jogo:  http://${bootConfig.bindHost}:${bootConfig.port}/jogo-idle/play.html`);
+    console.log(`Admin: http://${bootConfig.bindHost}:${bootConfig.port}/jogo-idle/admin/`);
+  });
+}

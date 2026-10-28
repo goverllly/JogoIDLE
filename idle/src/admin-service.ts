@@ -48,6 +48,7 @@ import { monsterVisualMeta, sanitizeMonsterVisualId } from "../lib/jogo-idle/gam
 import { sanitizeZoneScene } from "../lib/jogo-idle/game/zone-scene";
 import { simulateFarmFight } from "../lib/jogo-idle/admin-simulate";
 import { listJogoIdleAdminEmails, isJogoIdleAdmin } from "../lib/jogo-idle/admin";
+import { adminAuthAls } from "./auth/admin-context.ts";
 import { getWorldSnapshot } from "../lib/jogo-idle/content";
 import {
   createEmptyHudDocument,
@@ -138,9 +139,25 @@ function listMetaZones() {
 }
 
 export function assertIdleAdmin(email = LOCAL_USER_EMAIL) {
+  // Protected mode: middleware + ALS principal (role revalidated on session resolve).
+  const principal = adminAuthAls.getStore();
+  if (principal) {
+    if (principal.role !== "ADMIN") {
+      const error = new Error("Apenas o admin do Jogo IDLE pode fazer isso");
+      (error as { status?: number }).status = 403;
+      throw error;
+    }
+    return;
+  }
+  if (String(process.env.IDLE_AUTH_MODE || "").toLowerCase() === "protected") {
+    const error = new Error("Admin principal required");
+    (error as { status?: number }).status = 403;
+    throw error;
+  }
+  // Local / legacy: allowlist by email (includes local@idle.local).
   if (!isJogoIdleAdmin(email)) {
     const error = new Error("Apenas o admin do Jogo IDLE pode fazer isso");
-    error.status = 403;
+    (error as { status?: number }).status = 403;
     throw error;
   }
 }

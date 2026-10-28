@@ -8,19 +8,33 @@ Cópia jogável do Jogo IDLE **sem** gate de módulo externo e **sem** missões 
 cd idle
 npm install
 npm run admin:build
-npm run dev
+npm run dev          # IDLE_AUTH_MODE=local + bind 127.0.0.1
 ```
 
 Abra http://localhost:8787 — lobby para criar personagem e entrar no jogo.
 
-- Admin Studio: http://localhost:8787/jogo-idle/admin/
+- Admin Studio: http://localhost:8787/jogo-idle/admin/ (livre em `local`; login ADMIN em `protected`)
+- Login page (protected): `/jogo-idle/login.html`
 - Dev hot-reload do admin: `npm run admin:dev` (porta 5174, proxy da API)
 
-Progresso em `idle/data/save.json`.
+Progresso em `idle/data/save.json`. Auth (protected): `idle/data/auth-users.json` + `auth-sessions.json` (gitignored).
+
+### Modo protected (resumo)
+
+```bash
+export IDLE_AUTH_MODE=protected
+export IDLE_SESSION_SECRET='pelo-menos-32-caracteres-aleatorios'
+export IDLE_ALLOW_HTTP_LOCAL=1   # só loopback/teste; produção: HTTPS + IDLE_COOKIE_SECURE=1
+IDLE_ADMIN_EMAIL=... IDLE_ADMIN_PASSWORD=... npm run auth:create-admin
+IDLE_PLAYER_EMAIL=... IDLE_PLAYER_PASSWORD=... npm run auth:create-player
+npm start
+```
+
+Detalhes: `AUDITORIA_JOGO_IDLE/13_FASE2_AUTH.md`.
 
 ## O que foi removido / desligado
 
-- `ModuleAccessGate` / `withModuleAuth` (acesso livre local; admin sempre liberado)
+- `ModuleAccessGate` / `withModuleAuth` externos (substituídos por `IDLE_AUTH_MODE`)
 - Missões de engajamento (`engagement/claim` responde 410)
 - Bônus de plantão e FlowTime do TicTac
 - Dependência do Prisma/auth externo

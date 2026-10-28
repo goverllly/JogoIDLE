@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Login — Jogo IDLE</title>
+    <link rel="stylesheet" href="/jogo-idle/styles.css" />
+    <style>
+      body.login-page {
+        min-height: 100vh;
+        margin: 0;
+        display: grid;
+        place-items: center;
+        background: radial-gradient(ellipse at 50% 20%, #1a2744 0%, #0b1020 55%, #070a12 100%);
+        color: #e8dcc8;
+        font-family: Georgia, "Times New Roman", serif;
+      }
+      .login-card {
+        width: min(420px, 92vw);
+        padding: 1.75rem 1.5rem;
+        border: 1px solid #8a6a2e;
+        background: linear-gradient(180deg, rgba(20, 28, 48, 0.95), rgba(10, 14, 28, 0.98));
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+      }
+      .login-card h1 {
+        margin: 0 0 0.35rem;
+        font-size: 1.45rem;
+        color: #d4af37;
+        letter-spacing: 0.04em;
+      }
+      .login-card p {
+        margin: 0 0 1.25rem;
+        opacity: 0.75;
+        font-size: 0.9rem;
+      }
+      .login-card label {
+        display: block;
+        margin: 0.65rem 0 0.25rem;
+        font-size: 0.85rem;
+      }
+      .login-card input {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 0.55rem 0.65rem;
+        border: 1px solid #3a4a6a;
+        background: #0d1424;
+        color: #f0e6d2;
+      }
+      .login-card button {
+        margin-top: 1.1rem;
+        width: 100%;
+        padding: 0.65rem;
+        border: 1px solid #d4af37;
+        background: #1c2a4a;
+        color: #d4af37;
+        font: inherit;
+        cursor: pointer;
+      }
+      .login-card .err {
+        color: #e07070;
+        min-height: 1.2em;
+        margin-top: 0.75rem;
+        font-size: 0.85rem;
+      }
+    </style>
+  </head>
+  <body class="login-page">
+    <form class="login-card" id="login-form">
+      <h1>Jogo IDLE</h1>
+      <p>Entre com sua conta (modo protegido).</p>
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" autocomplete="username" required />
+      <label for="password">Senha</label>
+      <input id="password" name="password" type="password" autocomplete="current-password" required />
+      <button type="submit">Entrar</button>
+      <div class="err" id="err" aria-live="polite"></div>
+    </form>
+    <script type="module">
+      const params = new URLSearchParams(location.search);
+      const next = params.get("next") || "/jogo-idle/lobby.html";
+      const form = document.getElementById("login-form");
+      const err = document.getElementById("err");
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        err.textContent = "";
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const res = await fetch("/api/jogo-idle/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "same-origin",
+          body: JSON.stringify({ email, password }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || data.success === false) {
+          err.textContent = data.error || "Falha no login";
+          return;
+        }
+        if (data.csrfToken) sessionStorage.setItem("jogo_idle_csrf", data.csrfToken);
+        location.href = next;
+      });
+    </script>
+  </body>
+</html>
