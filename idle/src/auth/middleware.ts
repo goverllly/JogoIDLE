@@ -19,10 +19,24 @@ function deny(res: Response, status: number, error: string, code: string) {
   res.status(status).set("Cache-Control", "no-store").json({ success: false, error, code });
 }
 
-export function securityHeaders(_req: Request, res: Response, next: NextFunction) {
+/** Paths embedded by lobby/criar as same-origin iframes. */
+function isEmbeddablePreviewPath(path: string): boolean {
+  const p = String(path || "").split("?")[0];
+  return (
+    p === "/jogo-idle/preview.html" ||
+    p === "/jogo-idle/admin-studio/preview.html"
+  );
+}
+
+export function securityHeaders(req: Request, res: Response, next: NextFunction) {
   res.setHeader("X-Content-Type-Options", "nosniff");
   res.setHeader("Referrer-Policy", "no-referrer");
-  res.setHeader("X-Frame-Options", "DENY");
+  // DENY broke the character preview iframe. Embeddable preview pages omit
+  // X-Frame-Options so lobby/criar can frame them; other pages stay SAMEORIGIN
+  // (blocks cross-site clickjacking, allows same-origin frames).
+  if (!isEmbeddablePreviewPath(req.path)) {
+    res.setHeader("X-Frame-Options", "SAMEORIGIN");
+  }
   next();
 }
 
