@@ -159,7 +159,7 @@ Navegador (mesmo servidor temporário da aceitação): o iframe do lobby carrego
 | Arena: esconder o duelo | P0 | Feito `e452eac` | API 501; `#arena` intacto |
 | Drill restore (processo parado, dir isolado) | P0 | Feito `2f7cca2` | Segunda instância; save pessoal intocado |
 | `frame-ancestors 'self'` no preview | P1 | Feito `384060d` | Também `X-Frame-Options: SAMEORIGIN` só nas duas páginas |
-| Docs de convite (create-player) | P1 | Pequeno | Operador |
+| Docs de convite (create-player) | P1 | Feito no portal | `README` + login; sem troca de senha e sem CLI de revogação |
 | Health + rate limit geral | P2 | Médio | Depois da beta |
 | Ranking/temporadas/PvP/Docker | P3 | Grande | Pós-beta |
 
@@ -168,18 +168,18 @@ Navegador (mesmo servidor temporário da aceitação): o iframe do lobby carrego
 ## 9. Roadmap
 
 - **6.2** — entregue: CSRF no cliente, duelo oculto, restore isolado, embed da prévia, aceitação protected no navegador (atributo, equipar, refinar, farm, logout, uma ação admin).
-- **6.3** — procedimento de convite e mensagens de auth. **Não iniciada por esta entrega.**
+- **6.3** — portal de login dos convidados e mensagens de auth. Sem redefinição de senha e sem CLI para revogar.
 - **6.4** — health/proxy (ainda 1 instância). O restore parado da 6.2 não substitui health.
 - **6.5** — o fluxo manual protected foi feito na 6.2; checklist GPU continua aberto. O canvas do play não foi confirmado.
 - **6.6** — Go/no-go da beta. Ainda não.
 
-**6.2 concluída no código. 6.3 não iniciada.** 6.4–6.6 seguem em aberto.
+**6.2 concluída no código.** O portal cobre a entrada da 6.3; troca de senha e revogação por CLI continuam fora. 6.4–6.6 seguem em aberto.
 
 ---
 
 ## 10. Adendo — portal de login (2026-10-28)
 
-A entrada dos convidados é [`idle/public/jogo-idle/login.html`](../idle/public/jogo-idle/login.html), com estilo próprio em `login.css`. O POST continua sendo `/api/jogo-idle/auth/login` com `{ email, password }`. Cookies, CSRF e modo `local` não mudaram. Este adendo não faz parte dos commits da 6.2: no momento do registro, `login.css`, `assets/login/` e `login-ui.test.ts` ainda estavam fora do Git.
+A entrada dos convidados é [`idle/public/jogo-idle/login.html`](../idle/public/jogo-idle/login.html), com estilo próprio em `login.css`. O POST continua sendo `/api/jogo-idle/auth/login` com `{ email, password }`. Cookies, CSRF e modo `local` não mudaram.
 
 - Fundo: `--login-background-image`, `--login-background-position` e `--login-background-position-mobile`. O gradiente navy fica por baixo da imagem.
 - Convite: `npm run auth:create-player`. Sem cadastro público e sem redefinição de senha.

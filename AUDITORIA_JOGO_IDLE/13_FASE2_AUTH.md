@@ -43,6 +43,8 @@ IDLE_PLAYER_EMAIL=... IDLE_PLAYER_PASSWORD=... npm run auth:create-player
 
 Via `tsx` (ESM/TS). Sem contas default; senhas nunca logadas. Role `PLAYER` no create-player; promoção não aceita payload de cliente.
 
+O portal `/jogo-idle/login.html` autentica esse e-mail. Não há cadastro público, código de convite nem fluxo de nova senha. Desativar uma conta (`setUserDisabled`) ainda não tem CLI — não editar o JSON de auth à mão.
+
 ## admin-service
 
 `assertIdleAdmin()` usa AsyncLocalStorage do principal autenticado no modo protected (não allowlist hardcoded). Local legado continua via allowlist/`local@idle.local` apenas fora de protected.
