@@ -31,10 +31,14 @@ function isEmbeddablePreviewPath(path: string): boolean {
 export function securityHeaders(req: Request, res: Response, next: NextFunction) {
   res.setHeader("X-Content-Type-Options", "nosniff");
   res.setHeader("Referrer-Policy", "no-referrer");
-  // DENY broke the character preview iframe. Embeddable preview pages omit
-  // X-Frame-Options so lobby/criar can frame them; other pages stay SAMEORIGIN
-  // (blocks cross-site clickjacking, allows same-origin frames).
-  if (!isEmbeddablePreviewPath(req.path)) {
+  // SAMEORIGIN permite o iframe do lobby e do studio e recusa outro site.
+  // frame-ancestors 'self' é a política atual; X-Frame-Options cobre clientes antigos.
+  // As duas páginas de prévia são as únicas que recebem CSP. O DENY antigo
+  // bloqueava o iframe same-origin e não volta.
+  if (isEmbeddablePreviewPath(req.path)) {
+    res.setHeader("Content-Security-Policy", "frame-ancestors 'self'");
+    res.setHeader("X-Frame-Options", "SAMEORIGIN");
+  } else {
     res.setHeader("X-Frame-Options", "SAMEORIGIN");
   }
   next();
