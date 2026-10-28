@@ -42,9 +42,14 @@ import { ensureHuntPerf, resetHuntPerf } from '../hunt-perf';
 
 const MAX_EVENTS = 40;
 
-function pickNormalMonster(zone) {
+/** RNG injetável (testes determinísticos). Default = Math.random. */
+function resolveRng(options) {
+  return typeof options?.rng === 'function' ? options.rng : Math.random;
+}
+
+function pickNormalMonster(zone, rng = Math.random) {
   const list = zone.monsters;
-  const monster = { ...list[Math.floor(Math.random() * list.length)] };
+  const monster = { ...list[Math.floor(rng() * list.length)] };
   monster.defense = monsterDefense(monster);
   monster.isBoss = false;
   return monster;
@@ -59,11 +64,11 @@ function shouldSpawnBoss(character, zone) {
   return wave >= zoneBossWaveSize(zone);
 }
 
-function pickMonster(zone, character) {
+function pickMonster(zone, character, rng = Math.random) {
   if (shouldSpawnBoss(character, zone)) {
     return pickBoss(zone);
   }
-  return pickNormalMonster(zone);
+  return pickNormalMonster(zone, rng);
 }
 
 function spawnEvent(target) {
@@ -80,10 +85,10 @@ function spawnEvent(target) {
   };
 }
 
-function currentTarget(character, zone) {
+function currentTarget(character, zone, rng = Math.random) {
   const c = character.combat;
   if (c && c.zoneId === zone.id && c.monsterHp > 0) return c;
-  const monster = pickMonster(zone, character);
+  const monster = pickMonster(zone, character, rng);
   if (monster.isBoss) {
     // Consome a onda ao trazer o chefe; se o farm cair no meio, não reaparece na hora.
     character.farmWaveKills = 0;
@@ -138,10 +143,12 @@ function finalizeFarmResult(base, extras = {}) {
  * boss da macro (HP = soma dos mobs; ATK/DEF reforçados).
  *
  * `options.xpMult` / `goldMult` / `dropMult` vêm só do servidor (engajamento).
+ * `options.rng` — função [0,1) injetável (default Math.random); não mockar global.
  */
 export function processFarm(character, now = Date.now(), options = {}) {
   if (!character.farmZoneId) return emptyResult();
 
+  const rng = resolveRng(options);
   const skillMults = getSkillFarmMults(character, now);
   const xpMult =
     (Number(options.xpMult) > 0 ? Number(options.xpMult) : 1) * (skillMults.xpMult || 1);
@@ -276,9 +283,11 @@ export function processFarm(character, now = Date.now(), options = {}) {
     }
   };
   const applyOutgoingDamage = (rawDmg) => {
-    const hpBefore = target.monsterHp;
-    const applied = Math.min(Math.max(0, rawDmg), Math.max(0, hpBefore));
-    target.monsterHp = Math.max(0, hpBefore - rawDmg);
+    const hpBefore = Number.isFinite(target.monsterHp) ? target.monsterHp : 0;
+    const safeRaw = Number.isFinite(rawDmg) ? Math.max(0, rawDmg) : 0;
+    const applied = Math.min(safeRaw, Math.max(0, hpBefore));
+    target.monsterHp = Math.max(0, hpBefore - safeRaw);
+    if (!Number.isFinite(target.monsterHp)) target.monsterHp = 0;
     if (perf && applied > 0) perf.damageDealt += applied;
     return applied;
   };
@@ -298,8 +307,9 @@ export function processFarm(character, now = Date.now(), options = {}) {
     }
   }
 
-  let target = currentTarget(character, zone);
+  let target = currentTarget(character, zone, rng);
   if (target && !Number.isFinite(target.fightElapsedMs)) target.fightElapsedMs = 0;
+  if (target && !Number.isFinite(target.monsterHp)) target.monsterHp = 0;
   const critChance = stats.critChance;
   ensureCombatSkills(character);
 
@@ -347,7 +357,9 @@ export function processFarm(character, now = Date.now(), options = {}) {
     let usedSkill = false;
 
     if (skillDef) {
-      const cast = executeCombatSkill(character, skillDef, target, stats, now - remaining);
+      const cast = executeCombatSkill(character, skillDef, target, stats, now - remaining, {
+        rng,
+      });
       if (cast.ok) {
         usedSkill = true;
         pushEvent({
@@ -388,7 +400,7 @@ export function processFarm(character, now = Date.now(), options = {}) {
     }
 
     if (!usedSkill) {
-      const crit = Math.random() < critChance;
+      const crit = rng() < critChance;
       const mitigation = monsterDefense(target.monster);
       let atk = Math.max(1, Math.floor(stats.attack * damageMult));
       if (character.classId === 'MAGO') {
@@ -396,7 +408,7 @@ export function processFarm(character, now = Date.now(), options = {}) {
       }
       const base = Math.max(1, atk - mitigation);
       const dmg = crit ? Math.floor(base * 1.8) : base;
-      const applied = applyOutgoingDamage(dmg);
+      const applied = applyOutgoingDamage(Number.isFinite(dmg) ? dmg : 0);
       applyJourneyEvent(character, {
         source: 'farm',
         type: 'hit_dealt',
@@ -428,7 +440,7 @@ export function processFarm(character, now = Date.now(), options = {}) {
       const rewardXp = Math.max(1, Math.floor(target.monster.xp * xpMult * celXp));
       const rewardGold = Math.max(
         0,
-        Math.floor((target.monster.gold + Math.floor(Math.random() * 3)) * goldMult),
+        Math.floor((target.monster.gold + Math.floor(rng() * 3)) * goldMult),
       );
       const levelBefore = character.level;
       applyRewards(character, { xp: rewardXp, gold: rewardGold });
@@ -486,9 +498,9 @@ export function processFarm(character, now = Date.now(), options = {}) {
       const bossMult = zone.bossDropMult != null ? Number(zone.bossDropMult) : bal.bossDropMult;
       const baseDrop = wasBoss ? zoneDrop * bossMult : zoneDrop;
       const dropChance = Math.min(1, baseDrop * dropMult);
-      if (Math.random() < dropChance) {
+      if (rng() < dropChance) {
         const celestialZone = Boolean(zone.requiresAscension);
-        const item = rollDrop(zone.tier || 1, character.classId, { celestialZone });
+        const item = rollDrop(zone.tier || 1, character.classId, { celestialZone, rng });
         if (item) {
           const result = ingestLootWithPets(character, item);
           const info = publicItem(item);
@@ -528,8 +540,8 @@ export function processFarm(character, now = Date.now(), options = {}) {
       if (wasBoss) {
         const refineChance =
           zone.refineDropChance != null ? Number(zone.refineDropChance) : bal.refineDropChance;
-        if (refineChance > 0 && Math.random() < Math.min(1, Math.max(0, refineChance))) {
-          const item = createItem(REFINER_TEMPLATE_ID, 'epic', 1);
+        if (refineChance > 0 && rng() < Math.min(1, Math.max(0, refineChance))) {
+          const item = createItem(REFINER_TEMPLATE_ID, 'epic', 1, rng);
           const result = ingestLootWithPets(character, item);
           const info = publicItem(item);
           pushEvent({
@@ -566,8 +578,8 @@ export function processFarm(character, now = Date.now(), options = {}) {
           const pityBonus = Math.min(0.05, pity * 0.002);
           const sucoChance = Math.min(0.12, baseChance + pityBonus);
           character.provaDivinaBossKillsWithoutSuco = pity + 1;
-          if (Math.random() < Math.min(1, Math.max(0, sucoChance))) {
-            const item = createItem(SUCO_CELESTIAL_TEMPLATE_ID, 'legendary', 1);
+          if (rng() < Math.min(1, Math.max(0, sucoChance))) {
+            const item = createItem(SUCO_CELESTIAL_TEMPLATE_ID, 'legendary', 1, rng);
             const result = ingestLootWithPets(character, item);
             const info = publicItem(item);
             if (result.added) {
@@ -614,16 +626,16 @@ export function processFarm(character, now = Date.now(), options = {}) {
         );
       }
       // Chance de poção de vida (editável no catálogo; boss ×5)
-      if (Math.random() < getHpPotionDropChance({ wasBoss })) {
-        const potion = createItem('consumable_hp_potion', 'uncommon', 1);
+      if (rng() < getHpPotionDropChance({ wasBoss })) {
+        const potion = createItem('consumable_hp_potion', 'uncommon', 1, rng);
         const pr = ingestLootWithPets(character, potion);
         noteDropIngest(pr, potion);
         if (pr.added && log.length < 8) {
           log.push(pr.stacked ? 'Poção de Vida (+1 no stack)' : 'Poção de Vida dropada');
         }
       }
-      if (Math.random() < getManaPotionDropChance({ wasBoss })) {
-        const potion = createItem('consumable_mana_potion', 'uncommon', 1);
+      if (rng() < getManaPotionDropChance({ wasBoss })) {
+        const potion = createItem('consumable_mana_potion', 'uncommon', 1, rng);
         const pr = ingestLootWithPets(character, potion);
         noteDropIngest(pr, potion);
         if (pr.added && log.length < 8) {
@@ -641,23 +653,26 @@ export function processFarm(character, now = Date.now(), options = {}) {
         );
       }
       character.combat = null;
-      target = currentTarget(character, zone);
+      target = currentTarget(character, zone, rng);
       pushEvent(spawnEvent(target));
       Object.assign(stats, computeStats(character));
       continue;
     }
 
     let incoming = Math.max(0, target.monster.attack - stats.defense);
+    if (!Number.isFinite(incoming)) incoming = 0;
     const mit = Number(character.combatMitigateNext) || 0;
     if (mit > 0) {
       incoming = Math.max(0, Math.floor(incoming * (1 - Math.min(0.9, mit))));
       character.combatMitigateNext = 0;
     }
     // Passiva Guerreiro: 12% chance de bloquear o hit
-    if (character.classId === 'GUERREIRO' && Math.random() < 0.12) {
+    if (character.classId === 'GUERREIRO' && rng() < 0.12) {
       incoming = 0;
     }
-    character.currentHp -= incoming;
+    const hpBeforeHurt = Number.isFinite(character.currentHp) ? character.currentHp : 0;
+    character.currentHp = hpBeforeHurt - incoming;
+    if (!Number.isFinite(character.currentHp)) character.currentHp = 0;
     gainRage(character, RAGE_ON_HURT);
     if (incoming > 0) {
       applyJourneyEvent(character, {
@@ -847,7 +862,7 @@ export function startFarm(character, zoneId, options = {}) {
   } else {
     resetHuntPerf(character, zone);
   }
-  currentTarget(character, zone);
+  currentTarget(character, zone, resolveRng(options));
   return zone;
 }
 

@@ -783,10 +783,11 @@ export function pickCombatSkillForTick(character, now = Date.now()) {
 /**
  * Executa skill no alvo. Retorna hits + eventos para o combat loop.
  */
-export function executeCombatSkill(character, def, target, stats, now = Date.now()) {
+export function executeCombatSkill(character, def, target, stats, now = Date.now(), options = {}) {
   if (!canAfford(character, def, stats)) {
     return { ok: false, reason: 'resource' };
   }
+  const rng = typeof options?.rng === 'function' ? options.rng : Math.random;
   const spent = spendResource(character, def, stats);
   const cdUntil = new Date(now + def.cooldownMs).toISOString();
   character.combatSkills.cooldowns[def.id] = cdUntil;
@@ -808,15 +809,16 @@ export function executeCombatSkill(character, def, target, stats, now = Date.now
   let totalDmg = 0;
 
   for (let i = 0; i < hits; i += 1) {
-    const crit = def.guaranteeCrit || Math.random() < stats.critChance;
+    const crit = def.guaranteeCrit || rng() < stats.critChance;
     const atk = Math.max(
       1,
       Math.floor((stats.attack * def.damageMult + mpPart) * bossMult * elemMult),
     );
     const base = Math.max(1, atk - mitigation);
     const dmg = crit ? Math.floor(base * 1.8) : base;
-    totalDmg += dmg;
-    hitResults.push({ dmg, crit });
+    const safe = Number.isFinite(dmg) ? dmg : 0;
+    totalDmg += safe;
+    hitResults.push({ dmg: safe, crit });
   }
 
   return {

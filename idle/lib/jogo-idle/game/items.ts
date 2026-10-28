@@ -1352,14 +1352,19 @@ export function getTemplate(id) {
 
 loadCatalog();
 
-export function createItem(templateId, rarity = 'common', roll = 0.9 + Math.random() * 0.2) {
+export function createItem(templateId, rarity = 'common', roll, rng = Math.random) {
   if (!CATALOG.has(templateId)) throw new Error(`Item desconhecido: ${templateId}`);
   const t = CATALOG.get(templateId);
+  const rollFn = typeof rng === 'function' ? rng : Math.random;
+  const resolvedRoll =
+    roll != null && Number.isFinite(Number(roll))
+      ? Number(roll)
+      : 0.9 + rollFn() * 0.2;
   const item = {
     uid: randomUUID(),
     templateId,
     rarity,
-    roll: Math.round(roll * 1000) / 1000,
+    roll: Math.round(resolvedRoll * 1000) / 1000,
   };
   if (t?.stackable) item.qty = 1;
   return item;
@@ -1477,9 +1482,9 @@ export function publicItem(item) {
   };
 }
 
-function rollRarity() {
+function rollRarity(rng = Math.random) {
   const total = RARITY_ORDER.reduce((s, r) => s + RARITIES[r].weight, 0);
-  let n = Math.random() * total;
+  let n = rng() * total;
   for (const r of RARITY_ORDER) {
     n -= RARITIES[r].weight;
     if (n <= 0) return r;
@@ -1492,11 +1497,11 @@ function rollRarity() {
  * Gear com `requiresAscension` só entra no pool em zonas celestiais.
  * Consumíveis especiais (Refinador / Suco) não saem por este path.
  */
-function pickWeightedTemplate(list) {
+function pickWeightedTemplate(list, rng = Math.random) {
   const eligible = list.filter((t) => templateDropWeight(t) > 0);
   if (!eligible.length) return null;
   const total = eligible.reduce((sum, t) => sum + templateDropWeight(t), 0);
-  let n = Math.random() * total;
+  let n = rng() * total;
   for (const t of eligible) {
     n -= templateDropWeight(t);
     if (n <= 0) return t;
@@ -1510,7 +1515,8 @@ function pickWeightedTemplate(list) {
  * `dropChance` no template = peso relativo (0 = nunca; ausente = 1).
  * Consumíveis especiais (Refinador / Suco / Poção) não saem por este path.
  */
-export function rollDrop(tier, classId, { celestialZone = false } = {}) {
+export function rollDrop(tier, classId, { celestialZone = false, rng = Math.random } = {}) {
+  const roll = typeof rng === 'function' ? rng : Math.random;
   const pool = [...CATALOG.values()].filter((t) => {
     if (t.tier !== tier) return false;
     if (t.consumable || t.slot === 'consumable') return false;
@@ -1522,10 +1528,15 @@ export function rollDrop(tier, classId, { celestialZone = false } = {}) {
   });
   if (!pool.length) return null;
   const own = pool.filter((t) => t.classes.includes(classId));
-  const from = Math.random() < 0.65 && own.length ? own : pool;
-  const template = pickWeightedTemplate(from);
+  const from = roll() < 0.65 && own.length ? own : pool;
+  const template = pickWeightedTemplate(from, roll);
   if (!template) return null;
-  return createItem(template.id, rollRarity());
+  return createItem(template.id, rollRarity(roll), undefined, roll);
+}
+
+/** Exposto para testes de faixa de raridade. */
+export function rollRarityForTests(rng) {
+  return rollRarity(rng);
 }
 
 export function starterWeaponId(classId) {
