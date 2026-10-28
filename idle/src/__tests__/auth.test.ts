@@ -192,6 +192,33 @@ describe("boot fail-closed", () => {
   });
 });
 
+describe("perf diagnostics boot gate", () => {
+  it("local + IDLE_PERF_DIAGNOSTICS=1 habilita flag no boot", () => {
+    const cfg = resolveBootConfig({
+      IDLE_AUTH_MODE: "local",
+      IDLE_BIND: "127.0.0.1",
+      IDLE_PERF_DIAGNOSTICS: "1",
+    });
+    assert.equal(cfg.perfDiagnostics, true);
+  });
+
+  it("local sem IDLE_PERF_DIAGNOSTICS permanece desligado", () => {
+    const cfg = resolveBootConfig({ IDLE_AUTH_MODE: "local", IDLE_BIND: "127.0.0.1" });
+    assert.equal(cfg.perfDiagnostics, false);
+  });
+
+  it("protected nunca habilita perfDiagnostics mesmo com env=1", () => {
+    const cfg = resolveBootConfig({
+      IDLE_AUTH_MODE: "protected",
+      IDLE_BIND: "127.0.0.1",
+      IDLE_SESSION_SECRET: SECRET,
+      IDLE_ALLOW_HTTP_LOCAL: "1",
+      IDLE_PERF_DIAGNOSTICS: "1",
+    });
+    assert.equal(cfg.perfDiagnostics, false);
+  });
+});
+
 describe("local mode", () => {
   it("dev sem login obrigatório — /api/jogo-idle/characters com userId=1", async () => {
     const cfg = resolveBootConfig({ IDLE_AUTH_MODE: "local", IDLE_BIND: "127.0.0.1" });

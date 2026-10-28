@@ -163,7 +163,13 @@ function registerGameRoutes(app: express.Express, bootConfig: BootConfig) {
 
 app.get("/api/jogo-idle/meta", async (req, res) => {
   try {
-    ok(res, { success: true, ...(await getMeta()) });
+    const cfg = req.bootConfig;
+    ok(res, {
+      success: true,
+      ...(await getMeta()),
+      authMode: cfg?.mode ?? null,
+      perfDiagnostics: Boolean(cfg?.perfDiagnostics),
+    });
   } catch (error) {
     fail(res, error);
   }

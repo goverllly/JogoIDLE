@@ -16,6 +16,12 @@ export type BootConfig = {
   trustedProxies: string[];
   /** True when bind is loopback only. */
   isLoopbackBind: boolean;
+  /**
+   * Client perf probe may activate only when this is true.
+   * Requires IDLE_AUTH_MODE=local AND IDLE_PERF_DIAGNOSTICS=1.
+   * Never enabled in protected (localStorage/query alone are insufficient).
+   */
+  perfDiagnostics: boolean;
 };
 
 export class BootConfigError extends Error {
@@ -124,6 +130,9 @@ export function resolveBootConfig(env: NodeJS.ProcessEnv = process.env): BootCon
     cookieSecure = false;
   }
 
+  // Diagnostics are opt-in and local-only — never trust client flags or bind host alone.
+  const perfDiagnostics = mode === "local" && env.IDLE_PERF_DIAGNOSTICS === "1";
+
   return {
     mode,
     port,
@@ -134,6 +143,7 @@ export function resolveBootConfig(env: NodeJS.ProcessEnv = process.env): BootCon
     allowHttpLocal,
     trustedProxies: trustProxyFlag ? trustedProxies : [],
     isLoopbackBind: loopback,
+    perfDiagnostics,
   };
 }
 
@@ -143,6 +153,7 @@ export function bootBanner(cfg: BootConfig): string[] {
       (cfg.mode === "local" ? " (dev identity ON — loopback only)" : " (real sessions required)"),
     `Bind http://${cfg.bindHost}:${cfg.port}`,
   ];
+  if (cfg.perfDiagnostics) lines.push("PERF DIAGNOSTICS=on (client probe may activate)");
   if (cfg.mode === "protected") {
     lines.push(`Cookie Secure=${cfg.cookieSecure} allowHttpLocal=${cfg.allowHttpLocal}`);
     if (cfg.trustedProxies.length) lines.push(`Trusted proxies: ${cfg.trustedProxies.join(", ")}`);
