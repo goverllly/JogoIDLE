@@ -1,3 +1,5 @@
+import { applyCsrfHeaders, rejectIfFailed } from "./http.js";
+
 const fmt = new Intl.NumberFormat("pt-BR");
 
 function apiPath(path) {
@@ -7,14 +9,25 @@ function apiPath(path) {
 }
 
 async function api(path, opts = {}) {
-  const res = await fetch(apiPath(path), {
+  const url = apiPath(path);
+  const headers = applyCsrfHeaders(
+    url,
+    { method: opts.method, headers: { "Content-Type": "application/json", ...(opts.headers || {}) } },
+    document.cookie,
+    location.origin,
+  );
+  const res = await fetch(url, {
     credentials: "same-origin",
-    headers: { "Content-Type": "application/json", ...(opts.headers || {}) },
     ...opts,
+    headers,
   });
   const data = await res.json().catch(() => ({}));
-  if (!res.ok || data.success === false) {
-    throw new Error(data.error || `Erro ${res.status}`);
+  if (!res.ok) return rejectIfFailed(res, data, location);
+  if (data.success === false) {
+    const err = new Error(data.error || `Erro ${res.status}`);
+    err.status = res.status;
+    err.code = data.code;
+    throw err;
   }
   return data;
 }

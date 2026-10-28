@@ -76,8 +76,9 @@
       <div class="err" id="err" aria-live="polite"></div>
     </form>
     <script type="module">
+      import { sanitizeLoginNext } from "./http.js";
       const params = new URLSearchParams(location.search);
-      const next = params.get("next") || "/jogo-idle/lobby.html";
+      const next = sanitizeLoginNext(params.get("next") || "/jogo-idle/lobby.html");
       const form = document.getElementById("login-form");
       const err = document.getElementById("err");
       form.addEventListener("submit", async (e) => {
@@ -96,7 +97,6 @@
           err.textContent = data.error || "Falha no login";
           return;
         }
-        if (data.csrfToken) sessionStorage.setItem("jogo_idle_csrf", data.csrfToken);
         location.href = next;
       });
     </script>

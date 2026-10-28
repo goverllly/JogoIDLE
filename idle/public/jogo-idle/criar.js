@@ -1,5 +1,6 @@
 /** Studio de Criação 2.0 — Classe → Aparência → Confirmar */
 import { DEFAULT_LOOK } from "./appearance.js";
+import { applyCsrfHeaders, rejectIfFailed } from "./http.js";
 
 const CLASS_GLYPH = {
   GUERREIRO: "⚔",
@@ -324,7 +325,12 @@ els.btnCreate.addEventListener("click", async () => {
     const res = await fetch("/api/jogo-idle/characters", {
       method: "POST",
       credentials: "same-origin",
-      headers: { "Content-Type": "application/json" },
+      headers: applyCsrfHeaders(
+        "/api/jogo-idle/characters",
+        { method: "POST", headers: { "Content-Type": "application/json" } },
+        document.cookie,
+        location.origin,
+      ),
       body: JSON.stringify({
         name: state.name,
         classId: state.classId,
@@ -332,7 +338,7 @@ els.btnCreate.addEventListener("click", async () => {
       }),
     });
     const data = await res.json().catch(() => ({}));
-    if (!res.ok) throw new Error(data.error || data.message || `Erro ${res.status}`);
+    rejectIfFailed(res, data, location);
     window.location.href = "/jogo-idle/lobby.html";
   } catch (err) {
     setErr(err.message || "Falha ao criar personagem");

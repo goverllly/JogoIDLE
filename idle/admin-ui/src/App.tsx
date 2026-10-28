@@ -7,23 +7,16 @@ import {
   type AdminZone,
 } from "./JogoIdleAdmin";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { applyCsrfHeaders, loginRedirectFor } from "../../public/jogo-idle/http.js";
 
 async function idleFetch(path: string, init?: RequestInit) {
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-    ...((init?.headers as Record<string, string>) || {}),
-  };
-  const method = (init?.method || "GET").toUpperCase();
-  if (method !== "GET" && method !== "HEAD") {
-    const csrf =
-      sessionStorage.getItem("jogo_idle_csrf") ||
-      document.cookie
-        .split(";")
-        .map((p) => p.trim())
-        .find((p) => p.startsWith("jogo_idle_csrf="))
-        ?.slice("jogo_idle_csrf=".length);
-    if (csrf) headers["X-CSRF-Token"] = decodeURIComponent(csrf);
-  }
+  const headers = applyCsrfHeaders(
+    path,
+    { method: init?.method, headers: init?.headers },
+    document.cookie,
+    window.location.origin,
+  );
+  if (!headers.has("Content-Type")) headers.set("Content-Type", "application/json");
   const res = await fetch(path, {
     ...init,
     credentials: "same-origin",
@@ -31,6 +24,10 @@ async function idleFetch(path: string, init?: RequestInit) {
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok || data?.success === false) {
+    if (res.status === 401 && data?.code !== "CSRF_INVALID") {
+      const dest = loginRedirectFor(window.location.pathname, window.location.search);
+      if (dest) window.location.assign(dest);
+    }
     const code = data?.code ? ` [${data.code}]` : "";
     throw new Error((data?.error || `HTTP ${res.status}`) + code);
   }

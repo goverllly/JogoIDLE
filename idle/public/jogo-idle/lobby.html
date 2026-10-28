@@ -108,6 +108,7 @@
     </div>
 
     <script type="module">
+      import { applyCsrfHeaders, rejectIfFailed } from "./http.js";
       const CLASS_GLYPH = {
         GUERREIRO: "⚔",
         BARBARO: "🪓",
@@ -336,14 +337,19 @@
       }
 
       async function api(path, opts = {}) {
+        const headers = applyCsrfHeaders(
+          path,
+          { method: opts.method, headers: { "Content-Type": "application/json", ...(opts.headers || {}) } },
+          document.cookie,
+          location.origin,
+        );
         const res = await fetch(path, {
           credentials: "same-origin",
-          headers: { "Content-Type": "application/json", ...(opts.headers || {}) },
           ...opts,
+          headers,
         });
         const data = await res.json().catch(() => ({}));
-        if (!res.ok) throw new Error(data.error || data.message || `Erro ${res.status}`);
-        return data;
+        return rejectIfFailed(res, data, location);
       }
 
       async function loadLobby() {

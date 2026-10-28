@@ -1,3 +1,4 @@
+import { applyCsrfHeaders, IdleHttpError, rejectIfFailed } from './http.js';
 import { createArena } from './arena.js';
 import { createInventoryUI } from './inventory.js';
 import { createMerchantUI } from './merchant.js';
@@ -768,17 +769,26 @@ function notifyMaintenance(message) {
 
 async function api(path, options = {}) {
   const t0 = performance.now();
-  const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
-  const res = await fetch(apiPath(path), { credentials: 'include', ...options, headers });
+  const url = apiPath(path);
+  const headers = applyCsrfHeaders(
+    url,
+    { method: options.method, headers: { 'Content-Type': 'application/json', ...(options.headers || {}) } },
+    document.cookie,
+    window.location.origin,
+  );
+  const res = await fetch(url, { credentials: 'include', ...options, headers });
   const data = await res.json().catch(() => ({}));
   noteFetch(performance.now() - t0);
   if (!res.ok) {
-    if (res.status === 401) {
-      window.location.assign('/jogo-idle/lobby.html');
+    let err;
+    try {
+      rejectIfFailed(res, data, window.location);
+    } catch (caught) {
+      err = caught;
     }
-    const err = new Error(data.error || `Erro ${res.status}`);
-    err.status = res.status;
-    err.code = data.code;
+    if (!(err instanceof IdleHttpError)) {
+      err = new IdleHttpError(data.error || `Erro ${res.status}`, res.status, data.code);
+    }
     const maintenance =
       data.code === 'MAINTENANCE' ||
       (res.status === 503 && /manuten/i.test(String(data.error || '')));
@@ -2218,7 +2228,21 @@ function goToLobby() {
   window.location.assign('/jogo-idle/lobby.html');
 }
 
-els.logoutBtn?.addEventListener('click', goToLobby);
+els.logoutBtn?.addEventListener('click', async () => {
+  if (meta?.authMode !== 'protected') {
+    goToLobby();
+    return;
+  }
+  try {
+    await api('/api/jogo-idle/auth/logout', { method: 'POST', body: '{}' });
+  } catch (err) {
+    if (err.status !== 401 && err.code !== 'AUTH_REQUIRED') {
+      toast(err.message || 'Falha ao sair', 2500);
+      return;
+    }
+  }
+  window.location.assign('/jogo-idle/login.html');
+});
 els.lobbyBtn?.addEventListener('click', goToLobby);
 
 $('cronicas-btn')?.addEventListener('click', () => {
