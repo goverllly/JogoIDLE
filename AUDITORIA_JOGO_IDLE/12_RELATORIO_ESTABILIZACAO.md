@@ -254,8 +254,8 @@ Somente relatório (`14_AUDITORIA_GAMEPLAY.md`). Nenhum preço/prob/fórmula mud
 | P3-HUD | HUD Builder dirty/breakpoints/publish/CSS | P0 | Resolvido | 76 pass + admin build | (fase 3 commits) |
 | P4-GAMEPLAY | Combate/farm/inv/ascensão/HTTP + auditoria | P0 | Resolvido | suite Fase 4 + admin build | (fase 4 commits) |
 | P5-PERF | Probe + sync /me + suspend + 5.7 | P1 | Implementação OK; GPU % N/A | ≥151 pass; HTTP/CDP em `15_*.md` | ver commits perf |
-| Fase 6.1 | Auditoria funcional / beta | P1 | Documentada | 154 pass; ver `16_*.md` | commit docs |
-| Fase 6.2+ | CSRF client, Arena UI, restore | P0 | Pendente | — | — |
+| Fase 6.1 | Auditoria funcional / beta | P1 | Documentada | 154 pass; ver `16_*.md` | `0c52cae` |
+| Fase 6.2 | CSRF client, duelo oculto, restore isolado, embed da prévia | P0 | Resolvido no código | 161 pass no código; 167 com teste local do portal; admin:build OK | `73a45e0` `e452eac` `2f7cca2` `384060d` |
 
 ---
 
@@ -274,3 +274,25 @@ Somente relatório (`14_AUDITORIA_GAMEPLAY.md`). Nenhum preço/prob/fórmula mud
 |---------|-----------|
 | `cd idle && npm test` | **≥151 pass / 0 fail** |
 | Veredito | **Implementação concluída; validação visual/GPU parcial** — pronto para Fase 6 funcional |
+
+---
+
+## Fase 6.2 — Bloqueadores da beta
+
+### Entregue
+- Cliente lê `jogo_idle_csrf` e envia `X-CSRF-Token` só em mutação same-origin. O servidor continua rejeitando token ausente, inválido ou de outra sessão.
+- Duelo PvP oculto (`#arena-combat-btn`, `#arena-btn`). A caça `#arena` permanece. API 501 preservada.
+- Restore com o processo parado, cópia do diretório e segunda instância. Conta, personagem, inventário, refino, preço do catálogo e papéis conferidos. Login por senha ok. Sessão antiga continua válida com outro `IDLE_SESSION_SECRET`, porque o segredo não assina o cookie.
+- Prévia: `frame-ancestors 'self'` e `X-Frame-Options: SAMEORIGIN` só nas duas páginas. Iframe same-origin carregou no navegador.
+- Aceitação protected no navegador, dados temporários: login, lobby, criar, +1 FOR, equipar, refinar, farm start/stop, logout, concessão admin.
+
+### Não declarado
+- Beta liberada para convite. Faltam HTTPS, health, observabilidade e a fase de convite.
+- Canvas 3D da página de play (a consulta não achou `canvas`).
+- Fase 6.3. Não iniciada.
+
+### Testes
+| Comando | Resultado |
+|---------|-----------|
+| `cd idle && npm test` | **161 pass / 0 fail** no código da 6.2. **167 pass / 0 fail** com `login-ui.test.ts` local, fora do Git |
+| `cd idle && npm run admin:build` | **OK** |

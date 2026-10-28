@@ -1,6 +1,6 @@
 # 08 — Problemas conhecidos
 
-**Fase 6.1:** bloqueadores de beta fechada (CSRF ausente no cliente protected, Arena 501 clicável, restore ops não ensaiado, `frame-ancestors` ainda não aplicado) estão em [`16_AUDITORIA_FUNCIONALIDADES_LANCAMENTO.md`](16_AUDITORIA_FUNCIONALIDADES_LANCAMENTO.md). Não corrigidos nesta auditoria.
+**Fase 6.2 (código `384060d`):** cliente CSRF, ocultação do duelo, restore em instância isolada e `frame-ancestors 'self'` nas duas prévias estão em [`16_AUDITORIA_FUNCIONALIDADES_LANCAMENTO.md`](16_AUDITORIA_FUNCIONALIDADES_LANCAMENTO.md). A beta fechada continua sem convite: HTTPS, health, observabilidade e procedimento de convidado seguem abertos. O segredo de sessão não invalida cookies restaurados.
 
 Só itens com evidência (código, UI disabled, stub HTTP, roadmap no repo). Sem inventar bugs de jogabilidade sem prova.
 
@@ -12,7 +12,8 @@ Só itens com evidência (código, UI disabled, stub HTTP, roadmap no repo). Sem
 | **Publicar mapa** versionado disabled (“Fase 4” no Admin Studio) | `admin-map.tsx` |
 | Criação de **zonas novas** adiada (“Fase 3”) | `admin-zones.tsx` |
 | Loot tables **por monstro** / skills de mob = Fase 2 | `admin-loot.tsx`, `admin-monsters.tsx`, `content/facade.ts` |
-| Arena PvP **501** no standalone | `server.ts` loop `arena/*` |
+| Arena PvP **501**; botões `#arena-combat-btn` e `#arena-btn` ocultos. `#arena` é a caça PvE e permanece. O módulo não abre sozinho | `server.ts`, `play.html`, `theme-ref.css`, `app.js` |
+| `IDLE_SESSION_SECRET` não assina o cookie. Copiar `auth-sessions.json` mantém a sessão antiga válida com outro segredo | `restore-drill.test.ts` |
 | Engagement claim **410** | `server.ts`; `idle/README.md` |
 | Ranking / seasons HTTP **vazios** | `GET /ranking`, `/seasons` stubs |
 | Auth admin = e-mail/user fixos em **local**; protected usa sessão (Fase 2) | `IDLE_AUTH_MODE` + `13_FASE2_AUTH.md` |

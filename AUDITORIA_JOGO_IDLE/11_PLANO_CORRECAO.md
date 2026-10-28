@@ -2,7 +2,7 @@
 
 Branch de trabalho: **`main`** (sem branch de estabilização).  
 Commit de partida Fase 0/1: `90f51da` → integrado em `main` até `59dd861`.  
-Escopo concluído e **revalidado**: **Fases 0–4** + **UX pós-4**. Fase 5 **implementação concluída; GPU/FPS parcial** (`15_`). **Fase 6.1 auditoria entregue** (`16_`) — correções 6.2+ **não** iniciadas.  
+Escopo concluído e **revalidado**: **Fases 0–4** + **UX pós-4**. Fase 5 **implementação concluída; GPU/FPS parcial** (`15_`). **Fase 6.1 auditoria entregue** e **Fase 6.2 (bloqueadores) entregue** no código `384060d` (`16_`). Fase 6.3 **não** iniciada.  
 Detalhe Fase 2: `13_FASE2_AUTH.md`. Detalhe Fase 4: `14_AUDITORIA_GAMEPLAY.md`. Detalhe Fase 5: `15_AUDITORIA_PERFORMANCE.md`.
 
 ## Baseline (Fase 0) + revisão final
@@ -33,6 +33,9 @@ Detalhe Fase 2: `13_FASE2_AUTH.md`. Detalhe Fase 4: `14_AUDITORIA_GAMEPLAY.md`. 
 | Fase 5 performance | probe, sync, suspend + 5.7 HTTP/CDP | Implementação OK; FPS/GPU % não declarado | 2026-10-28 |
 | `npm test` (Fase 6.1) | auditoria, sem mudança de código de jogo | **154 pass / 0 fail** + admin:build OK | 2026-10-28 |
 | Fase 6.1 funcionalidades | matriz local/protected + beta | Relatório `16_`; sem correções | 2026-10-28 |
+| `npm test` (Fase 6.2) | CSRF + duelo oculto + restore + prévia | **161 pass / 0 fail** no código commitado. Com `login-ui.test.ts` local não versionado: **167 pass / 0 fail** | 2026-10-28 |
+| `admin:build` (Fase 6.2) | `cd idle && npm run admin:build` | **OK** — 124 módulos, `index-DZM_7zpl.js` | 2026-10-28 |
+| Fase 6.2 bloqueadores | CSRF, duelo, restore, embed | Entregue; beta ainda sem convite | 2026-10-28 |
 
 ## Itens
 
@@ -56,6 +59,10 @@ Detalhe Fase 2: `13_FASE2_AUTH.md`. Detalhe Fase 4: `14_AUDITORIA_GAMEPLAY.md`. 
 | P5-SYNC-01 | /me vs mutações fora de ordem | P0 | `client-sync.js`, `app.js` | Análise concorrência | Só offline-report tinha seq | revision + exclusive refresh | Resolvido | client-sync.test | Passou | ver log git |
 | P5-3D-01 | Suspend ≠ setActive(false) | P1 | `scene3d.js`, `arena.js` | setActive limpa timeline | Aba oculta usaria clear indevido | setRenderSuspended + destroy | Resolvido (funcional); GPU % N/A | render-suspend-source | Passou | ver log git |
 | P5.7-VAL | ISO#seq + HTTP before/after + CDP | P0 | `client-sync`, `.perf-wt` | Plano 5.7 | Validação parcial | Worktrees + regressões + relatório | Resolvido parcial | npm test + measure JSON | Passou | ver log git |
+| P6.2-CSRF | Cliente protected sem `X-CSRF-Token` | P0 | `http.js`, `App.tsx` | Relatório 6.1 | Token só no sessionStorage, e o `api()` não lia | Cookie `jogo_idle_csrf` + `Headers`; sem retry em 401/403 | Resolvido | client-csrf.test + UI | Passou | `73a45e0` |
+| P6.2-ARENA | Duelo 501 clicável | P0 | `play.html`, `app.js`, `theme-ref.css` | Botões visíveis | UI prometia duelo | Ocultar só `#arena-combat-btn` e `#arena-btn`; `#arena` intacto | Resolvido | arena-ui-source + UI | Passou | `e452eac` |
+| P6.2-RESTORE | Restore ops não ensaiado | P0 | `restore-drill.test.ts` | Só JSON de store | Sem segunda instância | Copiar parado e subir filho isolado | Resolvido | restore-drill | Passou | `2f7cca2` |
+| P6.2-PREVIEW | Prévia sem `frame-ancestors` | P1 | `middleware.ts` | Iframe same-origin sem CSP | DENY antigo removido, CSP ainda ausente | `frame-ancestors 'self'` + `X-Frame-Options: SAMEORIGIN` só nas duas páginas | Resolvido | preview-headers + iframe | Passou | `384060d` |
 
 ## Limitações documentadas (concorrência)
 
