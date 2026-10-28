@@ -1,20 +1,22 @@
 # 11 — Plano de correção (checklist)
 
-Branch: `stabilize/store-integrity`  
-Commit de partida: `90f51da`  
-Escopo ativo concluído neste ciclo: **Fases 0 e 1**. Fases 2–6 permanecem **Pendente**.
+Branch de trabalho: **`main`** (sem branch de estabilização).  
+Commit de partida Fase 0/1: `90f51da` → integrado em `main` até `59dd861`.  
+Escopo concluído e **revalidado**: **Fases 0 e 1**. Fases 2–6 permanecem **Pendente**.
 
-## Baseline (Fase 0)
+## Baseline (Fase 0) + revisão final
 
 | Check | Comando | Resultado | Quando |
 |-------|---------|-----------|--------|
-| Git limpo | `git status` | Limpo → branch `stabilize/store-integrity` | 2026-10-28 |
-| HEAD partida | `git rev-parse --short HEAD` | `90f51da` | 2026-10-28 |
+| Git limpo | `git status` | Limpo em `main` | 2026-10-28 |
+| HEAD partida | `git rev-parse --short HEAD` | `90f51da` (início) | 2026-10-28 |
 | `npm test` (pré) | `cd idle && npm test` | **21 pass / 0 fail** | 2026-10-28 |
 | `admin:build` (pré) | `cd idle && npm run admin:build` | **OK** | 2026-10-28 |
-| `npm test` (pós Fase 1) | inclui `src/__tests__/store.test.ts` | **39 pass / 0 fail** | 2026-10-28 |
-| `admin:build` (pós) | `cd idle && npm run admin:build` | **OK** | 2026-10-28 |
+| `npm test` (pós Fase 1) | inclui store tests | **39 pass / 0 fail** | 2026-10-28 |
+| `npm test` (revisão final) | + regressões | **44 pass / 0 fail** | 2026-10-28 |
+| `admin:build` (revisão) | `cd idle && npm run admin:build` | **OK** | 2026-10-28 |
 | `save.json` no git | `.gitignore` | Ignorado + backups/tmp/evidence | Confirmado |
+| Fase 1 validada | revisão final | **Sim — pronta para Fase 2** | 2026-10-28 |
 
 ## Itens
 

@@ -94,6 +94,53 @@ Camada de I/O mínima sem atomicidade, sem distinção ENOENT vs corrupt, e conf
 
 ---
 
+## Revisão final Fase 1 (pré–Fase 2)
+
+**Data:** 2026-10-28  
+**Branch / HEAD na revisão:** `main` @ `59dd861` (antes dos commits desta revisão)  
+**Política:** sem push automático; trabalho só em `main`.
+
+### Arquivos verificados
+- `idle/src/store.ts` — importa `store-io.ts` + `store-backup.ts`; usa `atomicWriteJson` / `createBackupFromValidSave`
+- `idle/src/store-io.ts` — escrita atômica, validação, corrupt read
+- `idle/src/store-backup.ts` — backups / restore interno
+- `idle/src/local-service.ts` / `admin-service.ts` — `DB_UPDATED_AT` / `STALE_CHARACTER` por igualdade
+- `idle/src/server.ts` — static apenas `public/jogo-idle` (sem servir `idle/data/`)
+- `idle/package.json` — `npm test` inclui `src/__tests__/**/*.test.ts`
+- `idle/src/__tests__/store.test.ts`
+
+### Problemas encontrados
+| Item | Severidade | Conclusão |
+|------|------------|-----------|
+| `updatedAt` com sufixo `#seq` vs `Date.parse` | Residual | **Não comprovado** no path standalone; callers usam igualdade. `Date.parse("…Z#1")` → `NaN` (risco futuro). |
+| Tmp órfão após falha | Gap de teste | Produção já limpava tmp; teste de regressão adicionado. |
+| Restore com falha no rename | Gap de teste | Principal preservado; teste + `writeOptions` no restore. |
+| `deleteCharacter` → backup | OK | Confirmado por teste. |
+| `adminEndSeason` sem backup | Limitação | Stub não muta save; não conectado (esperado). |
+| HTTP em `/data` | OK | Não exposto. |
+
+### Correções nesta revisão
+- Nenhuma mudança de gameplay / schema de save.
+- `restoreBackupToSavePath` aceita `writeOptions` (habilita teste de falha no rename do principal sem afetar o safety-backup).
+- Testes de regressão: legacy ISO, limpeza `.tmp`, delete→backup, restore falho, smoke integração.
+
+### Testes executados
+| Comando | Resultado |
+|---------|-----------|
+| `cd idle && npm test` (revisão) | **44 pass / 0 fail** |
+| `cd idle && npm run admin:build` | **OK** |
+
+### Limitações remanescentes
+- Multi-processo no mesmo `save.json`: não suportado.
+- `updatedAt` `ISO#seq` não é timestamp parseável; se no futuro precisar de data, preferir campo ISO separado + `revision` numérico.
+- Auth admin aberta (Fase 2).
+- `adminEndSeason` stub sem soft-reset / backup.
+
+### Veredito
+**Fase 1 validada e pronta para integração / início da Fase 2** (em trabalho separado).
+
+---
+
 ## Matriz (Fases 0–1)
 
 | ID | Problema | Prioridade | Status | Teste | Commit |
@@ -104,4 +151,5 @@ Camada de I/O mínima sem atomicidade, sem distinção ENOENT vs corrupt, e conf
 | P0-STORE-03 | Schema / estrutura | P0 | Resolvido | structure + future schema | (fix store) |
 | P0-STORE-04 | Backups | P0 | Resolvido | backup/restore tests | (fix store) |
 | P0-STORE-05 | STALE / concurrency | P0 | Resolvido | concurrent + monotonic | (fix store) |
+| P0-STORE-REV | Revisão final Fase 1 | P0 | Resolvido | 44 pass + admin build | (esta revisão) |
 | Fases 2–6 | Auth, HUD, … | P1+ | Pendente | — | — |
