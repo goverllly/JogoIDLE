@@ -66,9 +66,9 @@ export function AdminSettingsPanel({
       <StudioCard>
         <h3 className="studio-2-section-title">Runtime</h3>
         <p className="text-[0.78rem] text-[var(--studio-muted)]">
-          Persistência atual: singleton <code>sinergia_idle_catalog_state</code>. Draft /
+          Persistência atual: singleton <code>jogo_idle_catalog_state</code>. Draft /
           publish e histórico de revisões: Fase 4. Contratos em{" "}
-          <code>lib/sinergia-idle/content/</code>.
+          <code>lib/jogo-idle/content/</code>.
         </p>
       </StudioCard>
     </div>

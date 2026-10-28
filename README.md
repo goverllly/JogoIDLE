@@ -2,10 +2,10 @@
 
 Dois fronts no mesmo repositório:
 
-1. **Sinergia IDLE (standalone)** em `idle/` — o jogo completo do TicTac, **sem** gate de acesso SinergIA e **sem** missões de engajamento (plantão/FlowTime/check-in).
+1. **Jogo IDLE (standalone)** em `idle/` — o jogo idle completo, **sem** gate de acesso externo e **sem** missões de engajamento (plantão/FlowTime/check-in).
 2. **Véu de Cinzas** (raiz) — arena provisória Phaser + React (Ecos do Ocaso / docs).
 
-## Sinergia IDLE
+## Jogo IDLE
 
 ```bash
 cd idle && npm install && npm run dev

@@ -40,8 +40,8 @@ export function AdminOverviewPanel({
       setLoading(true);
       try {
         const [act, snap] = await Promise.all([
-          idleFetch("/api/sinergia-idle/admin/actions?limit=12"),
-          idleFetch("/api/sinergia-idle/admin/world-snapshot"),
+          idleFetch("/api/jogo-idle/admin/actions?limit=12"),
+          idleFetch("/api/jogo-idle/admin/world-snapshot"),
         ]);
         if (cancelled) return;
         setActions(Array.isArray(act?.actions) ? act.actions : []);

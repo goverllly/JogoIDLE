@@ -4,9 +4,12 @@ import {
   buildHudLayerTree,
   getHudComponent,
   type HudComponentDef,
-} from "@/lib/sinergia-idle/hud-registry";
-import type { HudLayoutDocument, HudStyleProps } from "@/lib/sinergia-idle/hud-layout";
-import { DEFAULT_SLOT_RARITY_FILL_MIX } from "@/lib/sinergia-idle/hud-layout";
+} from "@/lib/jogo-idle/hud-registry";
+import type { HudLayoutDocument, HudStyleProps } from "@/lib/jogo-idle/hud-layout";
+import {
+  DEFAULT_HUD_INTRO_TOKENS,
+  DEFAULT_SLOT_RARITY_FILL_MIX,
+} from "@/lib/jogo-idle/hud-layout";
 import {
   StudioBadge,
   StudioBtn,
@@ -48,7 +51,10 @@ function emptyDraft(): HudLayoutDocument {
     updatedBy: "admin",
     breakpoints: { desktop: 1024, tablet: 768, mobile: 0 },
     components: {},
-    tokens: { slotRarityFillMix: DEFAULT_SLOT_RARITY_FILL_MIX },
+    tokens: {
+      slotRarityFillMix: DEFAULT_SLOT_RARITY_FILL_MIX,
+      intro: { ...DEFAULT_HUD_INTRO_TOKENS },
+    },
   };
 }
 
@@ -181,7 +187,7 @@ export function AdminHudBuilder({ working, idleFetch, onMessage, run }: AdminHud
   );
 
   const loadDraft = useCallback(async () => {
-    const data = await idleFetch("/api/sinergia-idle/admin/hud-layout");
+    const data = await idleFetch("/api/jogo-idle/admin/hud-layout");
     const next = (data.draft as HudLayoutDocument) || emptyDraft();
     const base = JSON.stringify(next.components || {});
     baselineRef.current = base;
@@ -204,22 +210,22 @@ export function AdminHudBuilder({ working, idleFetch, onMessage, run }: AdminHud
       const data = event.data;
       if (!data || data.v !== MSG_V) return;
 
-      if (data.type === "sinergia-idle:hud-builder-ready") {
+      if (data.type === "jogo-idle:hud-builder-ready") {
         setReady(true);
         return;
       }
-      if (data.type === "sinergia-idle:hud-builder-selection") {
+      if (data.type === "jogo-idle:hud-builder-selection") {
         setSelectedId(typeof data.id === "string" ? data.id : null);
         setComputed(data.computed && typeof data.computed === "object" ? data.computed : null);
         return;
       }
-      if (data.type === "sinergia-idle:hud-builder-transform") {
+      if (data.type === "jogo-idle:hud-builder-transform") {
         if (data.props && typeof data.props === "object") {
           setComputed((prev) => ({ ...(prev || {}), ...data.props }));
         }
         return;
       }
-      if (data.type === "sinergia-idle:hud-builder-transform-end") {
+      if (data.type === "jogo-idle:hud-builder-transform-end") {
         const id = typeof data.id === "string" ? data.id : null;
         if (!id) return;
         const before = draftRef.current.components;
@@ -234,10 +240,10 @@ export function AdminHudBuilder({ working, idleFetch, onMessage, run }: AdminHud
         void before;
         return;
       }
-      if (data.type === "sinergia-idle:hud-builder-transform-cancel") {
+      if (data.type === "jogo-idle:hud-builder-transform-cancel") {
         // Bridge restored snapshot; re-sync admin draft → iframe
         postToHud({
-          type: "sinergia-idle:hud-builder-set-layout",
+          type: "jogo-idle:hud-builder-set-layout",
           layout: draftRef.current,
           breakpoint,
         });
@@ -253,23 +259,23 @@ export function AdminHudBuilder({ working, idleFetch, onMessage, run }: AdminHud
       suppressSyncRef.current = false;
       return;
     }
-    postToHud({ type: "sinergia-idle:hud-builder-set-layout", layout: draft, breakpoint });
+    postToHud({ type: "jogo-idle:hud-builder-set-layout", layout: draft, breakpoint });
   }, [ready, draft, breakpoint, postToHud]);
 
   useEffect(() => {
     if (!ready) return;
-    postToHud({ type: "sinergia-idle:hud-builder-mode", mode });
+    postToHud({ type: "jogo-idle:hud-builder-mode", mode });
   }, [ready, mode, postToHud]);
 
   useEffect(() => {
     if (!ready) return;
-    postToHud({ type: "sinergia-idle:hud-builder-layout-mode", mode: layoutMode });
+    postToHud({ type: "jogo-idle:hud-builder-layout-mode", mode: layoutMode });
   }, [ready, layoutMode, postToHud]);
 
   useEffect(() => {
     if (!ready) return;
     postToHud({
-      type: "sinergia-idle:hud-builder-snap",
+      type: "jogo-idle:hud-builder-snap",
       enabled: snapEnabled,
       grid: snapGrid,
       allowOverflow: false,
@@ -279,7 +285,7 @@ export function AdminHudBuilder({ working, idleFetch, onMessage, run }: AdminHud
   useEffect(() => {
     if (!ready) return;
     postToHud({
-      type: "sinergia-idle:hud-builder-viewport",
+      type: "jogo-idle:hud-builder-viewport",
       breakpoint,
       width: preset.w,
       height: preset.h,
@@ -288,7 +294,7 @@ export function AdminHudBuilder({ working, idleFetch, onMessage, run }: AdminHud
 
   function selectComponent(id: string) {
     setSelectedId(id);
-    postToHud({ type: "sinergia-idle:hud-builder-select", id });
+    postToHud({ type: "jogo-idle:hud-builder-select", id });
   }
 
   function patchSelected(props: HudStyleProps, opts?: { history?: boolean }) {
@@ -330,7 +336,7 @@ export function AdminHudBuilder({ working, idleFetch, onMessage, run }: AdminHud
 
   async function onSaveDraft() {
     await run(async () => {
-      const data = await idleFetch("/api/sinergia-idle/admin/hud-layout/draft", {
+      const data = await idleFetch("/api/jogo-idle/admin/hud-layout/draft", {
         method: "PUT",
         body: JSON.stringify({ layout: draft }),
       });
@@ -347,7 +353,7 @@ export function AdminHudBuilder({ working, idleFetch, onMessage, run }: AdminHud
   async function onRestoreDefault() {
     if (!window.confirm("Restaurar o rascunho ao layout padrão (sem overrides)?")) return;
     await run(async () => {
-      const data = await idleFetch("/api/sinergia-idle/admin/hud-layout/restore", {
+      const data = await idleFetch("/api/jogo-idle/admin/hud-layout/restore", {
         method: "POST",
         body: JSON.stringify({ toDefault: true }),
       });
@@ -416,7 +422,7 @@ export function AdminHudBuilder({ working, idleFetch, onMessage, run }: AdminHud
           setDraft(next);
           markDirty(next.components, baselineRef.current);
           postToHud({
-            type: "sinergia-idle:hud-builder-patch",
+            type: "jogo-idle:hud-builder-patch",
             id: selectedId,
             props: {
               position: "absolute",
@@ -446,7 +452,7 @@ export function AdminHudBuilder({ working, idleFetch, onMessage, run }: AdminHud
           setDraft(next);
           markDirty(next.components, baselineRef.current);
           postToHud({
-            type: "sinergia-idle:hud-builder-patch",
+            type: "jogo-idle:hud-builder-patch",
             id: selectedId,
             props,
             breakpoint,
@@ -681,7 +687,7 @@ export function AdminHudBuilder({ working, idleFetch, onMessage, run }: AdminHud
             <iframe
               ref={iframeRef}
               title="HUD Builder — pré-visualização"
-              src={`/sinergia-idle/play.html?hudBuilder=1`}
+              src={`/jogo-idle/play.html?hudBuilder=1`}
               className="studio-2-hud__iframe"
               style={{
                 width: preset.w,
@@ -721,9 +727,9 @@ export function AdminHudBuilder({ working, idleFetch, onMessage, run }: AdminHud
                   commitDraft(next, { sync: true });
                   try {
                     const win = iframeRef.current?.contentWindow as
-                      | (Window & { SinergiaHudLayout?: { setTokens?: (t: object) => void } })
+                      | (Window & { JogoIdleHudLayout?: { setTokens?: (t: object) => void } })
                       | null;
-                    win?.SinergiaHudLayout?.setTokens?.({ slotRarityFillMix });
+                    win?.JogoIdleHudLayout?.setTokens?.({ slotRarityFillMix });
                   } catch {
                     /* preview offline */
                   }
@@ -733,6 +739,131 @@ export function AdminHudBuilder({ working, idleFetch, onMessage, run }: AdminHud
             <p className="text-[0.62rem] text-[var(--studio-muted)]">
               Intensidade do fundo colorido do slot conforme a raridade (0–60%).
             </p>
+          </StudioFormSection>
+          <StudioFormSection title="Transições e Animações">
+            {(() => {
+              const intro = {
+                ...DEFAULT_HUD_INTRO_TOKENS,
+                ...(draft.tokens?.intro || {}),
+              };
+              const patchIntro = (partial: Partial<typeof DEFAULT_HUD_INTRO_TOKENS>) => {
+                const next = structuredClone(draft);
+                const merged = { ...intro, ...partial };
+                next.tokens = { ...(next.tokens || {}), intro: merged };
+                commitDraft(next, { sync: true });
+                try {
+                  const win = iframeRef.current?.contentWindow as
+                    | (Window & { JogoIdleHudLayout?: { setTokens?: (t: object) => void } })
+                    | null;
+                  win?.JogoIdleHudLayout?.setTokens?.({ intro: merged });
+                } catch {
+                  /* preview offline */
+                }
+              };
+              return (
+                <>
+                  <StudioField label="Intro ao entrar no jogo">
+                    <label className="flex items-center gap-2 text-[0.75rem]">
+                      <input
+                        type="checkbox"
+                        checked={intro.enabled}
+                        onChange={(e) => patchIntro({ enabled: e.target.checked })}
+                      />
+                      Ativar intro cinematográfica
+                    </label>
+                  </StudioField>
+                  <StudioField label={`Fade do cenário (${intro.fadeMs} ms)`}>
+                    <input
+                      className="studio-2-input"
+                      type="range"
+                      min={100}
+                      max={3000}
+                      step={50}
+                      value={intro.fadeMs}
+                      disabled={!intro.enabled}
+                      onChange={(e) => patchIntro({ fadeMs: Number(e.target.value) || 500 })}
+                    />
+                  </StudioField>
+                  <StudioField label={`Cartão de título (${intro.titleMs} ms)`}>
+                    <input
+                      className="studio-2-input"
+                      type="range"
+                      min={0}
+                      max={5000}
+                      step={50}
+                      value={intro.titleMs}
+                      disabled={!intro.enabled}
+                      onChange={(e) => patchIntro({ titleMs: Number(e.target.value) || 0 })}
+                    />
+                  </StudioField>
+                  <StudioField label={`Queda da HUD (${intro.hudMs} ms)`}>
+                    <input
+                      className="studio-2-input"
+                      type="range"
+                      min={100}
+                      max={3000}
+                      step={50}
+                      value={intro.hudMs}
+                      disabled={!intro.enabled}
+                      onChange={(e) => patchIntro({ hudMs: Number(e.target.value) || 700 })}
+                    />
+                  </StudioField>
+                  <StudioField label={`Offset Y da HUD (${intro.offsetY} px)`}>
+                    <input
+                      className="studio-2-input"
+                      type="range"
+                      min={-200}
+                      max={0}
+                      step={5}
+                      value={intro.offsetY}
+                      disabled={!intro.enabled}
+                      onChange={(e) => patchIntro({ offsetY: Number(e.target.value) || -80 })}
+                    />
+                  </StudioField>
+                  <StudioField label="Easing CSS">
+                    <input
+                      className="studio-2-input"
+                      type="text"
+                      value={intro.easing}
+                      disabled={!intro.enabled}
+                      onChange={(e) => patchIntro({ easing: e.target.value })}
+                    />
+                  </StudioField>
+                  <StudioField label="Conteúdo">
+                    <label className="mb-1 flex items-center gap-2 text-[0.75rem]">
+                      <input
+                        type="checkbox"
+                        checked={intro.showChapterName}
+                        disabled={!intro.enabled}
+                        onChange={(e) => patchIntro({ showChapterName: e.target.checked })}
+                      />
+                      Mostrar nome do capítulo
+                    </label>
+                    <label className="mb-1 flex items-center gap-2 text-[0.75rem]">
+                      <input
+                        type="checkbox"
+                        checked={intro.showRegionName}
+                        disabled={!intro.enabled}
+                        onChange={(e) => patchIntro({ showRegionName: e.target.checked })}
+                      />
+                      Mostrar região
+                    </label>
+                    <label className="flex items-center gap-2 text-[0.75rem]">
+                      <input
+                        type="checkbox"
+                        checked={intro.allowSkip}
+                        disabled={!intro.enabled}
+                        onChange={(e) => patchIntro({ allowSkip: e.target.checked })}
+                      />
+                      Permitir pular
+                    </label>
+                  </StudioField>
+                  <p className="text-[0.62rem] text-[var(--studio-muted)]">
+                    A intro roda só em play.html (não no preview do Builder). Fundos vêm do catálogo de capítulos.
+                  </p>
+                </>
+              );
+            })()}
           </StudioFormSection>
           {selected ? (
             <>

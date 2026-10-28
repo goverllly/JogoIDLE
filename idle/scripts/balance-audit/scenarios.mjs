@@ -1,4 +1,4 @@
-import { DEFAULT_BALANCE, xpToNextLevel as xpMotor } from "../../lib/sinergia-idle/game/balance.ts";
+import { DEFAULT_BALANCE, xpToNextLevel as xpMotor } from "../../lib/jogo-idle/game/balance.ts";
 
 /** Curva XP contínua (suaviza saltos das faixas atuais). */
 export function xpToNextLevelScenario(level, curve) {

@@ -4,7 +4,7 @@
 
 ## Situação atual (resumo executivo)
 
-O Sinergia IDLE, com as regras atuais do código, permite alcançar o **nível 500 (cap mortal) em aproximadamente 10–18 horas de caça efetiva** em perfis Guerreiro simulados — **abaixo de 24 horas**, confirmando a hipótese do design.
+O Jogo IDLE, com as regras atuais do código, permite alcançar o **nível 500 (cap mortal) em aproximadamente 10–18 horas de caça efetiva** em perfis Guerreiro simulados — **abaixo de 24 horas**, confirmando a hipótese do design.
 
 Fatores principais:
 
@@ -22,7 +22,7 @@ Fatores principais:
 | `__world.balance` | DEFAULT_BALANCE | **vazio** (= defaults) | N/A |
 | Overrides de zona | BASE_ZONES | nenhum | N/A |
 
-**Impacto da divergência de drop:** no standalone, drops de equipamento são ~7× mais raros que o default do código. A progressão de **nível/XP** (simulada) ainda é rápida; a progressão de **poder via loot** fica mais lenta localmente. Produção pode diferir — validar `sinergia_idle_catalog_state`.
+**Impacto da divergência de drop:** no standalone, drops de equipamento são ~7× mais raros que o default do código. A progressão de **nível/XP** (simulada) ainda é rápida; a progressão de **poder via loot** fica mais lenta localmente. Produção pode diferir — validar `jogo_idle_catalog_state`.
 
 ## Personagens observados no save local (evidência histórica)
 
@@ -59,6 +59,6 @@ Ver `11_PROPOSTA_REBALANCEAMENTO.md` e `12_RESUMO_PARA_DECISAO.md`. Preferência
 
 ## Fontes
 
-- `idle/lib/sinergia-idle/game/balance.ts`, `data.ts`, `character.ts`, `combat.ts`, `inventory.ts`, `items.ts`
+- `idle/lib/jogo-idle/game/balance.ts`, `data.ts`, `character.ts`, `combat.ts`, `inventory.ts`, `items.ts`
 - Dados: `docs/balanceamento/data/*`
 - Script: `idle/scripts/balance-audit/run-all.mjs`

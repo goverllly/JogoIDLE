@@ -7,7 +7,7 @@
 
 ## Regra atual
 
-- Combate/economia usam apenas `Number` (IEEE-754). Sem BigInt no `idle/lib/sinergia-idle/`.
+- Combate/economia usam apenas `Number` (IEEE-754). Sem BigInt no `idle/lib/jogo-idle/`.
 - Dano: `max(1, floor(attack × mult) − mitigation)`; crítico ×1.8.
 - HUD: `toLocaleString('pt-BR')` sem abreviação mi/bi/tri.
 - Admin gold parse limita em `Number.MAX_SAFE_INTEGER` (~9.007e15).

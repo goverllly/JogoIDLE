@@ -1,4 +1,4 @@
-# Guia Visual — HUD 3.0 Sinergia IDLE
+# Guia Visual — HUD 3.0 Jogo IDLE
 
 **Data:** 2026-10-26  
 **Uso:** direção artística e regras técnicas para produção de assets.  
@@ -8,7 +8,7 @@
 
 ## 1. Visão
 
-Transformar a UI Sinergia IDLE de painéis CSS/navy + PNGs opacos em uma experiência **Dark Fantasy Medieval** coerente: pedra negra, metal envelhecido, molduras góticas douradas, lanternas/brasas, ruínas e luz cinematográfica — sem sacrificar legibilidade nem a lógica dinâmica do jogo.
+Transformar a UI Jogo IDLE de painéis CSS/navy + PNGs opacos em uma experiência **Dark Fantasy Medieval** coerente: pedra negra, metal envelhecido, molduras góticas douradas, lanternas/brasas, ruínas e luz cinematográfica — sem sacrificar legibilidade nem a lógica dinâmica do jogo.
 
 **Não é objetivo deste guia** alterar código. A implementação CSS virá depois da biblioteca de imagens.
 

@@ -1,0 +1,260 @@
+/**
+ * Intro cinematográfica — overlay + animação do wrapper da HUD.
+ * Não altera slots data-hud-id; só body classes + #play-intro / .frame.
+ */
+
+#play-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  background: #050808;
+  opacity: 0;
+  transition: opacity var(--play-intro-fade-ms, 500ms) ease;
+}
+
+#play-intro.is-visible {
+  opacity: 1;
+}
+
+#play-intro.is-leaving {
+  opacity: 0;
+  pointer-events: none;
+  transition-duration: var(--play-intro-outro-ms, 280ms);
+}
+
+.play-intro__bg {
+  position: absolute;
+  inset: 0;
+  background-color: #050808;
+  background-image:
+    var(--play-intro-veil, linear-gradient(180deg, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0.62) 100%)),
+    var(--play-intro-bg, none);
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  transform: scale(1.04);
+  transition: transform calc(var(--play-intro-fade-ms, 500ms) + var(--play-intro-title-ms, 900ms))
+    cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+#play-intro.is-visible .play-intro__bg {
+  transform: scale(1);
+}
+
+.play-intro__card {
+  position: relative;
+  z-index: 1;
+  max-width: min(36rem, 90vw);
+  padding: 1.5rem 1.75rem;
+  text-align: center;
+  color: #f2ebe0;
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.65);
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity 420ms ease,
+    transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+#play-intro.is-titled .play-intro__card {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.play-intro__eyebrow {
+  display: block;
+  font-family: var(--font-display, Georgia, "Times New Roman", serif);
+  font-size: clamp(0.72rem, 1.6vw, 0.85rem);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(242, 235, 224, 0.72);
+  margin-bottom: 0.55rem;
+}
+
+.play-intro__title {
+  margin: 0;
+  font-family: var(--font-display, Georgia, "Times New Roman", serif);
+  font-size: clamp(1.55rem, 4.2vw, 2.35rem);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: 0.04em;
+}
+
+.play-intro__region {
+  margin: 0.85rem 0 0;
+  font-family: var(--font-display, Georgia, "Times New Roman", serif);
+  font-size: clamp(0.95rem, 2.4vw, 1.2rem);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--hud-light-primary, #c9a050) 85%, #fff);
+}
+
+.play-intro__line {
+  margin: 1.1rem auto 0;
+  max-width: 28rem;
+  font-family: var(--font-body, Georgia, serif);
+  font-size: clamp(0.92rem, 2vw, 1.05rem);
+  font-style: italic;
+  line-height: 1.45;
+  color: rgba(242, 235, 224, 0.88);
+}
+
+.play-intro__ornament {
+  display: block;
+  width: 4.5rem;
+  height: 1px;
+  margin: 1rem auto 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--hud-light-primary, #c9a050) 70%, #fff),
+    transparent
+  );
+}
+
+.play-intro__skip {
+  position: absolute;
+  right: max(1rem, env(safe-area-inset-right));
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  z-index: 2;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(0, 0, 0, 0.35);
+  color: rgba(242, 235, 224, 0.9);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.45rem 0.75rem;
+  border-radius: 2px;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+}
+
+.play-intro__skip:hover,
+.play-intro__skip:focus-visible {
+  background: rgba(0, 0, 0, 0.55);
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.play-intro__skip[hidden] {
+  display: none !important;
+}
+
+.play-intro__hint {
+  position: absolute;
+  left: 50%;
+  bottom: max(1.1rem, env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  z-index: 2;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(242, 235, 224, 0.45);
+  opacity: 0;
+  transition: opacity 300ms ease;
+  pointer-events: none;
+}
+
+#play-intro.is-waiting .play-intro__hint {
+  opacity: 1;
+}
+
+/* HUD wrapper — animação isolada do layout Builder */
+body.play-intro-pending .frame {
+  opacity: 0;
+  transform: translateY(var(--play-intro-offset-y, -80px)) scale(0.97);
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+body.play-intro-hud-enter .frame {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: none;
+  transition:
+    opacity var(--play-intro-hud-ms, 700ms) var(--play-intro-easing, cubic-bezier(0.22, 1, 0.36, 1)),
+    transform var(--play-intro-hud-ms, 700ms) var(--play-intro-easing, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+body.play-intro-hud-enter .frame > .stage__left,
+body.play-intro-hud-enter .frame [data-hud-id="stage-left"],
+body.play-intro-hud-enter .frame .stage__center,
+body.play-intro-hud-enter .frame .col--center,
+body.play-intro-hud-enter .frame [data-hud-id="stage-right"],
+body.play-intro-hud-enter .frame .stage__right,
+body.play-intro-hud-enter .frame .col--right {
+  opacity: 0;
+  transform: translateY(-18px);
+  animation: play-intro-stagger var(--play-intro-hud-ms, 700ms)
+    var(--play-intro-easing, cubic-bezier(0.22, 1, 0.36, 1)) forwards;
+}
+
+body.play-intro-hud-enter .frame > .stage__left,
+body.play-intro-hud-enter .frame [data-hud-id="stage-left"] {
+  animation-delay: 0ms;
+}
+
+body.play-intro-hud-enter .frame .stage__center,
+body.play-intro-hud-enter .frame .col--center {
+  animation-delay: 60ms;
+}
+
+body.play-intro-hud-enter .frame [data-hud-id="stage-right"],
+body.play-intro-hud-enter .frame .stage__right,
+body.play-intro-hud-enter .frame .col--right {
+  animation-delay: 110ms;
+}
+
+@keyframes play-intro-stagger {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+body.play-intro-done .frame {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+  will-change: auto;
+}
+
+body.play-intro-done .frame > .stage__left,
+body.play-intro-done .frame [data-hud-id="stage-left"],
+body.play-intro-done .frame .stage__center,
+body.play-intro-done .frame .col--center,
+body.play-intro-done .frame [data-hud-id="stage-right"],
+body.play-intro-done .frame .stage__right,
+body.play-intro-done .frame .col--right {
+  opacity: 1;
+  transform: none;
+  animation: none;
+}
+
+html.hud-builder-preview #play-intro,
+html.hud-builder-preview body.play-intro-pending .frame,
+html.hud-builder-preview body.play-intro-hud-enter .frame {
+  /* Builder preview: sem intro */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #play-intro,
+  #play-intro .play-intro__bg,
+  #play-intro .play-intro__card,
+  body.play-intro-pending .frame,
+  body.play-intro-hud-enter .frame,
+  body.play-intro-hud-enter .frame > .stage__left,
+  body.play-intro-hud-enter .frame [data-hud-id="stage-left"],
+  body.play-intro-hud-enter .frame .stage__center,
+  body.play-intro-hud-enter .frame .col--center,
+  body.play-intro-hud-enter .frame [data-hud-id="stage-right"],
+  body.play-intro-hud-enter .frame .stage__right,
+  body.play-intro-hud-enter .frame .col--right,
+  body.play-intro-pending .frame {
+    transform: none;
+  }
+}

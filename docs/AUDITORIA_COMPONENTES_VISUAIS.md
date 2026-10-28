@@ -1,4 +1,4 @@
-# Auditoria de Componentes Visuais — Sinergia IDLE (HUD 3.0)
+# Auditoria de Componentes Visuais — Jogo IDLE (HUD 3.0)
 
 **Data:** 2026-10-26  
 **Tipo:** Análise e documentação apenas — nenhum código, CSS ou asset foi modificado.  
@@ -39,14 +39,14 @@
 
 | Fonte | Papel |
 |-------|--------|
-| [`idle/public/sinergia-idle/play.html`](../idle/public/sinergia-idle/play.html) | Shell canônico (`body.play-stage`) |
-| Cascade CSS | `styles.css` → `hud.css` → `theme-v2.css` → [`theme-ref.css`](../idle/public/sinergia-idle/theme-ref.css) |
+| [`idle/public/jogo-idle/play.html`](../idle/public/jogo-idle/play.html) | Shell canônico (`body.play-stage`) |
+| Cascade CSS | `styles.css` → `hud.css` → `theme-v2.css` → [`theme-ref.css`](../idle/public/jogo-idle/theme-ref.css) |
 | JS de UI | `app.js`, `inventory.js`, `merchant.js`, `arena-ui.js`, `divindade.js`, `confirm-dialog.js`, `offline-report.js`, `hunt-perf-ui.js`, `engagement.js`, `fx.js` |
-| Assets | [`idle/public/sinergia-idle/assets/hud/`](../idle/public/sinergia-idle/assets/hud/) |
+| Assets | [`idle/public/jogo-idle/assets/hud/`](../idle/public/jogo-idle/assets/hud/) |
 
 **Excluído desta auditoria:** Admin Studio (`admin/`, `admin-ui/`), `map-editor`, `preview`, protótipos React fora do play.
 
-**Legado (mencionado, não auditado como UI ativa):** [`index.html`](../idle/public/sinergia-idle/index.html) — shell “WYD Idle” antigo.
+**Legado (mencionado, não auditado como UI ativa):** [`index.html`](../idle/public/jogo-idle/index.html) — shell “WYD Idle” antigo.
 
 ### 1.2 Telas / funcionalidades
 
@@ -178,7 +178,7 @@ Padrão estrutural compartilhado: `#idle-{name}` → `__backdrop` + `__panel` + 
 
 | Campo | Valor |
 |-------|--------|
-| Finalidade | Missões SinergIA (código completo) |
+| Finalidade | Missões de engajamento (código completo) |
 | Arquivo | `engagement.js` — **não montado** no `app.js` standalone; botão `#engagement-btn` hidden |
 | Seletores | `#idle-engagement`, `.idle-engagement__panel`, `__offer`, `__buy` |
 | Dimensões | `width: min(440px, calc(100vw - 2rem))` **[CSS]**; z `75` |

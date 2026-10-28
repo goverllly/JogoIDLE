@@ -32,14 +32,14 @@ import {
   CELESTIAL_ASCEND_BONUS,
   DIVINDADE_GOLD_COST,
   MORTAL_LEVEL_CAP,
-} from "../../lib/sinergia-idle/game/balance.ts";
+} from "../../lib/jogo-idle/game/balance.ts";
 import {
   BASE_ZONES,
   CLASSES,
   buildZoneBoss,
   zoneBossWaveSize,
   expectedPlayerPower,
-} from "../../lib/sinergia-idle/game/data.ts";
+} from "../../lib/jogo-idle/game/data.ts";
 
 ensureOut();
 

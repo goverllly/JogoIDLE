@@ -1,0 +1,632 @@
+/* Crônicas das Quatro Eras — galeria de portais (HUD 3.0 navy/aço/ouro) */
+
+/* styles.css/hud.css travam html/body com overflow:hidden (HUD do play).
+   Nesta página precisamos de scroll vertical para ler o painel de detalhes. */
+html:has(body.cronicas-page) {
+  height: auto !important;
+  max-height: none !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+}
+
+body.cronicas-page {
+  --chron-bg: #071524;
+  --chron-panel: #0d2032;
+  --chron-panel-alt: #142b40;
+  --chron-border: #395f7c;
+  --chron-border-active: #58bce7;
+  --chron-gold: #e5bd67;
+  --chron-gold-bright: #f4d89a;
+  --chron-text: #e1edf6;
+  --chron-muted: #91a9bc;
+  --chron-ok: #7ec8a0;
+  --chron-locked: #7a8a9a;
+  --font-display: "Cinzel", Georgia, serif;
+  --font-body: "Source Sans 3", system-ui, sans-serif;
+
+  margin: 0;
+  min-height: 100vh;
+  height: auto !important;
+  max-height: none !important;
+  position: relative;
+  color: var(--chron-text);
+  font-family: var(--font-body);
+  background: var(--chron-bg);
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+}
+
+.cronicas-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(7, 21, 36, 0.72) 0%, rgba(7, 21, 36, 0.82) 45%, rgba(7, 21, 36, 0.92) 100%),
+    url("/jogo-idle/assets/cronicas/vale-gotico-lua-cheia.png") center / cover no-repeat;
+}
+
+.cronicas-shell {
+  position: relative;
+  z-index: 1;
+  max-width: 1480px;
+  margin: 0 auto;
+  padding: 22px 20px 72px;
+}
+
+/* ——— Header ——— */
+.cronicas-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 18px;
+  padding: 18px 22px;
+  margin-bottom: 14px;
+  border: 1px solid var(--chron-border);
+  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(13, 32, 50, 0.92), rgba(7, 21, 36, 0.94));
+  box-shadow: inset 0 0 0 1px rgba(88, 188, 231, 0.08);
+}
+
+.cronicas-eyebrow {
+  margin: 0;
+  font-family: var(--font-display);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-size: 0.68rem;
+  color: var(--chron-gold);
+}
+
+.cronicas-header h1 {
+  margin: 4px 0 6px;
+  font-family: var(--font-display);
+  font-size: clamp(1.55rem, 3.2vw, 2.35rem);
+  color: var(--chron-gold-bright);
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.cronicas-lede {
+  margin: 0;
+  color: var(--chron-muted);
+  font-size: 0.95rem;
+}
+
+.cronicas-nav {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.cronicas-nav__link {
+  color: var(--chron-text);
+  text-decoration: none;
+  border: 1px solid var(--chron-border);
+  padding: 8px 14px;
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: 4px;
+  background: rgba(7, 21, 36, 0.55);
+  transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
+}
+
+.cronicas-nav__link:hover {
+  border-color: var(--chron-border-active);
+  color: var(--chron-gold-bright);
+  background: rgba(88, 188, 231, 0.08);
+}
+
+/* ——— Season strip ——— */
+.cronicas-season {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 18px;
+  padding: 12px 14px;
+  border: 1px solid var(--chron-border);
+  border-radius: 8px;
+  background: rgba(13, 32, 50, 0.88);
+}
+
+.cronicas-season__item {
+  min-width: 0;
+  padding: 6px 10px;
+  border-left: 2px solid rgba(88, 188, 231, 0.35);
+}
+
+.cronicas-season__label {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--chron-muted);
+  margin-bottom: 4px;
+}
+
+.cronicas-season__value {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--chron-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cronicas-season__value--gold {
+  color: var(--chron-gold-bright);
+}
+
+.cronicas-banner {
+  margin: 0 0 14px;
+  padding: 10px 14px;
+  border: 1px solid rgba(88, 188, 231, 0.35);
+  background: rgba(88, 188, 231, 0.08);
+  color: var(--chron-text);
+  font-size: 0.9rem;
+  border-radius: 6px;
+}
+
+.cronicas-banner--err {
+  border-color: rgba(220, 90, 90, 0.5);
+  background: rgba(80, 20, 20, 0.45);
+  color: #ffc9c9;
+}
+
+.cronicas-state {
+  padding: 48px 16px;
+  text-align: center;
+  color: var(--chron-muted);
+  font-family: var(--font-display);
+  letter-spacing: 0.06em;
+}
+
+/* ——— Layout ——— */
+.cronicas-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.cronicas-gallery {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(12px, 1.6vw, 22px);
+  outline: none;
+}
+
+/* ——— Cards ——— */
+.cronicas-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: inherit;
+  text-align: left;
+  border-radius: 6px;
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.cronicas-card:focus-visible {
+  outline: 2px solid var(--chron-border-active);
+  outline-offset: 4px;
+}
+
+.cronicas-card.is-selected {
+  transform: translateY(-4px);
+  filter:
+    drop-shadow(0 0 1px rgba(88, 188, 231, 0.95))
+    drop-shadow(0 0 10px rgba(88, 188, 231, 0.55))
+    drop-shadow(0 0 22px rgba(88, 188, 231, 0.28));
+}
+
+.cronicas-card.is-locked .cronicas-card__art {
+  filter: brightness(0.78) saturate(0.85);
+}
+
+.cronicas-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-height: 1.5rem;
+  padding: 0 2px;
+}
+
+.cronicas-card__badge {
+  font-family: var(--font-display);
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 3px;
+  background: rgba(7, 21, 36, 0.9);
+  border: 1px solid var(--chron-border);
+  color: var(--chron-muted);
+  pointer-events: none;
+}
+
+.cronicas-card__badge[data-status="available"] {
+  border-color: rgba(88, 188, 231, 0.55);
+  color: var(--chron-border-active);
+}
+
+.cronicas-card__badge[data-status="in_progress"] {
+  border-color: rgba(229, 189, 103, 0.55);
+  color: var(--chron-gold-bright);
+}
+
+.cronicas-card__badge[data-status="completed"] {
+  border-color: rgba(126, 200, 160, 0.55);
+  color: var(--chron-ok);
+}
+
+.cronicas-card__badge[data-status="locked"] {
+  border-color: rgba(122, 138, 154, 0.5);
+  color: var(--chron-locked);
+}
+
+.cronicas-card__active-tag {
+  font-family: var(--font-display);
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 3px;
+  background: rgba(229, 189, 103, 0.16);
+  border: 1px solid rgba(229, 189, 103, 0.65);
+  color: var(--chron-gold-bright);
+  pointer-events: none;
+}
+
+.cronicas-card__level-chip {
+  margin-left: auto;
+  font-size: 0.68rem;
+  color: var(--chron-muted);
+  font-weight: 600;
+}
+
+.cronicas-card__art-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  overflow: visible;
+  box-shadow: none;
+}
+
+.cronicas-card__art {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+  background: transparent;
+}
+
+.cronicas-card__name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  color: var(--chron-text);
+  text-align: center;
+  line-height: 1.3;
+}
+
+.cronicas-card:hover:not(.is-selected) {
+  transform: translateY(-4px);
+  filter: brightness(1.04);
+}
+
+/* ——— Detail panel ——— */
+.cronicas-detail {
+  padding: 20px 22px 22px;
+  border: 1px solid var(--chron-border);
+  border-radius: 8px;
+  background: linear-gradient(160deg, rgba(13, 32, 50, 0.94), rgba(7, 21, 36, 0.96));
+  box-shadow: inset 0 0 0 1px rgba(88, 188, 231, 0.06);
+}
+
+.cronicas-detail__hint {
+  margin: 28px 0;
+  text-align: center;
+  color: var(--chron-muted);
+}
+
+.cronicas-detail__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.2fr) minmax(0, 1.15fr) minmax(0, 0.95fr);
+  gap: 18px 22px;
+  align-items: start;
+}
+
+.cronicas-detail__kicker {
+  margin: 0 0 4px;
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--chron-gold);
+}
+
+.cronicas-detail h2 {
+  margin: 0 0 6px;
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 2vw, 1.55rem);
+  color: var(--chron-gold-bright);
+  line-height: 1.2;
+}
+
+.cronicas-detail__class {
+  margin: 0 0 12px;
+  color: var(--chron-muted);
+  font-size: 0.88rem;
+}
+
+.cronicas-detail__stats {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+}
+
+.cronicas-detail__stats div {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 0.88rem;
+}
+
+.cronicas-detail__stats dt {
+  margin: 0;
+  color: var(--chron-muted);
+}
+
+.cronicas-detail__stats dd {
+  margin: 0;
+  font-weight: 700;
+  text-align: right;
+  color: var(--chron-text);
+}
+
+.cronicas-detail h3 {
+  margin: 0 0 10px;
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--chron-gold);
+}
+
+.cronicas-progress {
+  margin-bottom: 12px;
+}
+
+.cronicas-progress__bar {
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+  border: 1px solid rgba(88, 188, 231, 0.2);
+}
+
+.cronicas-progress__fill {
+  height: 100%;
+  background: linear-gradient(90deg, #2a6a8a, var(--chron-border-active));
+  border-radius: inherit;
+  transition: width 0.35s ease;
+}
+
+.cronicas-progress__label {
+  margin: 6px 0 0;
+  font-size: 0.78rem;
+  color: var(--chron-muted);
+}
+
+.cronicas-legacy-badge {
+  display: inline-block;
+  margin: 0 0 10px;
+  font-size: 0.68rem;
+  padding: 3px 8px;
+  border: 1px solid rgba(180, 160, 220, 0.4);
+  color: #d4c8f0;
+  font-family: var(--font-display);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-radius: 3px;
+}
+
+/* Region trail */
+.cronicas-regions {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cronicas-regions li {
+  display: grid;
+  grid-template-columns: 10px minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+  padding: 6px 8px;
+  border-radius: 4px;
+  background: rgba(7, 21, 36, 0.45);
+  border: 1px solid rgba(57, 95, 124, 0.35);
+  font-size: 0.8rem;
+}
+
+.cronicas-regions li.is-current {
+  border-color: rgba(229, 189, 103, 0.55);
+  background: rgba(229, 189, 103, 0.08);
+}
+
+.cronicas-regions li.is-done {
+  opacity: 0.85;
+}
+
+.cronicas-regions li.is-locked {
+  opacity: 0.55;
+}
+
+.cronicas-regions__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--chron-locked);
+}
+
+.cronicas-regions li.is-current .cronicas-regions__dot {
+  background: var(--chron-gold);
+  box-shadow: 0 0 6px rgba(229, 189, 103, 0.55);
+}
+
+.cronicas-regions li.is-done .cronicas-regions__dot {
+  background: var(--chron-ok);
+}
+
+.cronicas-regions__range {
+  color: var(--chron-muted);
+  font-size: 0.72rem;
+  white-space: nowrap;
+}
+
+.cronicas-detail ul.plain {
+  margin: 0;
+  padding-left: 1.1rem;
+  color: var(--chron-text);
+  font-size: 0.86rem;
+  line-height: 1.4;
+}
+
+.cronicas-detail ul.plain li + li {
+  margin-top: 3px;
+}
+
+.cronicas-mission {
+  margin: 0 0 12px;
+  font-size: 0.9rem;
+  color: var(--chron-text);
+}
+
+.cronicas-mission strong {
+  color: var(--chron-gold-bright);
+}
+
+.cronicas-cta {
+  margin-top: 14px;
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid rgba(229, 189, 103, 0.55);
+  border-radius: 6px;
+  background: linear-gradient(180deg, rgba(229, 189, 103, 0.28), rgba(229, 189, 103, 0.1));
+  color: var(--chron-gold-bright);
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: filter 0.18s ease, border-color 0.18s ease;
+}
+
+.cronicas-cta:hover:not(:disabled) {
+  filter: brightness(1.08);
+  border-color: var(--chron-gold-bright);
+}
+
+.cronicas-cta:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.cronicas-cta--ghost {
+  border-color: var(--chron-border);
+  background: rgba(7, 21, 36, 0.55);
+  color: var(--chron-text);
+}
+
+.cronicas-cta.is-busy {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* ——— Responsive ——— */
+@media (max-width: 1199px) {
+  .cronicas-gallery {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 720px;
+    margin-inline: auto;
+  }
+
+  .cronicas-detail__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .cronicas-season {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .cronicas-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cronicas-season {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .cronicas-gallery {
+    display: flex;
+    grid-template-columns: none;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 14px;
+    max-width: none;
+    padding-bottom: 8px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .cronicas-card {
+    flex: 0 0 min(78vw, 280px);
+    scroll-snap-align: center;
+  }
+
+  .cronicas-detail__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cronicas-cta {
+    position: sticky;
+    bottom: 10px;
+    z-index: 3;
+    box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.35);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cronicas-card,
+  .cronicas-progress__fill,
+  .cronicas-nav__link,
+  .cronicas-cta {
+    transition: none;
+  }
+
+  .cronicas-card:hover:not(.is-selected),
+  .cronicas-card.is-selected {
+    transform: none;
+  }
+}

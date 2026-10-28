@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import {
-  SinergiaIdleAdmin,
+  JogoIdleAdmin,
   type AdminActiveCharacter,
   type AdminCatalogItem,
   type AdminCatalogMeta,
   type AdminZone,
-} from "./SinergiaIdleAdmin";
+} from "./JogoIdleAdmin";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 async function idleFetch(path: string, init?: RequestInit) {
@@ -44,7 +44,7 @@ export default function App() {
     setBusy(true);
     setError(null);
     try {
-      const meta = await idleFetch("/api/sinergia-idle/meta");
+      const meta = await idleFetch("/api/jogo-idle/meta");
       setCatalog(meta.adminCatalog || []);
       setCatalogMeta(meta.adminCatalogMeta || null);
       setActiveCharacters(meta.adminActiveCharacters || []);
@@ -91,14 +91,14 @@ export default function App() {
     <div className="min-h-screen">
       <div className="flex items-center justify-between gap-3 px-4 py-3 border-b border-border/60 bg-card/40">
         <div>
-          <div className="text-sm text-muted-foreground">Sinergia IDLE · standalone</div>
+          <div className="text-sm text-muted-foreground">Jogo IDLE · standalone</div>
           <h1 className="text-lg font-semibold tracking-wide text-primary">Admin Studio</h1>
         </div>
-        <a className="text-sm text-muted-foreground hover:text-foreground" href="/sinergia-idle/lobby.html">
+        <a className="text-sm text-muted-foreground hover:text-foreground" href="/jogo-idle/lobby.html">
           ← Lobby
         </a>
       </div>
-      <SinergiaIdleAdmin
+      <JogoIdleAdmin
         catalog={catalog}
         catalogMeta={catalogMeta}
         activeCharacters={activeCharacters}

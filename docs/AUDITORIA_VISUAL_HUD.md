@@ -1,4 +1,4 @@
-# Sinergia IDLE — Auditoria Visual da HUD
+# Jogo IDLE — Auditoria Visual da HUD
 
 **Data:** 2026-10-26  
 **Escopo:** HUD live de combate (`play.html` + cascade CSS). Sem alterações de código neste documento.  
@@ -10,14 +10,14 @@
 
 | Fonte | Detalhe |
 |-------|---------|
-| Markup | [`idle/public/sinergia-idle/play.html`](../idle/public/sinergia-idle/play.html) (`body.play-stage`) |
-| CSS efetivo | `styles.css` → `hud.css` → `theme-v2.css` → [`theme-ref.css`](../idle/public/sinergia-idle/theme-ref.css) (última vence) |
+| Markup | [`idle/public/jogo-idle/play.html`](../idle/public/jogo-idle/play.html) (`body.play-stage`) |
+| CSS efetivo | `styles.css` → `hud.css` → `theme-v2.css` → [`theme-ref.css`](../idle/public/jogo-idle/theme-ref.css) (última vence) |
 | Lógica / DOM dinâmico | `app.js`, `inventory.js`, modais JS |
 | Arena | Three.js (`arena.js` / `scene3d.js`) — **não há Phaser** nesta HUD |
 | Fora do escopo | `admin-ui`, `src/interface/*`, `index.html` legado (`.topbar`), lobby/preview |
-| Medições browser | `getBoundingClientRect` em `http://127.0.0.1:8787/sinergia-idle/play.html` com `Emulation.setDeviceMetricsOverride` |
+| Medições browser | `getBoundingClientRect` em `http://127.0.0.1:8787/jogo-idle/play.html` com `Emulation.setDeviceMetricsOverride` |
 | Rem | `16px` (confirmado em runtime) |
-| PNG atuais | `sips` em `idle/public/sinergia-idle/assets/hud/` |
+| PNG atuais | `sips` em `idle/public/jogo-idle/assets/hud/` |
 
 **Legenda de precisão**
 
@@ -345,7 +345,7 @@ Tom comum (prefixar todos):
 
 ### F.5 `frame-personagem.png` — nine-slice 620×1466 (+ slices), PNG alpha
 
-> … vertical side-panel frame suitable for 9-slice UI, width-focused ornaments on left/right edges, corner pieces separable, transparent center, designed so top/bottom/center edges can tile when panel height changes, Sinergia navy-gold gothic kit, no fixed-scene illustration glued to a single height.
+> … vertical side-panel frame suitable for 9-slice UI, width-focused ornaments on left/right edges, corner pieces separable, transparent center, designed so top/bottom/center edges can tile when panel height changes, Jogo IDLE navy-gold gothic kit, no fixed-scene illustration glued to a single height.
 
 ### F.6 Fundos ilustrados (JPEG/PNG opacos) — um por painel
 
@@ -386,7 +386,7 @@ Aspectos: herói 1087×1447; skills 1403×1121; boss 1313×1198; zona 2172×724 
 ## Organização de diretórios e nomenclatura
 
 ```
-idle/public/sinergia-idle/assets/hud/
+idle/public/jogo-idle/assets/hud/
   frames/
     frame-zona.png
     frame-heroi.png
@@ -419,7 +419,7 @@ idle/public/sinergia-idle/assets/hud/
 ```
 
 **Padrão de nome:** `frame-|bg-|ornament-|btn-|icon-|fx-` + kebab-case + papel.  
-CSS: `url('/sinergia-idle/assets/hud/frames/frame-heroi.png')`.
+CSS: `url('/jogo-idle/assets/hud/frames/frame-heroi.png')`.
 
 ---
 

@@ -110,7 +110,7 @@ O layout final será validado com protótipo em resolução 1280×720 antes da p
 
 1. Desbloquear novas regiões e derrotar chefes.
 2. Evoluir classes, construções e conjuntos de equipamento.
-3. Descobrir sinergias que permitam vencer desafios superiores.
+3. Descobrir jogo-idles que permitam vencer desafios superiores.
 4. Retornar após períodos ausentes para receber recompensas limitadas.
 
 **Regra:** o ciclo de combate/recompensa deve ser divertido e compreensível antes de adicionar cidade ou narrativa complexa.

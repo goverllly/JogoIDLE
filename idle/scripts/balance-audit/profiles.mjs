@@ -1,4 +1,4 @@
-import { CLASSES } from "../../lib/sinergia-idle/game/data.ts";
+import { CLASSES } from "../../lib/jogo-idle/game/data.ts";
 
 /** Builds comparáveis: ~55% primary, 25% CON, 15% DEX, resto secondary. */
 export const CLASS_PRIMARY = {

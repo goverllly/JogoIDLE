@@ -43,6 +43,6 @@
   },
   "production": {
     "accessible": false,
-    "reason": "Schema Prisma / DB da SinergIA não montados neste repo standalone"
+    "reason": "Schema Prisma / DB da plataforma não montados neste repo standalone"
   }
 }

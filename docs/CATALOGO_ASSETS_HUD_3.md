@@ -1,4 +1,4 @@
-# Catálogo de Assets — HUD 3.0 Sinergia IDLE
+# Catálogo de Assets — HUD 3.0 Jogo IDLE
 
 **Data:** 2026-10-26  
 **Base:** inventário em [`AUDITORIA_COMPONENTES_VISUAIS.md`](AUDITORIA_COMPONENTES_VISUAIS.md)  

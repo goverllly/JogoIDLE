@@ -14,7 +14,7 @@
 
 ## Proposta 3.0
 
-O Sinergia IDLE na plataforma maior deve **incentivar retorno regular** com ~**120 dias** de oportunidades relevantes — sem exigir 120 dias de grind ininterrupto.
+O Jogo IDLE na plataforma maior deve **incentivar retorno regular** com ~**120 dias** de oportunidades relevantes — sem exigir 120 dias de grind ininterrupto.
 
 | Conceito | Definição |
 |----------|-----------|

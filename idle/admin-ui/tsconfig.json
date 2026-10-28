@@ -13,7 +13,7 @@
     "strict": false,
     "paths": {
       "@/*": ["./src/*"],
-      "@/lib/sinergia-idle/*": ["../lib/sinergia-idle/*"]
+      "@/lib/jogo-idle/*": ["../lib/jogo-idle/*"]
     }
   },
   "include": ["src"]

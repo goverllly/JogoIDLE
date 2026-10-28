@@ -117,6 +117,10 @@ export type AdminZone = {
   id: string;
   name: string;
   minLevel: number;
+  maxLevel?: number | null;
+  chapterId?: string | null;
+  sceneProfileId?: string | null;
+  trial?: boolean;
   tier: number;
   requiresAscension?: string | null;
   dropChance?: number | null;
@@ -254,7 +258,7 @@ export const ADMIN_TABS: readonly AdminTabDef[] = [
 export const ADMIN_TAB_TITLES: Record<string, { title: string; subtitle: string }> = {
   overview: {
     title: "Visão Geral",
-    subtitle: "Central operacional do Sinergia IDLE — dados reais do runtime.",
+    subtitle: "Central operacional do Jogo IDLE — dados reais do runtime.",
   },
   items: {
     title: "Itens",

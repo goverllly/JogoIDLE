@@ -1,0 +1,64 @@
+/**
+ * JOGO IDLE — HUD 4.0 Surface / Lighting
+ * Espelho documental. Cascata real: FINAL de theme-ref.css + tokens em .play-stage.
+ * play.html NÃO carrega este arquivo (evita duplicar). Manter sincronizado com theme-ref.
+ */
+
+.play-stage {
+  --surface-top: #203a2c;
+  --surface-mid: #101d17;
+  --surface-bottom: #070e0b;
+  --surface-edge: #648e56;
+  --surface-light-rgb: 125, 171, 102;
+}
+
+.play-stage[data-chapter='I'],
+.play-stage:not([data-chapter]) {
+  --surface-top: #203a2c;
+  --surface-mid: #101d17;
+  --surface-bottom: #070e0b;
+  --surface-edge: #648e56;
+  --surface-light-rgb: 125, 171, 102;
+}
+
+.play-stage[data-chapter='II'] {
+  --surface-top: #253543;
+  --surface-mid: #15212d;
+  --surface-bottom: #0b101a;
+  --surface-edge: #96a8b9;
+  --surface-light-rgb: 168, 190, 210;
+}
+
+.play-stage[data-chapter='III'] {
+  --surface-top: #3a211a;
+  --surface-mid: #21130f;
+  --surface-bottom: #140909;
+  --surface-edge: #b95d39;
+  --surface-light-rgb: 232, 116, 65;
+}
+
+.play-stage[data-chapter='IV'] {
+  --surface-top: #292342;
+  --surface-mid: #17192d;
+  --surface-bottom: #090d20;
+  --surface-edge: #8565c4;
+  --surface-light-rgb: 166, 116, 236;
+}
+
+/* Kit compartilhado — ver theme-ref.css “Kit superfície HUD 4.0” */
+.play-stage :is(
+  .stage__left > .card.card--rail,
+  .stage__right > .card.card--bag,
+  .stage__right > .card.card--log,
+  .duel--trio .unit.unit--hero,
+  .stage__combat .unit.unit--hero,
+  .duel--trio .unit.unit--skills,
+  .stage__combat .unit.unit--skills,
+  .duel--trio .unit.unit--target,
+  .stage__combat .unit.unit--target
+) {
+  border-color: var(--surface-edge);
+  background-color: var(--surface-bottom);
+  background-image: var(--surface-bg);
+  box-shadow: var(--surface-shadow);
+}

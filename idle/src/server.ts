@@ -12,7 +12,9 @@ import {
   compareFameCharacters,
   createCharacterForUser,
   deleteCharacter,
+  enterActiveChapter,
   errorMessage,
+  getActiveChapters,
   getActiveJourney,
   getActiveState,
   getAnnouncements,
@@ -32,6 +34,7 @@ import {
   stopActiveFarm,
   unlockActiveSkill,
   updateActivePet,
+  updateAppearance,
   updateInventoryAutomationPrefs,
 } from "./local-service";
 import {
@@ -75,7 +78,7 @@ function fail(res: express.Response, error: unknown) {
 
 const uid = () => LOCAL_USER_ID;
 
-app.get("/api/sinergia-idle/meta", async (_req, res) => {
+app.get("/api/jogo-idle/meta", async (_req, res) => {
   try {
     ok(res, { success: true, ...(await getMeta()) });
   } catch (error) {
@@ -83,7 +86,7 @@ app.get("/api/sinergia-idle/meta", async (_req, res) => {
   }
 });
 
-app.get("/api/sinergia-idle/characters", async (_req, res) => {
+app.get("/api/jogo-idle/characters", async (_req, res) => {
   try {
     ok(res, { success: true, characters: await listCharacters(uid()) });
   } catch (error) {
@@ -91,7 +94,7 @@ app.get("/api/sinergia-idle/characters", async (_req, res) => {
   }
 });
 
-app.post("/api/sinergia-idle/characters", async (req, res) => {
+app.post("/api/jogo-idle/characters", async (req, res) => {
   try {
     const character = await createCharacterForUser(
       uid(),
@@ -105,7 +108,35 @@ app.post("/api/sinergia-idle/characters", async (req, res) => {
   }
 });
 
-app.post("/api/sinergia-idle/characters/:id/select", async (req, res) => {
+/** Bloqueio explícito: aparência só na criação. */
+app.post("/api/jogo-idle/me/appearance", async (req, res) => {
+  try {
+    await updateAppearance(uid(), req.body);
+    ok(res, { success: true });
+  } catch (error) {
+    fail(res, error);
+  }
+});
+
+app.patch("/api/jogo-idle/me/appearance", async (req, res) => {
+  try {
+    await updateAppearance(uid(), req.body);
+    ok(res, { success: true });
+  } catch (error) {
+    fail(res, error);
+  }
+});
+
+app.put("/api/jogo-idle/characters/:id/appearance", async (req, res) => {
+  try {
+    await updateAppearance(uid(), req.body);
+    ok(res, { success: true });
+  } catch (error) {
+    fail(res, error);
+  }
+});
+
+app.post("/api/jogo-idle/characters/:id/select", async (req, res) => {
   try {
     const character = await selectCharacter(uid(), String(req.params.id));
     ok(res, { success: true, character });
@@ -114,7 +145,7 @@ app.post("/api/sinergia-idle/characters/:id/select", async (req, res) => {
   }
 });
 
-app.delete("/api/sinergia-idle/characters/:id", async (req, res) => {
+app.delete("/api/jogo-idle/characters/:id", async (req, res) => {
   try {
     await deleteCharacter(uid(), String(req.params.id));
     ok(res, { success: true });
@@ -123,7 +154,7 @@ app.delete("/api/sinergia-idle/characters/:id", async (req, res) => {
   }
 });
 
-app.get("/api/sinergia-idle/me", async (_req, res) => {
+app.get("/api/jogo-idle/me", async (_req, res) => {
   try {
     ok(res, { success: true, ...(await getActiveState(uid())) });
   } catch (error) {
@@ -131,7 +162,7 @@ app.get("/api/sinergia-idle/me", async (_req, res) => {
   }
 });
 
-app.post("/api/sinergia-idle/farm/start", async (req, res) => {
+app.post("/api/jogo-idle/farm/start", async (req, res) => {
   try {
     ok(res, { success: true, ...(await startActiveFarm(uid(), String(req.body?.zoneId || ""))) });
   } catch (error) {
@@ -139,7 +170,7 @@ app.post("/api/sinergia-idle/farm/start", async (req, res) => {
   }
 });
 
-app.post("/api/sinergia-idle/farm/stop", async (_req, res) => {
+app.post("/api/jogo-idle/farm/stop", async (_req, res) => {
   try {
     ok(res, { success: true, ...(await stopActiveFarm(uid())) });
   } catch (error) {
@@ -147,7 +178,7 @@ app.post("/api/sinergia-idle/farm/stop", async (_req, res) => {
   }
 });
 
-app.post("/api/sinergia-idle/farm/auto-restart", async (req, res) => {
+app.post("/api/jogo-idle/farm/auto-restart", async (req, res) => {
   try {
     ok(res, { success: true, ...(await setAutoRestartFarm(uid(), Boolean(req.body?.enabled))) });
   } catch (error) {
@@ -155,7 +186,7 @@ app.post("/api/sinergia-idle/farm/auto-restart", async (req, res) => {
   }
 });
 
-app.post("/api/sinergia-idle/items/:op", async (req, res) => {
+app.post("/api/jogo-idle/items/:op", async (req, res) => {
   try {
     ok(res, { success: true, ok: true, ...(await applyItemOp(uid(), String(req.params.op), req.body || {})) });
   } catch (error) {
@@ -163,7 +194,7 @@ app.post("/api/sinergia-idle/items/:op", async (req, res) => {
   }
 });
 
-app.post("/api/sinergia-idle/merchant/buy", async (req, res) => {
+app.post("/api/jogo-idle/merchant/buy", async (req, res) => {
   try {
     ok(res, { success: true, ...(await buyMerchantOffering(uid(), String(req.body?.sku || ""))) });
   } catch (error) {
@@ -171,7 +202,7 @@ app.post("/api/sinergia-idle/merchant/buy", async (req, res) => {
   }
 });
 
-app.post("/api/sinergia-idle/me/attributes", async (req, res) => {
+app.post("/api/jogo-idle/me/attributes", async (req, res) => {
   try {
     ok(res, { success: true, ...(await allocateActiveAttributes(uid(), req.body?.allocations || req.body || {})) });
   } catch (error) {
@@ -179,7 +210,7 @@ app.post("/api/sinergia-idle/me/attributes", async (req, res) => {
   }
 });
 
-app.post("/api/sinergia-idle/me/skills/unlock", async (req, res) => {
+app.post("/api/jogo-idle/me/skills/unlock", async (req, res) => {
   try {
     ok(res, { success: true, ...(await unlockActiveSkill(uid(), String(req.body?.skillId || ""))) });
   } catch (error) {
@@ -187,7 +218,7 @@ app.post("/api/sinergia-idle/me/skills/unlock", async (req, res) => {
   }
 });
 
-app.post("/api/sinergia-idle/me/skills/activate", async (req, res) => {
+app.post("/api/jogo-idle/me/skills/activate", async (req, res) => {
   try {
     ok(res, { success: true, ...(await activateActiveSkill(uid(), String(req.body?.skillId || ""))) });
   } catch (error) {
@@ -195,7 +226,7 @@ app.post("/api/sinergia-idle/me/skills/activate", async (req, res) => {
   }
 });
 
-app.post("/api/sinergia-idle/me/combat-skills/cast", async (req, res) => {
+app.post("/api/jogo-idle/me/combat-skills/cast", async (req, res) => {
   try {
     ok(res, { success: true, ...(await castCombatSkill(uid(), String(req.body?.skillId || ""))) });
   } catch (error) {
@@ -203,7 +234,7 @@ app.post("/api/sinergia-idle/me/combat-skills/cast", async (req, res) => {
   }
 });
 
-app.post("/api/sinergia-idle/me/combat-skills/auto-cast", async (req, res) => {
+app.post("/api/jogo-idle/me/combat-skills/auto-cast", async (req, res) => {
   try {
     ok(res, { success: true, ...(await setCombatAutoCast(uid(), Boolean(req.body?.enabled))) });
   } catch (error) {
@@ -211,7 +242,7 @@ app.post("/api/sinergia-idle/me/combat-skills/auto-cast", async (req, res) => {
   }
 });
 
-app.post("/api/sinergia-idle/me/auto-hp-potion", async (req, res) => {
+app.post("/api/jogo-idle/me/auto-hp-potion", async (req, res) => {
   try {
     ok(
       res,
@@ -225,7 +256,7 @@ app.post("/api/sinergia-idle/me/auto-hp-potion", async (req, res) => {
   }
 });
 
-app.post("/api/sinergia-idle/me/pets", async (req, res) => {
+app.post("/api/jogo-idle/me/pets", async (req, res) => {
   try {
     ok(res, { success: true, ...(await updateActivePet(uid(), req.body?.petId ?? null)) });
   } catch (error) {
@@ -233,7 +264,7 @@ app.post("/api/sinergia-idle/me/pets", async (req, res) => {
   }
 });
 
-app.post("/api/sinergia-idle/me/inventory-automation", async (req, res) => {
+app.post("/api/jogo-idle/me/inventory-automation", async (req, res) => {
   try {
     ok(res, { success: true, ...(await updateInventoryAutomationPrefs(uid(), req.body || {})) });
   } catch (error) {
@@ -241,7 +272,7 @@ app.post("/api/sinergia-idle/me/inventory-automation", async (req, res) => {
   }
 });
 
-app.post("/api/sinergia-idle/me/hunt-perf/reset", async (_req, res) => {
+app.post("/api/jogo-idle/me/hunt-perf/reset", async (_req, res) => {
   try {
     ok(res, { success: true, ...(await resetActiveHuntPerf(uid())) });
   } catch (error) {
@@ -249,7 +280,7 @@ app.post("/api/sinergia-idle/me/hunt-perf/reset", async (_req, res) => {
   }
 });
 
-app.get("/api/sinergia-idle/announcements", async (_req, res) => {
+app.get("/api/jogo-idle/announcements", async (_req, res) => {
   try {
     ok(res, { success: true, ...(await getAnnouncements()) });
   } catch (error) {
@@ -257,14 +288,14 @@ app.get("/api/sinergia-idle/announcements", async (_req, res) => {
   }
 });
 
-/** Missões SinergIA desligadas no standalone. */
-app.post("/api/sinergia-idle/engagement/claim", (_req, res) => {
-  ok(res, { success: false, error: "Missões SinergIA não estão disponíveis neste jogo standalone." }, 410);
+/** Missões de engajamento desligadas no standalone. */
+app.post("/api/jogo-idle/engagement/claim", (_req, res) => {
+  ok(res, { success: false, error: "Missões de engajamento não estão disponíveis neste jogo standalone." }, 410);
 });
 
 const adminEmail = () => LOCAL_USER_EMAIL;
 
-app.post("/api/sinergia-idle/admin/config", async (req, res) => {
+app.post("/api/jogo-idle/admin/config", async (req, res) => {
   try {
     const body = req.body || {};
     ok(
@@ -354,7 +385,7 @@ app.post("/api/sinergia-idle/admin/config", async (req, res) => {
   }
 });
 
-app.post("/api/sinergia-idle/admin/grant", async (req, res) => {
+app.post("/api/jogo-idle/admin/grant", async (req, res) => {
   try {
     ok(res, { success: true, ...(await adminGrantItem(uid(), adminEmail(), req.body || {})) });
   } catch (error) {
@@ -362,7 +393,7 @@ app.post("/api/sinergia-idle/admin/grant", async (req, res) => {
   }
 });
 
-app.post("/api/sinergia-idle/admin/catalog", async (req, res) => {
+app.post("/api/jogo-idle/admin/catalog", async (req, res) => {
   try {
     const body = req.body || {};
     const creating = body.creating != null ? Boolean(body.creating) : !body.id;
@@ -376,7 +407,7 @@ app.post("/api/sinergia-idle/admin/catalog", async (req, res) => {
   }
 });
 
-app.post("/api/sinergia-idle/admin/catalog/delete", async (req, res) => {
+app.post("/api/jogo-idle/admin/catalog/delete", async (req, res) => {
   try {
     ok(
       res,
@@ -390,7 +421,7 @@ app.post("/api/sinergia-idle/admin/catalog/delete", async (req, res) => {
   }
 });
 
-app.post("/api/sinergia-idle/admin/catalog/reset", async (req, res) => {
+app.post("/api/jogo-idle/admin/catalog/reset", async (req, res) => {
   try {
     ok(
       res,
@@ -404,7 +435,7 @@ app.post("/api/sinergia-idle/admin/catalog/reset", async (req, res) => {
   }
 });
 
-app.post("/api/sinergia-idle/admin/character", async (req, res) => {
+app.post("/api/jogo-idle/admin/character", async (req, res) => {
   try {
     const body = req.body || {};
     ok(
@@ -426,7 +457,7 @@ app.post("/api/sinergia-idle/admin/character", async (req, res) => {
   }
 });
 
-app.post("/api/sinergia-idle/admin/character/delete", async (req, res) => {
+app.post("/api/jogo-idle/admin/character/delete", async (req, res) => {
   try {
     ok(
       res,
@@ -440,7 +471,7 @@ app.post("/api/sinergia-idle/admin/character/delete", async (req, res) => {
   }
 });
 
-app.post("/api/sinergia-idle/admin/season/end", async (req, res) => {
+app.post("/api/jogo-idle/admin/season/end", async (req, res) => {
   try {
     ok(res, { success: true, ...(await adminEndSeason(adminEmail(), req.body || {})) });
   } catch (error) {
@@ -448,7 +479,7 @@ app.post("/api/sinergia-idle/admin/season/end", async (req, res) => {
   }
 });
 
-app.get("/api/sinergia-idle/admin/actions", async (req, res) => {
+app.get("/api/jogo-idle/admin/actions", async (req, res) => {
   try {
     const limit = req.query.limit != null ? Number(req.query.limit) : 50;
     ok(res, { success: true, ...(await listAdminActions(adminEmail(), limit)) });
@@ -457,7 +488,7 @@ app.get("/api/sinergia-idle/admin/actions", async (req, res) => {
   }
 });
 
-app.get("/api/sinergia-idle/admin/engagement-metrics", async (_req, res) => {
+app.get("/api/jogo-idle/admin/engagement-metrics", async (_req, res) => {
   try {
     ok(res, { success: true, ...(await getAdminEngagementMetrics(adminEmail())) });
   } catch (error) {
@@ -465,7 +496,7 @@ app.get("/api/sinergia-idle/admin/engagement-metrics", async (_req, res) => {
   }
 });
 
-app.post("/api/sinergia-idle/admin/simulate", async (req, res) => {
+app.post("/api/jogo-idle/admin/simulate", async (req, res) => {
   try {
     ok(res, { success: true, ...(await adminSimulate(adminEmail(), req.body || {})) });
   } catch (error) {
@@ -473,7 +504,7 @@ app.post("/api/sinergia-idle/admin/simulate", async (req, res) => {
   }
 });
 
-app.get("/api/sinergia-idle/admin/world-snapshot", async (_req, res) => {
+app.get("/api/jogo-idle/admin/world-snapshot", async (_req, res) => {
   try {
     ok(res, { success: true, ...(await adminWorldSnapshot(adminEmail())) });
   } catch (error) {
@@ -481,7 +512,7 @@ app.get("/api/sinergia-idle/admin/world-snapshot", async (_req, res) => {
   }
 });
 
-app.get("/api/sinergia-idle/hud-layout", async (_req, res) => {
+app.get("/api/jogo-idle/hud-layout", async (_req, res) => {
   try {
     ok(res, { success: true, ...(await getPublishedHudLayout()) });
   } catch (error) {
@@ -489,7 +520,7 @@ app.get("/api/sinergia-idle/hud-layout", async (_req, res) => {
   }
 });
 
-app.get("/api/sinergia-idle/admin/hud-layout", async (_req, res) => {
+app.get("/api/jogo-idle/admin/hud-layout", async (_req, res) => {
   try {
     ok(res, { success: true, ...(await adminGetHudLayout(adminEmail())) });
   } catch (error) {
@@ -497,7 +528,7 @@ app.get("/api/sinergia-idle/admin/hud-layout", async (_req, res) => {
   }
 });
 
-app.put("/api/sinergia-idle/admin/hud-layout/draft", async (req, res) => {
+app.put("/api/jogo-idle/admin/hud-layout/draft", async (req, res) => {
   try {
     ok(res, { success: true, ...(await adminSaveHudDraft(adminEmail(), req.body || {})) });
   } catch (error) {
@@ -505,7 +536,7 @@ app.put("/api/sinergia-idle/admin/hud-layout/draft", async (req, res) => {
   }
 });
 
-app.post("/api/sinergia-idle/admin/hud-layout/publish", async (_req, res) => {
+app.post("/api/jogo-idle/admin/hud-layout/publish", async (_req, res) => {
   try {
     ok(res, { success: true, ...(await adminPublishHudLayout(adminEmail())) });
   } catch (error) {
@@ -513,7 +544,7 @@ app.post("/api/sinergia-idle/admin/hud-layout/publish", async (_req, res) => {
   }
 });
 
-app.post("/api/sinergia-idle/admin/hud-layout/restore", async (req, res) => {
+app.post("/api/jogo-idle/admin/hud-layout/restore", async (req, res) => {
   try {
     ok(res, { success: true, ...(await adminRestoreHudLayout(adminEmail(), req.body || {})) });
   } catch (error) {
@@ -521,7 +552,7 @@ app.post("/api/sinergia-idle/admin/hud-layout/restore", async (req, res) => {
   }
 });
 
-app.get("/api/sinergia-idle/admin/hud-layout/history", async (_req, res) => {
+app.get("/api/jogo-idle/admin/hud-layout/history", async (_req, res) => {
   try {
     const data = await adminGetHudLayout(adminEmail());
     ok(res, { success: true, history: data.history, publishedRevision: data.publishedRevision });
@@ -530,15 +561,15 @@ app.get("/api/sinergia-idle/admin/hud-layout/history", async (_req, res) => {
   }
 });
 
-app.get("/api/sinergia-idle/ranking", (_req, res) => {
+app.get("/api/jogo-idle/ranking", (_req, res) => {
   ok(res, { success: true, ranking: [], season: null });
 });
 
-app.get("/api/sinergia-idle/seasons", (_req, res) => {
+app.get("/api/jogo-idle/seasons", (_req, res) => {
   ok(res, { success: true, seasons: [] });
 });
 
-app.post("/api/sinergia-idle/me/ascend", async (_req, res) => {
+app.post("/api/jogo-idle/me/ascend", async (_req, res) => {
   try {
     ok(res, { success: true, ...(await ascendActiveCharacter(uid())) });
   } catch (error) {
@@ -546,7 +577,39 @@ app.post("/api/sinergia-idle/me/ascend", async (_req, res) => {
   }
 });
 
-app.get("/api/sinergia-idle/journey", async (req, res) => {
+app.get("/api/jogo-idle/chapters", async (_req, res) => {
+  try {
+    ok(res, { success: true, ...(await getActiveChapters(uid())) });
+  } catch (error) {
+    fail(res, error);
+  }
+});
+
+app.post("/api/jogo-idle/chapters/enter", async (req, res) => {
+  try {
+    ok(res, {
+      success: true,
+      ...(await enterActiveChapter(uid(), String(req.body?.chapterId || req.body?.id || ""))),
+    });
+  } catch (error) {
+    const missing = (error as { missingRequirements?: string[] })?.missingRequirements;
+    const status = httpStatus(error);
+    const code =
+      typeof (error as { code?: string })?.code === "string" ? (error as { code: string }).code : undefined;
+    ok(
+      res,
+      {
+        success: false,
+        error: errorMessage(error),
+        ...(code ? { code } : {}),
+        ...(missing ? { missingRequirements: missing } : {}),
+      },
+      status,
+    );
+  }
+});
+
+app.get("/api/jogo-idle/journey", async (req, res) => {
   try {
     ok(res, {
       success: true,
@@ -557,7 +620,7 @@ app.get("/api/sinergia-idle/journey", async (req, res) => {
   }
 });
 
-app.patch("/api/sinergia-idle/journey/privacy", async (req, res) => {
+app.patch("/api/jogo-idle/journey/privacy", async (req, res) => {
   try {
     ok(res, {
       success: true,
@@ -568,7 +631,7 @@ app.patch("/api/sinergia-idle/journey/privacy", async (req, res) => {
   }
 });
 
-app.get("/api/sinergia-idle/fame/overview", async (_req, res) => {
+app.get("/api/jogo-idle/fame/overview", async (_req, res) => {
   try {
     ok(res, { success: true, ...(await getFameOverview(uid())) });
   } catch (error) {
@@ -576,7 +639,7 @@ app.get("/api/sinergia-idle/fame/overview", async (_req, res) => {
   }
 });
 
-app.get("/api/sinergia-idle/fame/rankings", async (req, res) => {
+app.get("/api/jogo-idle/fame/rankings", async (req, res) => {
   try {
     ok(res, {
       success: true,
@@ -592,7 +655,7 @@ app.get("/api/sinergia-idle/fame/rankings", async (req, res) => {
   }
 });
 
-app.get("/api/sinergia-idle/fame/compare", async (req, res) => {
+app.get("/api/jogo-idle/fame/compare", async (req, res) => {
   try {
     ok(res, {
       success: true,
@@ -603,7 +666,7 @@ app.get("/api/sinergia-idle/fame/compare", async (req, res) => {
   }
 });
 
-app.post("/api/sinergia-idle/fame/reconcile", async (_req, res) => {
+app.post("/api/jogo-idle/fame/reconcile", async (_req, res) => {
   try {
     ok(res, { success: true, ...(await reconcileFameStore()) });
   } catch (error) {
@@ -612,26 +675,31 @@ app.post("/api/sinergia-idle/fame/reconcile", async (_req, res) => {
 });
 
 for (const path of [
-  "/api/sinergia-idle/arena/enter",
-  "/api/sinergia-idle/arena/leave",
-  "/api/sinergia-idle/arena/players",
-  "/api/sinergia-idle/arena/challenge",
-  "/api/sinergia-idle/arena/respond",
-  "/api/sinergia-idle/arena/forfeit",
+  "/api/jogo-idle/arena/enter",
+  "/api/jogo-idle/arena/leave",
+  "/api/jogo-idle/arena/players",
+  "/api/jogo-idle/arena/challenge",
+  "/api/jogo-idle/arena/respond",
+  "/api/jogo-idle/arena/forfeit",
 ]) {
   app.all(path, (_req, res) => {
     ok(res, { success: false, error: "Arena PvP desligada neste standalone." }, 501);
   });
 }
 
-app.use("/sinergia-idle", express.static(join(PUBLIC, "sinergia-idle")));
+/** Link legado do lobby apontava para admin.html (404); Studio vive em /admin/. */
+app.get("/jogo-idle/admin.html", (_req, res) => {
+  res.redirect(302, "/jogo-idle/admin/");
+});
 
-const ADMIN_DIST = join(PUBLIC, "sinergia-idle", "admin");
+app.use("/jogo-idle", express.static(join(PUBLIC, "jogo-idle")));
+
+const ADMIN_DIST = join(PUBLIC, "jogo-idle", "admin");
 app.use(
-  "/sinergia-idle/admin",
+  "/jogo-idle/admin",
   express.static(ADMIN_DIST, { index: "index.html", fallthrough: true }),
 );
-app.use("/sinergia-idle/admin", (req, res, next) => {
+app.use("/jogo-idle/admin", (req, res, next) => {
   if (req.method !== "GET" && req.method !== "HEAD") return next();
   res.sendFile(join(ADMIN_DIST, "index.html"), (err) => {
     if (err) {
@@ -644,16 +712,16 @@ app.use("/sinergia-idle/admin", (req, res, next) => {
 });
 
 app.get("/", (_req, res) => {
-  res.redirect(302, "/sinergia-idle/lobby.html");
+  res.redirect(302, "/jogo-idle/lobby.html");
 });
 
-app.get("/sinergia-idle", (_req, res) => {
-  res.redirect(302, "/sinergia-idle/lobby.html");
+app.get("/jogo-idle", (_req, res) => {
+  res.redirect(302, "/jogo-idle/lobby.html");
 });
 
 app.listen(PORT, () => {
-  console.log(`Sinergia IDLE standalone em http://localhost:${PORT}`);
-  console.log(`Lobby: http://localhost:${PORT}/sinergia-idle/lobby.html`);
-  console.log(`Jogo:  http://localhost:${PORT}/sinergia-idle/play.html`);
-  console.log(`Admin: http://localhost:${PORT}/sinergia-idle/admin/`);
+  console.log(`Jogo IDLE standalone em http://localhost:${PORT}`);
+  console.log(`Lobby: http://localhost:${PORT}/jogo-idle/lobby.html`);
+  console.log(`Jogo:  http://localhost:${PORT}/jogo-idle/play.html`);
+  console.log(`Admin: http://localhost:${PORT}/jogo-idle/admin/`);
 });

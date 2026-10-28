@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lobby — Jogo IDLE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Source+Sans+3:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/jogo-idle/styles/hud.css" />
+    <link rel="stylesheet" href="/jogo-idle/lobby.css" />
+  </head>
+  <body class="lobby-page">
+    <div class="lobby-bg" aria-hidden="true"></div>
+    <div class="lobby-shell">
+      <header class="lobby-topbar">
+        <p class="lobby-brand">Jogo IDLE</p>
+        <nav class="lobby-tabs" aria-label="Navegação">
+          <a class="is-on" href="/jogo-idle/lobby.html">Jogar</a>
+          <a href="/jogo-idle/cronicas.html">Crônicas</a>
+          <a href="/jogo-idle/admin/">Admin</a>
+        </nav>
+        <div class="lobby-seal" aria-hidden="true"></div>
+      </header>
+
+      <div class="idle-lobby-grid">
+        <!-- Prévia 3D -->
+        <section class="idle-lobby-panel idle-lobby-preview">
+          <div class="idle-lobby-panel-head">
+            <div class="idle-lobby-panel-ico" aria-hidden="true">◇</div>
+            <div>
+              <h2 class="idle-lobby-panel-title">Prévia do personagem</h2>
+              <p class="idle-lobby-panel-desc">Visual 3D da classe e aparência selecionadas.</p>
+            </div>
+          </div>
+          <div class="idle-lobby-preview__stage">
+            <iframe
+              id="preview-frame"
+              title="Prévia do personagem"
+              src="/jogo-idle/preview.html"
+              allow="autoplay"
+            ></iframe>
+            <span class="idle-lobby-preview__hint">Arraste para girar · Roda para zoom</span>
+          </div>
+        </section>
+
+        <!-- Lista -->
+        <section class="idle-lobby-panel">
+          <div class="idle-lobby-panel-head">
+            <div class="idle-lobby-panel-ico" aria-hidden="true">☰</div>
+            <div>
+              <h2 class="idle-lobby-panel-title">Seus personagens</h2>
+              <p class="idle-lobby-panel-desc" id="slots-label">0/3 slots</p>
+            </div>
+          </div>
+          <div class="idle-lobby-panel__body" id="char-list"></div>
+        </section>
+
+        <!-- Detalhe + criar -->
+        <div class="idle-lobby-side">
+          <section class="idle-lobby-panel idle-lobby-side-card" id="detail-panel" hidden>
+            <div class="idle-detail-head">
+              <div>
+                <h3 id="detail-name">—</h3>
+                <p id="detail-meta">—</p>
+              </div>
+              <div class="idle-detail-actions">
+                <button type="button" class="idle-btn idle-btn-play" id="btn-play">Jogar</button>
+                <button type="button" class="idle-btn idle-btn-delete" id="btn-delete">Excluir</button>
+              </div>
+            </div>
+            <div class="idle-lobby-panel__body">
+              <div class="idle-attr-grid" id="attr-grid"></div>
+              <div class="idle-stat-grid" id="bag-equip-grid"></div>
+              <div class="idle-stat-grid" id="hpmp-grid"></div>
+              <div class="idle-gold-bar">
+                <span class="idle-gold-bar__label" aria-hidden="true">◉</span>
+                <p class="idle-gold-bar__label">Ouro</p>
+                <p class="idle-gold-bar__value" id="detail-gold">0</p>
+              </div>
+              <p class="lobby-err" id="detail-err" hidden></p>
+            </div>
+          </section>
+
+          <section class="idle-lobby-panel idle-lobby-side-card" id="create-panel">
+            <div class="idle-lobby-panel-head">
+              <div class="idle-lobby-panel-ico" aria-hidden="true">＋</div>
+              <div>
+                <h2 class="idle-lobby-panel-title">Novo personagem</h2>
+                <p class="idle-lobby-panel-desc">Abra o Studio 3D para definir a aparência definitiva.</p>
+              </div>
+            </div>
+            <div class="idle-lobby-panel__body">
+              <p class="idle-lobby-empty" style="padding:0.5rem 0 0.85rem;text-align:left">
+                Classe, cores, capa e elmo são escolhidos na criação e não podem ser alterados depois.
+              </p>
+              <a class="idle-btn idle-btn-create" id="btn-studio" href="/jogo-idle/criar.html" style="display:inline-block;text-align:center;text-decoration:none;box-sizing:border-box">
+                Abrir Studio de Criação
+              </a>
+              <p class="lobby-err" id="create-err" hidden></p>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      const CLASS_GLYPH = {
+        GUERREIRO: "⚔",
+        BARBARO: "🪓",
+        MAGO: "✦",
+        ARQUEIRO: "🏹",
+      };
+
+      const DEFAULT_APPEARANCE = {
+        helmet: false,
+        cape: true,
+        skin: "fair",
+        armor: "steel",
+        metal: "gold",
+        capeColor: "crimson",
+        scale: 1,
+        stance: "Idle",
+      };
+
+      const state = {
+        characters: [],
+        classes: [],
+        maxCharacters: 3,
+        selectedId: null,
+      };
+
+      const els = {
+        list: document.getElementById("char-list"),
+        slots: document.getElementById("slots-label"),
+        detail: document.getElementById("detail-panel"),
+        detailName: document.getElementById("detail-name"),
+        detailMeta: document.getElementById("detail-meta"),
+        attrGrid: document.getElementById("attr-grid"),
+        bagEquip: document.getElementById("bag-equip-grid"),
+        hpmp: document.getElementById("hpmp-grid"),
+        gold: document.getElementById("detail-gold"),
+        detailErr: document.getElementById("detail-err"),
+        create: document.getElementById("create-panel"),
+        btnStudio: document.getElementById("btn-studio"),
+        createErr: document.getElementById("create-err"),
+        btnPlay: document.getElementById("btn-play"),
+        btnDelete: document.getElementById("btn-delete"),
+        frame: document.getElementById("preview-frame"),
+      };
+
+      function fmt(n) {
+        if (n === "—" || n == null || n === "") return "—";
+        const v = Number(n);
+        if (!Number.isFinite(v)) return String(n);
+        return v.toLocaleString("pt-BR");
+      }
+
+      function resolveAppearance(raw) {
+        if (!raw || typeof raw !== "object") return { ...DEFAULT_APPEARANCE };
+        return { ...DEFAULT_APPEARANCE, ...raw };
+      }
+
+      function classLabel(id) {
+        const found = state.classes.find((c) => c.id === id);
+        return found?.name || id || "—";
+      }
+
+      function pushPreview(classId, appearance) {
+        const win = els.frame?.contentWindow;
+        if (!win || !classId) return;
+        win.postMessage(
+          { type: "jogo-idle:preview", classId, appearance: { ...appearance } },
+          window.location.origin,
+        );
+      }
+
+      function pingPreview() {
+        els.frame?.contentWindow?.postMessage(
+          { type: "jogo-idle:preview-ping" },
+          window.location.origin,
+        );
+      }
+
+      window.addEventListener("message", (event) => {
+        if (event.origin !== window.location.origin) return;
+        if (event.data?.type === "jogo-idle:preview-ready") syncPreviewFromSelection();
+      });
+
+      els.frame?.addEventListener("load", () => {
+        pingPreview();
+        syncPreviewFromSelection();
+      });
+
+      function selectedCharacter() {
+        return state.characters.find((c) => c.id === state.selectedId) || null;
+      }
+
+      function syncPreviewFromSelection() {
+        const sel = selectedCharacter();
+        if (sel) pushPreview(sel.classId, resolveAppearance(sel.appearance));
+      }
+
+      function setErr(el, msg) {
+        if (!msg) {
+          el.hidden = true;
+          el.textContent = "";
+          return;
+        }
+        el.hidden = false;
+        el.textContent = msg;
+      }
+
+      function renderList() {
+        const max = state.maxCharacters || 3;
+        els.slots.textContent = `${state.characters.length}/${max} slots`;
+
+        if (!state.characters.length) {
+          els.list.innerHTML = `<div class="idle-lobby-empty">Nenhum personagem ainda.<br />Abra o Studio ao lado.</div>`;
+          return;
+        }
+
+        els.list.innerHTML = state.characters
+          .map((c) => {
+            const active = c.id === state.selectedId ? " idle-char-card--active" : "";
+            const glyph = CLASS_GLYPH[c.classId] || "◆";
+            const farm = c.farmZoneId ? `<span class="idle-char-card__badge">Em farm</span>` : "";
+            return `
+              <button type="button" class="idle-char-card${active}" data-id="${c.id}">
+                <span class="idle-char-card__avatar" aria-hidden="true">${glyph}</span>
+                <span>
+                  <span class="idle-char-card__name">${escapeHtml(c.name)}</span>
+                  <span class="idle-char-card__meta">${escapeHtml(classLabel(c.classId))}</span>
+                  ${farm}
+                </span>
+                <span class="idle-char-card__lv">Lv. ${c.level || 1}</span>
+              </button>`;
+          })
+          .join("");
+
+        els.list.querySelectorAll("[data-id]").forEach((btn) => {
+          btn.addEventListener("click", () => selectCharacter(btn.getAttribute("data-id")));
+        });
+      }
+
+      function escapeHtml(s) {
+        return String(s || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      function renderDetail() {
+        const c = selectedCharacter();
+        if (!c) {
+          els.detail.hidden = true;
+          return;
+        }
+        els.detail.hidden = false;
+        setErr(els.detailErr, "");
+
+        const attrs = c.attributes || {};
+        els.detailName.textContent = c.name;
+        els.detailMeta.textContent = `Lv. ${c.level || 1} · ${classLabel(c.classId)}`;
+        els.gold.textContent = fmt(c.gold);
+
+        els.attrGrid.innerHTML = [
+          ["str", "FOR", attrs.str ?? attrs.FOR ?? 0],
+          ["int", "INT", attrs.int ?? attrs.INT ?? 0],
+          ["dex", "DES", attrs.dex ?? attrs.DES ?? 0],
+          ["con", "CON", attrs.con ?? attrs.CON ?? 0],
+        ]
+          .map(
+            ([key, label, val]) => `
+            <div class="idle-attr-tile">
+              <span class="idle-attr-tile__ico idle-attr-tile__ico--${key}">${label[0]}</span>
+              <span class="idle-attr-tile__label">${label}</span>
+              <span class="idle-attr-tile__value">${fmt(val)}</span>
+            </div>`,
+          )
+          .join("");
+
+        const inv = Array.isArray(c.inventory) ? c.inventory.length : 0;
+        const invSize = c.inventorySize || 20;
+        const bagUp = c.bagUpgrades || 0;
+        const equipCount = c.equipment ? Object.values(c.equipment).filter(Boolean).length : 0;
+        const atk = c.stats?.attack ?? "—";
+        const def = c.stats?.defense ?? "—";
+
+        els.bagEquip.innerHTML = `
+          <div class="idle-stat-tile">
+            <span class="idle-stat-tile__ico" aria-hidden="true">🎒</span>
+            <div>
+              <p class="idle-stat-tile__label">Mochila</p>
+              <p class="idle-stat-tile__value">${inv}/${invSize} itens</p>
+              <p class="idle-stat-tile__sub">${bagUp > 0 ? `Expansões: ${bagUp}` : "Capacidade base"}</p>
+            </div>
+          </div>
+          <div class="idle-stat-tile">
+            <span class="idle-stat-tile__ico" aria-hidden="true">⛨</span>
+            <div>
+              <p class="idle-stat-tile__label">Equipamento</p>
+              <p class="idle-stat-tile__value">${equipCount} slots ocupados</p>
+              <p class="idle-stat-tile__sub">ATK ${fmt(atk)} · DEF ${fmt(def)}</p>
+            </div>
+          </div>`;
+
+        const hp = c.stats?.maxHp ?? 0;
+        const mp = c.stats?.maxMp ?? 0;
+        els.hpmp.innerHTML = `
+          <div class="idle-stat-tile">
+            <span class="idle-stat-tile__ico idle-stat-tile__ico--hp" aria-hidden="true">♥</span>
+            <div>
+              <p class="idle-stat-tile__label">HP máx.</p>
+              <p class="idle-stat-tile__value">${fmt(hp)}</p>
+            </div>
+          </div>
+          <div class="idle-stat-tile">
+            <span class="idle-stat-tile__ico idle-stat-tile__ico--mp" aria-hidden="true">◆</span>
+            <div>
+              <p class="idle-stat-tile__label">MP máx.</p>
+              <p class="idle-stat-tile__value">${fmt(mp)}</p>
+            </div>
+          </div>`;
+      }
+
+      function selectCharacter(id) {
+        state.selectedId = id;
+        renderList();
+        renderDetail();
+        syncPreviewFromSelection();
+      }
+
+      async function api(path, opts = {}) {
+        const res = await fetch(path, {
+          credentials: "same-origin",
+          headers: { "Content-Type": "application/json", ...(opts.headers || {}) },
+          ...opts,
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || data.message || `Erro ${res.status}`);
+        return data;
+      }
+
+      async function loadLobby() {
+        const [meta, chars] = await Promise.all([
+          api("/api/jogo-idle/meta"),
+          api("/api/jogo-idle/characters"),
+        ]);
+
+        state.classes = meta.classes || [];
+        state.maxCharacters = meta.maxCharacters || 3;
+        state.characters = Array.isArray(chars) ? chars : chars.characters || [];
+
+        if (!state.selectedId && state.characters[0]) {
+          state.selectedId = state.characters[0].id;
+        }
+        if (state.selectedId && !state.characters.some((c) => c.id === state.selectedId)) {
+          state.selectedId = state.characters[0]?.id || null;
+        }
+
+        renderList();
+        renderDetail();
+        syncPreviewFromSelection();
+
+        const full = state.characters.length >= state.maxCharacters;
+        if (els.btnStudio) {
+          els.btnStudio.style.pointerEvents = full ? "none" : "auto";
+          els.btnStudio.setAttribute("aria-disabled", full ? "true" : "false");
+        }
+        els.create.style.opacity = full ? "0.55" : "1";
+        if (full) setErr(els.createErr, "Limite de personagens atingido.");
+        else setErr(els.createErr, "");
+      }
+
+      els.btnPlay.addEventListener("click", async () => {
+        const c = selectedCharacter();
+        if (!c) return;
+        setErr(els.detailErr, "");
+        try {
+          await api(`/api/jogo-idle/characters/${c.id}/select`, { method: "POST", body: "{}" });
+          window.location.href = "/jogo-idle/play.html";
+        } catch (err) {
+          setErr(els.detailErr, err.message);
+        }
+      });
+
+      els.btnDelete.addEventListener("click", async () => {
+        const c = selectedCharacter();
+        if (!c) return;
+        if (!confirm(`Excluir "${c.name}"? Esta ação não pode ser desfeita.`)) return;
+        setErr(els.detailErr, "");
+        try {
+          await api(`/api/jogo-idle/characters/${c.id}`, { method: "DELETE" });
+          state.selectedId = null;
+          await loadLobby();
+        } catch (err) {
+          setErr(els.detailErr, err.message);
+        }
+      });
+
+      loadLobby().catch((err) => {
+        els.list.innerHTML = `<div class="idle-lobby-empty">${escapeHtml(err.message)}</div>`;
+      });
+    </script>
+  </body>
+</html>

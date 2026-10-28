@@ -9,12 +9,12 @@ const idleRoot = resolve(root, "..");
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  base: "/sinergia-idle/admin/",
+  base: "/jogo-idle/admin/",
   resolve: {
     alias: [
       {
-        find: /^@\/lib\/sinergia-idle\/(.*)$/,
-        replacement: resolve(idleRoot, "lib/sinergia-idle/$1"),
+        find: /^@\/lib\/jogo-idle\/(.*)$/,
+        replacement: resolve(idleRoot, "lib/jogo-idle/$1"),
       },
       { find: "@", replacement: resolve(root, "src") },
     ],
@@ -23,14 +23,14 @@ export default defineConfig({
     port: 5174,
     proxy: {
       "/api": "http://localhost:8787",
-      "/sinergia-idle": {
+      "/jogo-idle": {
         target: "http://localhost:8787",
-        bypass: (req) => (req.url?.startsWith("/sinergia-idle/admin") ? req.url : undefined),
+        bypass: (req) => (req.url?.startsWith("/jogo-idle/admin") ? req.url : undefined),
       },
     },
   },
   build: {
-    outDir: resolve(idleRoot, "public/sinergia-idle/admin"),
+    outDir: resolve(idleRoot, "public/jogo-idle/admin"),
     emptyOutDir: true,
   },
 });

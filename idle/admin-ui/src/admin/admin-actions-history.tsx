@@ -24,7 +24,7 @@ export function AdminActionsHistory({ idleFetch }: AdminActionsHistoryProps) {
       setLoading(true);
       setError(null);
       try {
-        const data = await idleFetch("/api/sinergia-idle/admin/actions?limit=50");
+        const data = await idleFetch("/api/jogo-idle/admin/actions?limit=50");
         if (cancelled) return;
         const list = Array.isArray(data?.actions)
           ? data.actions

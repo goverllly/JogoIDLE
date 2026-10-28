@@ -105,7 +105,7 @@ export function AdminEngagementPanel({ idleFetch }: AdminEngagementPanelProps) {
     setLoading(true);
     setError(null);
     try {
-      const data = await idleFetch("/api/sinergia-idle/admin/engagement-metrics");
+      const data = await idleFetch("/api/jogo-idle/admin/engagement-metrics");
       if (!data?.success || !data.metrics) {
         throw new Error(data?.error || "Falha ao carregar métricas");
       }

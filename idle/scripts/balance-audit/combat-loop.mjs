@@ -1,4 +1,4 @@
-import { monsterDefense } from "../../lib/sinergia-idle/game/data.ts";
+import { monsterDefense } from "../../lib/jogo-idle/game/data.ts";
 import { classSkillProfile } from "./profiles.mjs";
 
 const MAGE_BASIC = 0.55;

@@ -1,6 +1,6 @@
 // @ts-nocheck
 /**
- * Admin Studio — APIs locais (sem Prisma / gate SinergIA).
+ * Admin Studio — APIs locais (sem Prisma / gate externo).
  */
 import { randomUUID } from "node:crypto";
 import {
@@ -8,22 +8,22 @@ import {
   ensureAttributeEconomy,
   publicCharacter,
   setCharacterLevel,
-} from "../lib/sinergia-idle/game/character";
-import { processFarm } from "../lib/sinergia-idle/game/combat";
+} from "../lib/jogo-idle/game/character";
+import { processFarm } from "../lib/jogo-idle/game/combat";
 import {
   getZoneOverrides,
   refreshZones,
   setZoneOverrides,
   ZONES,
-} from "../lib/sinergia-idle/game/data";
-import { getBalance, getBalanceOverrides, setBalanceOverrides } from "../lib/sinergia-idle/game/balance";
+} from "../lib/jogo-idle/game/data";
+import { getBalance, getBalanceOverrides, setBalanceOverrides } from "../lib/jogo-idle/game/balance";
 import {
   getGameMaintenance,
   publicGameMaintenance,
   setGameMaintenance,
-} from "../lib/sinergia-idle/game/maintenance";
-import { unlockCosmetic } from "../lib/sinergia-idle/game/cosmetics";
-import { ensureGear, addItem, clearInventory } from "../lib/sinergia-idle/game/inventory";
+} from "../lib/jogo-idle/game/maintenance";
+import { unlockCosmetic } from "../lib/jogo-idle/game/cosmetics";
+import { ensureGear, addItem, clearInventory } from "../lib/jogo-idle/game/inventory";
 import {
   catalogMeta,
   createItem,
@@ -43,12 +43,12 @@ import {
   setPetParrotPrice,
   setRefinerPrice,
   upsertTemplate,
-} from "../lib/sinergia-idle/game/items";
-import { monsterVisualMeta, sanitizeMonsterVisualId } from "../lib/sinergia-idle/game/monster-visuals";
-import { sanitizeZoneScene } from "../lib/sinergia-idle/game/zone-scene";
-import { simulateFarmFight } from "../lib/sinergia-idle/admin-simulate";
-import { listSinergiaIdleAdminEmails, isSinergiaIdleAdmin } from "../lib/sinergia-idle/admin";
-import { getWorldSnapshot } from "../lib/sinergia-idle/content";
+} from "../lib/jogo-idle/game/items";
+import { monsterVisualMeta, sanitizeMonsterVisualId } from "../lib/jogo-idle/game/monster-visuals";
+import { sanitizeZoneScene } from "../lib/jogo-idle/game/zone-scene";
+import { simulateFarmFight } from "../lib/jogo-idle/admin-simulate";
+import { listJogoIdleAdminEmails, isJogoIdleAdmin } from "../lib/jogo-idle/admin";
+import { getWorldSnapshot } from "../lib/jogo-idle/content";
 import {
   createEmptyHudDocument,
   findHudHistoryRevision,
@@ -59,8 +59,8 @@ import {
   sanitizeHudLayoutDocument,
   setHudDraft,
   setHudPublished,
-} from "../lib/sinergia-idle/hud-layout";
-import { HUD_COMPONENTS } from "../lib/sinergia-idle/hud-registry";
+} from "../lib/jogo-idle/hud-layout";
+import { HUD_COMPONENTS } from "../lib/jogo-idle/hud-registry";
 import {
   LOCAL_USER_EMAIL,
   LOCAL_USER_ID,
@@ -121,6 +121,10 @@ function listMetaZones() {
       name: zone.name,
       description: zone.description,
       minLevel: zone.minLevel,
+      maxLevel: zone.maxLevel ?? null,
+      chapterId: zone.chapterId || null,
+      sceneProfileId: zone.sceneProfileId || null,
+      trial: Boolean(zone.trial),
       tier: zone.tier,
       requiresAscension: zone.requiresAscension || null,
       mortalOnly: Boolean(zone.mortalOnly),
@@ -134,8 +138,8 @@ function listMetaZones() {
 }
 
 export function assertIdleAdmin(email = LOCAL_USER_EMAIL) {
-  if (!isSinergiaIdleAdmin(email)) {
-    const error = new Error("Apenas o admin do Sinergia IDLE pode fazer isso");
+  if (!isJogoIdleAdmin(email)) {
+    const error = new Error("Apenas o admin do Jogo IDLE pode fazer isso");
     error.status = 403;
     throw error;
   }
@@ -217,7 +221,7 @@ export async function adminMetaPayload() {
     adminBalance: getBalance(),
     adminBalanceOverrides: getBalanceOverrides(),
     adminZoneOverrides: getZoneOverrides(),
-    adminEmails: listSinergiaIdleAdminEmails(),
+    adminEmails: listJogoIdleAdminEmails(),
   };
 }
 
@@ -547,7 +551,7 @@ export async function getAdminEngagementMetrics(email) {
     metrics: {
       claimsTotal: 0,
       uniqueClaimers: 0,
-      note: "Missões SinergIA desligadas neste standalone.",
+      note: "Missões de engajamento desligadas neste standalone.",
     },
   };
 }

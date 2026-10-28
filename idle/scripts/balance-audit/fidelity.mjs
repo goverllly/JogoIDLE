@@ -8,9 +8,9 @@ import {
   totalXpToReach,
   MORTAL_LEVEL_CAP,
   CELESTIAL_LEVEL_CAP,
-} from "../../lib/sinergia-idle/game/balance.ts";
-import { CLASSES, BASE_ZONES, scaleMonster, expectedPlayerPower } from "../../lib/sinergia-idle/game/data.ts";
-import { DROP_CHANCE, RARITIES } from "../../lib/sinergia-idle/game/items.ts";
+} from "../../lib/jogo-idle/game/balance.ts";
+import { CLASSES, BASE_ZONES, scaleMonster, expectedPlayerPower } from "../../lib/jogo-idle/game/data.ts";
+import { DROP_CHANCE, RARITIES } from "../../lib/jogo-idle/game/items.ts";
 import { computeStatsMirror } from "./lib.mjs";
 
 const MAGE_BASIC = 0.55;

@@ -56,7 +56,7 @@ export function AdminSimulatePanel({
     setBusy(true);
     onMessage(null);
     try {
-      const data = await idleFetch("/api/sinergia-idle/admin/simulate", {
+      const data = await idleFetch("/api/jogo-idle/admin/simulate", {
         method: "POST",
         body: JSON.stringify({
           zoneId: zone?.id || zoneId,

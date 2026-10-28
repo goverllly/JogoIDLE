@@ -112,8 +112,11 @@ export function AdminZonesPanel({
               <div className="min-w-0 flex-1">
                 <div className="truncate text-sm font-semibold">{z.name}</div>
                 <div className="text-[0.65rem] text-[var(--studio-muted)]">
-                  Lv {z.minLevel} · T{z.tier}
-                  {z.requiresAscension ? " · Celestial" : ""}
+                  {z.chapterId ? `Cap.${z.chapterId} · ` : ""}
+                  Lv {z.minLevel}
+                  {z.maxLevel != null ? `–${z.maxLevel}` : ""} · T{z.tier}
+                  {z.trial ? " · Ritual" : ""}
+                  {z.requiresAscension ? ` · ${z.requiresAscension}` : ""}
                 </div>
               </div>
             </button>
@@ -129,7 +132,12 @@ export function AdminZonesPanel({
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div>
                 <h3 className="studio-2-section-title mb-0">{zone.name}</h3>
-                <p className="text-[0.68rem] text-[var(--studio-muted)]">id: {zone.id}</p>
+                <p className="text-[0.68rem] text-[var(--studio-muted)]">
+                  id: {zone.id}
+                  {zone.chapterId ? ` · Cap. ${zone.chapterId}` : ""}
+                  {zone.sceneProfileId ? ` · perfil ${zone.sceneProfileId}` : ""}
+                  {zone.trial ? " · trial" : ""}
+                </p>
               </div>
               <StudioBtn variant="danger" type="button" disabled={working} onClick={() => void onClear()}>
                 Limpar overrides

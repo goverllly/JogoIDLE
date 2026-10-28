@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Jogo IDLE 2.0</title>
+    <link rel="stylesheet" href="/jogo-idle/styles.css" />
+    <link rel="stylesheet" href="/jogo-idle/hud.css" />
+    <link rel="stylesheet" href="/jogo-idle/theme-v2.css" />
+    <link rel="stylesheet" href="/jogo-idle/theme-ref.css" />
+    <link rel="stylesheet" href="/jogo-idle/play-intro.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "/jogo-idle/vendor/three/three.module.js",
+          "three/addons/": "/jogo-idle/vendor/three/addons/"
+        }
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          if (new URLSearchParams(location.search).get("hudBuilder") === "1") {
+            document.documentElement.classList.add("hud-builder-preview");
+          } else {
+            document.documentElement.classList.add("play-intro-boot");
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body class="play-stage play-intro-pending" data-chapter="I">
+    <input id="drawer-left" class="drawer-check" type="checkbox" />
+    <input id="drawer-right" class="drawer-check" type="checkbox" />
+    <div class="frame">
+      <div class="drawer-tabs">
+        <label class="drawer-tab" for="drawer-left">Personagem</label>
+        <label class="drawer-tab drawer-tab--right" for="drawer-right">Mochila</label>
+      </div>
+
+      <main id="game-panel" class="layout layout--play stage">
+        <aside class="stage__left col col--left" data-hud-id="stage-left">
+          <section class="card card--rail" data-hud-id="card-rail" data-collapsed="false">
+            <div class="panel-toggle-row">
+              <button id="rail-toggle" class="panel-toggle" type="button" aria-expanded="true">
+                <span class="eyebrow">Personagem</span>
+                <span id="rail-toggle-label">Ocultar</span>
+              </button>
+              <button id="lobby-btn" class="rail-lobby-btn" type="button" title="Voltar ao lobby de personagens">
+                Lobby
+              </button>
+            </div>
+            <div class="panel-body panel-body--rail">
+            <div class="hero-rail">
+              <div class="hero-rail__portrait">
+                <img id="hero-portrait" alt="" src="/jogo-idle/assets/hud/portrait-guerreiro.jpg" />
+              </div>
+              <div class="hero-rail__id">
+                <h2 id="hero-name">—</h2>
+                <p id="hero-class" class="muted hero-rail__class"></p>
+                <div class="hero-rail__meta">
+                  <span class="lv-pill">LV <strong id="stat-level">1</strong></span>
+                  <span id="evo-badge" class="badge badge--evo hidden">Mortal</span>
+                  <span id="engagement-badge" class="badge badge--engagement hidden" title="Bônus de participação">Bônus</span>
+                </div>
+                <span id="nav-char-name" class="sr-only">Personagem</span>
+              </div>
+            </div>
+
+            <div class="tabs tabs--rail" role="tablist">
+              <button class="tab active" data-tab="equip" type="button">Equipar</button>
+              <button class="tab" data-tab="skills" type="button">Skills</button>
+              <button class="tab" data-tab="perf" type="button" title="Desempenho">Desemp.</button>
+            </div>
+
+            <div class="tab-panel" data-panel="equip">
+              <div class="equip-panel">
+                <div class="equip-doll equip-doll--grid" aria-label="Slots de equipamento">
+                  <button class="slot slot--head" type="button" data-label="Elmo" data-slot="head"></button>
+                  <button class="slot slot--chest" type="button" data-label="Peito" data-slot="chest"></button>
+                  <button class="slot slot--necklace" type="button" data-label="Colar" data-slot="necklace"></button>
+                  <button class="slot slot--weapon" type="button" data-label="Arma" data-slot="weapon"></button>
+                  <button class="slot slot--offhand" type="button" data-label="2ª mão" data-slot="offhand"></button>
+                  <button class="slot slot--ring" type="button" data-label="Anel" data-slot="ring"></button>
+                  <button class="slot slot--gloves" type="button" data-label="Luva" data-slot="gloves"></button>
+                  <button class="slot slot--legs" type="button" data-label="Calça" data-slot="legs"></button>
+                  <button class="slot slot--boots" type="button" data-label="Bota" data-slot="boots"></button>
+                </div>
+              </div>
+
+              <div class="attr-panel">
+                <div class="attr-panel__head">
+                  <p class="panel-label">Atributos</p>
+                  <p id="unspent-points" class="unspent-points hidden">
+                    <span class="unspent-points__chip">Pontos livres <b id="unspent-value">0</b></span>
+                  </p>
+                </div>
+                <dl class="attr-list" id="attr-list">
+                  <div class="attr-row" data-stat="str">
+                    <dt>
+                      <span class="attr-code">FOR</span>
+                      <span class="attr-name">Força</span>
+                    </dt>
+                    <dd class="attr-row__val"><span id="attr-str" class="attr-val">0</span></dd>
+                    <dd class="attr-row__bar" aria-hidden="true">
+                      <span class="attr-bar"><span id="attr-bar-str" class="attr-bar__fill"></span></span>
+                    </dd>
+                    <dd class="attr-row__actions">
+                      <button type="button" class="attr-plus hidden" data-attr="str" data-amount="1" title="Investir 1 ponto">+1</button>
+                      <button type="button" class="attr-plus attr-plus--bulk hidden" data-attr="str" data-amount="5" title="Investir 5 pontos">+5</button>
+                      <input type="number" class="attr-custom-amount hidden" data-attr="str" min="1" step="1" inputmode="numeric" aria-label="Quantidade de pontos em FOR" title="Quantidade a investir" />
+                      <button type="button" class="attr-plus attr-plus--apply hidden" data-attr="str" data-mode="custom" title="Investir a quantidade informada">OK</button>
+                      <button type="button" class="attr-plus attr-plus--max hidden" data-attr="str" data-mode="max" title="Investir todos os pontos livres">Máx</button>
+                    </dd>
+                  </div>
+                  <div class="attr-row" data-stat="int">
+                    <dt>
+                      <span class="attr-code">INT</span>
+                      <span class="attr-name">Intelecto</span>
+                    </dt>
+                    <dd class="attr-row__val"><span id="attr-int" class="attr-val">0</span></dd>
+                    <dd class="attr-row__bar" aria-hidden="true">
+                      <span class="attr-bar"><span id="attr-bar-int" class="attr-bar__fill"></span></span>
+                    </dd>
+                    <dd class="attr-row__actions">
+                      <button type="button" class="attr-plus hidden" data-attr="int" data-amount="1" title="Investir 1 ponto">+1</button>
+                      <button type="button" class="attr-plus attr-plus--bulk hidden" data-attr="int" data-amount="5" title="Investir 5 pontos">+5</button>
+                      <input type="number" class="attr-custom-amount hidden" data-attr="int" min="1" step="1" inputmode="numeric" aria-label="Quantidade de pontos em INT" title="Quantidade a investir" />
+                      <button type="button" class="attr-plus attr-plus--apply hidden" data-attr="int" data-mode="custom" title="Investir a quantidade informada">OK</button>
+                      <button type="button" class="attr-plus attr-plus--max hidden" data-attr="int" data-mode="max" title="Investir todos os pontos livres">Máx</button>
+                    </dd>
+                  </div>
+                  <div class="attr-row" data-stat="dex">
+                    <dt>
+                      <span class="attr-code">DES</span>
+                      <span class="attr-name">Destreza</span>
+                    </dt>
+                    <dd class="attr-row__val"><span id="attr-dex" class="attr-val">0</span></dd>
+                    <dd class="attr-row__bar" aria-hidden="true">
+                      <span class="attr-bar"><span id="attr-bar-dex" class="attr-bar__fill"></span></span>
+                    </dd>
+                    <dd class="attr-row__actions">
+                      <button type="button" class="attr-plus hidden" data-attr="dex" data-amount="1" title="Investir 1 ponto">+1</button>
+                      <button type="button" class="attr-plus attr-plus--bulk hidden" data-attr="dex" data-amount="5" title="Investir 5 pontos">+5</button>
+                      <input type="number" class="attr-custom-amount hidden" data-attr="dex" min="1" step="1" inputmode="numeric" aria-label="Quantidade de pontos em DES" title="Quantidade a investir" />
+                      <button type="button" class="attr-plus attr-plus--apply hidden" data-attr="dex" data-mode="custom" title="Investir a quantidade informada">OK</button>
+                      <button type="button" class="attr-plus attr-plus--max hidden" data-attr="dex" data-mode="max" title="Investir todos os pontos livres">Máx</button>
+                    </dd>
+                  </div>
+                  <div class="attr-row" data-stat="con">
+                    <dt>
+                      <span class="attr-code">CON</span>
+                      <span class="attr-name">Constituição</span>
+                    </dt>
+                    <dd class="attr-row__val"><span id="attr-con" class="attr-val">0</span></dd>
+                    <dd class="attr-row__bar" aria-hidden="true">
+                      <span class="attr-bar"><span id="attr-bar-con" class="attr-bar__fill"></span></span>
+                    </dd>
+                    <dd class="attr-row__actions">
+                      <button type="button" class="attr-plus hidden" data-attr="con" data-amount="1" title="Investir 1 ponto">+1</button>
+                      <button type="button" class="attr-plus attr-plus--bulk hidden" data-attr="con" data-amount="5" title="Investir 5 pontos">+5</button>
+                      <input type="number" class="attr-custom-amount hidden" data-attr="con" min="1" step="1" inputmode="numeric" aria-label="Quantidade de pontos em CON" title="Quantidade a investir" />
+                      <button type="button" class="attr-plus attr-plus--apply hidden" data-attr="con" data-mode="custom" title="Investir a quantidade informada">OK</button>
+                      <button type="button" class="attr-plus attr-plus--max hidden" data-attr="con" data-mode="max" title="Investir todos os pontos livres">Máx</button>
+                    </dd>
+                  </div>
+                </dl>
+              </div>
+            </div>
+
+            <div class="tab-panel hidden" data-panel="skills">
+              <div class="skills-panel__teaser">
+                <p class="panel-label">Árvore de skills</p>
+                <p id="skill-points" class="skill-points">
+                  <span class="skill-points__chip">Pontos de skill <b id="skill-points-value">0</b></span>
+                </p>
+                <p class="skills-hint muted">Compre em ordem (1 → 2 → 3). Ative para um buff temporário no farm.</p>
+                <p id="skills-active" class="skills-active muted hidden"></p>
+                <button type="button" id="skills-open-btn" class="btn btn--gold">Abrir árvore</button>
+              </div>
+            </div>
+
+            <div class="tab-panel hidden" data-panel="perf">
+              <div class="skills-panel__teaser">
+                <p class="panel-label">Desempenho de caça</p>
+                <p class="skills-hint muted">XP/h, ouro/h e eficiência da caça atual — indicadores de farm, não de trabalho.</p>
+                <button type="button" id="hunt-perf-open-btn" class="btn btn--gold">Abrir painel</button>
+              </div>
+            </div>
+
+            <button id="arena-btn" class="sr-only" type="button">Arena</button>
+            </div>
+          </section>
+        </aside>
+
+        <section class="stage__center col col--center" data-hud-id="stage-center">
+          <div class="stage__viewport" data-hud-id="stage-viewport">
+            <div class="arena-stone-frame" aria-hidden="false">
+              <section id="arena" class="arena arena--3d-only" data-zone="idle">
+                <div class="arena__far"></div>
+                <div class="arena__particles"></div>
+                <div class="arena__ground"></div>
+                <div class="fighter f-hero">
+                  <div class="bar hp"><span></span></div>
+                  <div class="fighter__body"></div>
+                </div>
+                <div class="fighter f-monster gone">
+                  <div class="target-plate"><strong></strong><span></span></div>
+                  <div class="bar"><span></span></div>
+                  <div class="fighter__body"></div>
+                </div>
+                <div class="arena__fx"></div>
+                <p class="arena__idle-msg">Escolha uma área para começar a caçar</p>
+                <div class="arena-hud">
+                  <div class="arena-hud__chip"><small>Abates</small><b id="hud-kills">0</b></div>
+                  <div class="arena-hud__chip"><small>XP</small><b id="hud-xp">0</b></div>
+                  <div class="arena-hud__chip"><small>DPS</small><b id="hud-dps">—</b></div>
+                  <div class="arena-hud__chip"><small>TTK</small><b id="hud-ttk">—</b></div>
+                </div>
+              </section>
+              <div id="arena-combat-fire" class="arena-combat-fire" aria-hidden="true">
+                <span class="arena-combat-fire__glow"></span>
+                <span class="arena-combat-fire__side arena-combat-fire__side--left"></span>
+                <span class="arena-combat-fire__side arena-combat-fire__side--right"></span>
+                <span class="arena-combat-fire__base"></span>
+                <span class="arena-combat-fire__embers"></span>
+              </div>
+            </div>
+            <div class="zone-plaque" data-hud-id="zone-plaque">
+              <div class="zone-plaque__main">
+                <strong id="activity-name">Escolha uma área</strong>
+                <span id="activity-desc" class="muted"></span>
+              </div>
+            </div>
+            <div class="arena-autos" data-hud-id="arena-autos">
+              <label
+                class="arena-autos__row toggle-row"
+                title="Usa skills prontas automaticamente no farm (desligado por padrão)"
+              >
+                <input type="checkbox" id="combat-auto-cast" />
+                <span class="toggle-switch" aria-hidden="true"></span>
+                Auto-usar skills
+              </label>
+              <div
+                class="arena-autos__potion auto-hp-potion"
+                title="Bebe Poção de Vida automaticamente no farm quando o HP cair ao limiar"
+              >
+                <label class="arena-autos__row toggle-row">
+                  <input type="checkbox" id="auto-hp-potion" />
+                  <span class="toggle-switch" aria-hidden="true"></span>
+                  Auto poção
+                </label>
+                <label class="pct-pill">
+                  <input
+                    type="number"
+                    id="auto-hp-potion-pct"
+                    min="5"
+                    max="95"
+                    step="5"
+                    value="40"
+                  />
+                  <span>% HP</span>
+                </label>
+              </div>
+            </div>
+            <div class="arena-skills" data-hud-id="arena-skills">
+              <small id="duel-speed" class="sr-only">—</small>
+              <div id="combat-skill-bar" class="combat-skill-bar" aria-label="Skills de combate">
+                <div class="combat-skill-bar__slots" id="combat-skill-slots">
+                  <button type="button" class="combat-skill-slot combat-skill-slot--locked" disabled aria-label="Skill bloqueada">
+                    <span class="combat-skill-slot__icon" aria-hidden="true">·</span>
+                    <span class="combat-skill-slot__cost">—</span>
+                  </button>
+                  <button type="button" class="combat-skill-slot combat-skill-slot--locked" disabled aria-label="Skill bloqueada">
+                    <span class="combat-skill-slot__icon" aria-hidden="true">·</span>
+                    <span class="combat-skill-slot__cost">—</span>
+                  </button>
+                  <button type="button" class="combat-skill-slot combat-skill-slot--locked" disabled aria-label="Skill bloqueada">
+                    <span class="combat-skill-slot__icon" aria-hidden="true">·</span>
+                    <span class="combat-skill-slot__cost">—</span>
+                  </button>
+                  <button type="button" class="combat-skill-slot combat-skill-slot--locked" disabled aria-label="Skill bloqueada">
+                    <span class="combat-skill-slot__icon" aria-hidden="true">·</span>
+                    <span class="combat-skill-slot__cost">—</span>
+                  </button>
+                  <button type="button" class="combat-skill-slot combat-skill-slot--locked" disabled aria-label="Skill bloqueada">
+                    <span class="combat-skill-slot__icon" aria-hidden="true">·</span>
+                    <span class="combat-skill-slot__cost">—</span>
+                  </button>
+                  <button type="button" class="combat-skill-slot combat-skill-slot--locked" disabled aria-label="Skill bloqueada">
+                    <span class="combat-skill-slot__icon" aria-hidden="true">·</span>
+                    <span class="combat-skill-slot__cost">—</span>
+                  </button>
+                  <button type="button" class="combat-skill-slot combat-skill-slot--locked" disabled aria-label="Skill bloqueada">
+                    <span class="combat-skill-slot__icon" aria-hidden="true">·</span>
+                    <span class="combat-skill-slot__cost">—</span>
+                  </button>
+                  <button type="button" class="combat-skill-slot combat-skill-slot--locked" disabled aria-label="Skill bloqueada">
+                    <span class="combat-skill-slot__icon" aria-hidden="true">·</span>
+                    <span class="combat-skill-slot__cost">—</span>
+                  </button>
+                  <button type="button" class="combat-skill-slot combat-skill-slot--locked" disabled aria-label="Skill bloqueada">
+                    <span class="combat-skill-slot__icon" aria-hidden="true">·</span>
+                    <span class="combat-skill-slot__cost">—</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="stage__dock">
+            <div class="stage__float combat-actions" data-hud-id="combat-actions">
+              <button id="stop-btn" class="btn btn--small stage-btn hidden" type="button"><img src="/jogo-idle/assets/hud/ui-stop.svg" alt="" />Parar</button>
+              <button id="area-btn" class="btn btn--small stage-btn" type="button" title="Escolher área de caça">
+                <img src="/jogo-idle/assets/hud/ui-area.svg" alt="" />Área
+              </button>
+              <button
+                id="arena-combat-btn"
+                class="btn btn--small stage-btn btn--arena"
+                type="button"
+                title="Arena de duelos com aposta"
+              >
+                <img src="/jogo-idle/assets/hud/ui-arena.png" alt="" />Arena
+              </button>
+            </div>
+
+            <div class="duel duel--trio stage__combat">
+              <div class="card unit unit--hero" data-hud-id="unit-hero">
+                <div class="unit__head">
+                  <span id="unit-evo" class="badge badge--evo">Mortal</span>
+                  <strong id="unit-name">—</strong>
+                  <span class="lv-pill">Lv. <b id="unit-level">1</b></span>
+                </div>
+                <div class="unit__body">
+                  <div class="unit__section unit__section--vitals">
+                    <div id="hero-hp-meter" class="meter meter--hp meter--fx meter--chunky">
+                      <div class="meter__track">
+                        <span id="hp-ghost" class="meter__ghost"></span>
+                        <span id="hp-fill" class="meter__fill">
+                          <i class="meter__sheen" aria-hidden="true"></i>
+                          <i class="meter__tip" aria-hidden="true"></i>
+                          <i class="meter__sparks" aria-hidden="true"></i>
+                        </span>
+                      </div>
+                      <span class="meter__label">HP</span>
+                      <span id="stat-hp" class="meter__value">0 / 0</span>
+                      <span id="hp-delta" class="meter__delta" aria-hidden="true"></span>
+                    </div>
+                    <div id="resource-meter" class="meter meter--mp meter--fx meter--chunky">
+                      <div class="meter__track">
+                        <span id="mp-ghost" class="meter__ghost"></span>
+                        <span id="mp-fill" class="meter__fill">
+                          <i class="meter__sheen" aria-hidden="true"></i>
+                          <i class="meter__tip" aria-hidden="true"></i>
+                          <i class="meter__sparks" aria-hidden="true"></i>
+                        </span>
+                      </div>
+                      <span class="meter__label" id="resource-label">MP</span>
+                      <span id="stat-mp" class="meter__value">0 / 0</span>
+                      <span id="mp-delta" class="meter__delta" aria-hidden="true"></span>
+                    </div>
+                    <div class="meter meter--xp meter--fx meter--chunky">
+                      <div class="meter__track">
+                        <span id="unit-xp-fill" class="meter__fill">
+                          <i class="meter__tip" aria-hidden="true"></i>
+                        </span>
+                      </div>
+                      <span class="meter__label">XP</span>
+                      <span id="unit-xp-value" class="meter__value">0 / 0</span>
+                    </div>
+                  </div>
+                  <div class="unit__section unit__section--status">
+                    <p id="farm-buff-chip" class="farm-buff-chip hidden" aria-live="polite"></p>
+                    <p id="progress-hint" class="progress-hint muted hidden"></p>
+                  </div>
+                  <div class="unit__section">
+                    <div class="unit__stats unit__stats--row unit__stats--tiles">
+                      <span class="stat-tile" title="Ataque"><i class="stat-tile__ico" aria-hidden="true">⚔</i><b id="stat-atk">0</b></span>
+                      <span class="stat-tile" title="Defesa"><i class="stat-tile__ico" aria-hidden="true">🛡</i><b id="stat-def">0</b></span>
+                      <span class="stat-tile" title="Chance de crítico"><i class="stat-tile__ico" aria-hidden="true">✦</i><b id="stat-crit">0%</b></span>
+                      <span class="stat-tile" title="Intervalo de ataque"><i class="stat-tile__ico" aria-hidden="true">⌁</i><b id="stat-speed">0s</b></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="duel-crest" aria-hidden="true" title="Batalha"></div>
+
+              <div id="target-card" class="card unit unit--target" data-hud-id="unit-target">
+                <div class="unit__head">
+                  <span id="target-kind" class="badge badge--mob">Alvo</span>
+                  <strong id="target-name">Sem alvo</strong>
+                  <span class="lv-pill">Lv. <b id="target-level">—</b></span>
+                </div>
+                <div class="unit__body">
+                  <div class="unit__section unit__section--vitals">
+                    <div id="target-hp-meter" class="meter meter--enemy meter--fx meter--chunky">
+                      <div class="meter__track">
+                        <span id="target-ghost" class="meter__ghost"></span>
+                        <span id="target-fill" class="meter__fill">
+                          <i class="meter__sheen" aria-hidden="true"></i>
+                          <i class="meter__tip" aria-hidden="true"></i>
+                          <i class="meter__sparks" aria-hidden="true"></i>
+                        </span>
+                      </div>
+                      <span class="meter__label">HP</span>
+                      <span id="target-hp" class="meter__value">—</span>
+                      <span id="target-delta" class="meter__delta" aria-hidden="true"></span>
+                    </div>
+                    <div class="unit__hp-meta">
+                      <span id="target-hp-pct">—</span>
+                      <span id="target-threat" class="muted">—</span>
+                    </div>
+                  </div>
+                  <div class="unit__section">
+                    <div class="unit__stats unit__stats--row unit__stats--tiles unit__stats--enemy">
+                      <span class="stat-tile" title="Dano do inimigo"><i class="stat-tile__ico" aria-hidden="true">⚔</i><b id="target-atk">—</b></span>
+                      <span class="stat-tile" title="Defesa do inimigo"><i class="stat-tile__ico" aria-hidden="true">🛡</i><b id="target-def">—</b></span>
+                      <span class="stat-tile stat-tile--meta" title="DPS estimado"><b id="target-dps">—</b></span>
+                      <span class="stat-tile stat-tile--meta" title="Tempo até matar"><b id="target-ttk">—</b></span>
+                    </div>
+                  </div>
+                  <div id="activity-banner" class="activity hidden">
+                    <div class="activity__top">
+                      <span id="activity-banner-name"></span>
+                    </div>
+                    <div class="activity__count"><b id="activity-kills">0</b> abates nesta sessão</div>
+                    <div class="activity__bar"><span id="activity-fill"></span></div>
+                    <p id="farm-status" class="activity__note">Parado</p>
+                    <p id="event-farm-line" class="activity__note activity__event hidden"></p>
+                    <p id="combat-feedback" class="activity__note activity__combat-fb hidden"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <aside class="stage__right col col--right" data-hud-id="stage-right">
+          <section class="card card--bag" data-hud-id="card-bag" data-collapsed="false">
+            <div class="bag-chrome">
+              <button id="bag-toggle" class="panel-toggle" type="button" aria-expanded="true">
+                <span class="eyebrow">Mochila <span id="inv-count-toggle" class="panel-toggle__meta">0/20</span></span>
+                <span id="bag-toggle-label">Ocultar</span>
+              </button>
+              <div class="bag-head">
+                <h2 class="inv-title">Mochila <span id="inv-count">0/20</span></h2>
+                <div class="bag-head__actions">
+                  <button
+                    id="inv-expand-btn"
+                    class="icon-btn bag-expand"
+                    type="button"
+                    title="Expansão de mochila no Mercador"
+                    aria-label="Expandir mochila"
+                  >+</button>
+                  <details class="audio-pop">
+                    <summary title="Som">Som</summary>
+                    <div class="audio-pop__panel">
+                      <button id="mute-btn" class="icon-btn" type="button" aria-label="Som">🔊</button>
+                      <label title="Efeitos">SFX <input id="sfx-vol" type="range" min="0" max="1" step="0.05" /></label>
+                      <label title="Música">BGM <input id="music-vol" type="range" min="0" max="1" step="0.05" /></label>
+                    </div>
+                  </details>
+                  <label class="bag-close icon-btn" for="drawer-right" title="Fechar" aria-label="Fechar mochila">×</label>
+                </div>
+              </div>
+            </div>
+            <div class="panel-body panel-body--bag">
+            <div id="inv-filters" class="tabs tabs--inv-filter" role="tablist" aria-label="Filtro da mochila">
+              <button class="tab active" type="button" data-inv-filter="all">Todos</button>
+              <button class="tab" type="button" data-inv-filter="item">Itens</button>
+              <button class="tab" type="button" data-inv-filter="consumable" title="Consumíveis">Consum.</button>
+              <button class="tab" type="button" data-inv-filter="equip">Equip.</button>
+            </div>
+            <div id="inv-pages" class="tabs tabs--pages" aria-label="Páginas da mochila">
+              <button class="tab active" type="button" data-page="0">1</button>
+              <button class="tab locked" type="button" data-page="1" disabled title="Compre expansão no Mercador">2</button>
+            </div>
+            <div id="inv-grid" class="inv-grid" data-hud-id="inv-grid">
+              <div class="inv-cell"></div><div class="inv-cell"></div><div class="inv-cell"></div><div class="inv-cell"></div><div class="inv-cell"></div>
+              <div class="inv-cell"></div><div class="inv-cell"></div><div class="inv-cell"></div><div class="inv-cell"></div><div class="inv-cell"></div>
+              <div class="inv-cell"></div><div class="inv-cell"></div><div class="inv-cell"></div><div class="inv-cell"></div><div class="inv-cell"></div>
+              <div class="inv-cell"></div><div class="inv-cell"></div><div class="inv-cell"></div><div class="inv-cell"></div><div class="inv-cell"></div>
+            </div>
+            <details class="idle-smart-inv" id="idle-smart-inv">
+              <summary class="idle-smart-inv__summary">Inventário Inteligente</summary>
+              <div class="idle-smart-inv__body" id="smart-inv-body">
+                <p class="idle-smart-inv__hint muted">Preferências do personagem. Automação só roda com o pet adequado.</p>
+              </div>
+            </details>
+
+            <div class="inv-actions">
+              <button id="inv-sort" class="mini-btn mini-btn--organize" type="button" disabled title="Ordenar por tipo e raridade"><img src="/jogo-idle/assets/hud/ui-organize.svg" alt="" /><span>Organizar</span></button>
+              <button id="inv-junk" class="mini-btn mini-btn--clean" type="button" disabled title="Vender comuns e incomuns de outras classes"><img src="/jogo-idle/assets/hud/ui-clean.svg" alt="" /><span>Limpeza</span></button>
+              <button id="inv-sell" class="mini-btn mini-btn--sell" type="button" disabled title="Modo venda: clique em um item para vender"><img src="/jogo-idle/assets/hud/ui-sell.svg" alt="" /><span>Vender</span></button>
+            </div>
+            <label
+              class="inv-confirm-rare"
+              id="inv-confirm-rare-wrap"
+              title="Quando ativo, vender raro/épico/lendário pede confirmação"
+            >
+              <input type="checkbox" id="inv-confirm-rare" checked />
+              <span>Confirmar raros</span>
+            </label>
+            <div class="gold-line">
+              <span class="gold-line__label">
+                <img
+                  class="gold-line__stack"
+                  src="/jogo-idle/assets/hud/gold-coins-stack.png"
+                  alt=""
+                  width="28"
+                  height="28"
+                />
+                Saldo
+              </span>
+              <span class="gold-value"><span class="coin-ico"></span><b id="stat-gold">0</b> gold</span>
+            </div>
+
+            <div class="bag-utility">
+              <div class="pets-panel" id="pets-panel">
+                <div class="pets-panel__head">
+                  <p class="panel-label">Companheiro</p>
+                  <span class="pets-panel__hint muted">1 ativo</span>
+                </div>
+                <div class="pets-list" id="pets-list" role="list"></div>
+                <p class="pets-empty muted" id="pets-empty">Compre pets no Mercador. Só um age por vez.</p>
+              </div>
+              <div class="rail-actions">
+                <button id="logout-btn" class="rail-btn" type="button" title="Voltar ao lobby de personagens">
+                  <img src="/jogo-idle/assets/hud/ui-profile.svg" alt="" />Lobby
+                </button>
+                <button id="merchant-btn" class="rail-btn" type="button"><img src="/jogo-idle/assets/hud/ui-merchant.svg" alt="" />Mercador</button>
+                <button id="engagement-btn" class="rail-btn hidden" type="button" hidden aria-hidden="true"><img src="/jogo-idle/assets/hud/ui-missions.svg" alt="" />Missões</button>
+                <button id="cronicas-btn" class="rail-btn" type="button" title="Crônicas das Quatro Eras — capítulos">
+                  <img src="/jogo-idle/assets/hud/ui-missions.svg" alt="" width="18" height="18" />Capítulos
+                </button>
+                <button id="galeria-btn" class="rail-btn" type="button" title="Galeria da Fama — jornada e recordes">
+                  <img src="/jogo-idle/assets/hud/ranking-laurel.svg" alt="" width="18" height="18" />Galeria da Fama
+                </button>
+                <button id="divindade-btn" class="rail-btn nav__item--divindade is-muted" type="button" title="Divindade — ritual Celestial">
+                  <img src="/jogo-idle/assets/hud/ui-divinity.svg" alt="" />
+                  Divindade
+                  <span id="divindade-badge" class="nav__badge hidden">!</span>
+                </button>
+                <button id="ascend-btn" class="rail-btn" type="button">Falar com a Divindade</button>
+              </div>
+            </div>
+            </div>
+          </section>
+          <section class="card card--log" data-hud-id="card-log" data-collapsed="true">
+            <button id="log-toggle" class="panel-toggle log-toggle" type="button" aria-expanded="false">
+              <span class="eyebrow">Acontecimentos</span>
+              <span id="log-toggle-label">Mostrar</span>
+            </button>
+            <div class="panel-body panel-body--log">
+            <ul id="session-feed" class="log log--session"></ul>
+            <ul id="combat-log" class="log"></ul>
+            </div>
+          </section>
+        </aside>
+      </main>
+    </div>
+
+    <div id="idle-skills" class="idle-skills hidden">
+      <div class="idle-skills__backdrop" data-skills-close></div>
+      <div class="idle-skills__panel panel-frame" role="dialog" aria-modal="true" aria-labelledby="skills-title">
+        <header class="idle-skills__head">
+          <div>
+            <p class="idle-skills__eyebrow">Skills</p>
+            <h2 id="skills-title">Árvore de skills</h2>
+          </div>
+          <div class="idle-skills__head-actions">
+            <span class="skill-points__chip">Pontos <b id="skill-points-modal">0</b></span>
+            <button type="button" class="idle-skills__close" data-skills-close aria-label="Fechar">✕</button>
+          </div>
+        </header>
+        <p class="idle-skills__hint">Compre em ordem (1 → 2 → 3). Clique num nó para ver detalhes e comprar ou ativar.</p>
+        <div id="skill-tree" class="skill-tree" role="list" aria-label="Árvore linear de skills"></div>
+        <div id="skill-detail" class="skill-detail">
+          <p class="skill-detail__empty muted">Selecione uma skill na árvore.</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="idle-zones" class="idle-zones hidden">
+      <div class="idle-zones__backdrop" data-zones-close></div>
+      <div class="idle-zones__panel panel-frame" role="dialog" aria-modal="true" aria-labelledby="zones-title">
+        <header class="idle-zones__head">
+          <div>
+            <p class="idle-zones__eyebrow">Caça</p>
+            <h2 id="zones-title">Escolher área</h2>
+          </div>
+          <button type="button" class="idle-zones__close" data-zones-close aria-label="Fechar">✕</button>
+        </header>
+        <p class="idle-zones__hint">Selecione a fase e inicie a caçada.</p>
+        <div id="zones-list" class="idle-zones__list" role="listbox" aria-label="Áreas de caça"></div>
+        <div class="idle-zones__footer">
+          <button
+            id="auto-restart-btn"
+            class="btn btn--small btn--toggle"
+            type="button"
+            aria-pressed="false"
+            title="Após desmaio, retoma a mesma área sozinho (com 50% de HP)"
+          >
+            Restart auto: off
+          </button>
+          <button id="start-btn" class="btn btn--small btn--gold" type="button">Iniciar caça</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="toast" class="toast hidden" role="status"></div>
+    <script src="/jogo-idle/hud-layout-runtime.js" defer></script>
+    <script>
+      (function () {
+        try {
+          if (document.documentElement.classList.contains("hud-builder-preview")) {
+            document.body.classList.remove("play-intro-pending");
+            document.body.classList.add("play-intro-done");
+            var s = document.createElement("script");
+            s.src = "/jogo-idle/hud-builder-bridge.js";
+            s.defer = true;
+            document.head.appendChild(s);
+          }
+        } catch (e) {}
+      })();
+    </script>
+    <script type="module" src="/jogo-idle/app.js"></script>
+  </body>
+</html>

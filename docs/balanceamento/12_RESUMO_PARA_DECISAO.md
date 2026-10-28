@@ -30,7 +30,7 @@ Standalone usa **dropChance 0.016** (default 0.11). Isso **não** impede rush de
 
 ## Produção
 
-Não acessível aqui. Próximo passo de validação: ler `sinergia_idle_catalog_state` em modo somente leitura no app pai.
+Não acessível aqui. Próximo passo de validação: ler `jogo_idle_catalog_state` em modo somente leitura no app pai.
 
 ---
 

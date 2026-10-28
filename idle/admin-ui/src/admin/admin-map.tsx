@@ -1,6 +1,6 @@
 
 import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
-import { getZoneScenePreset, ZONE_PARTICLE_MODES } from "@/lib/sinergia-idle/game/zone-scene";
+import { getZoneScenePreset, ZONE_PARTICLE_MODES } from "@/lib/jogo-idle/game/zone-scene";
 import {
   StudioBtn,
   StudioField,
@@ -25,6 +25,10 @@ type ZoneRow = {
   id: string;
   name: string;
   minLevel: number;
+  maxLevel?: number | null;
+  chapterId?: string | null;
+  sceneProfileId?: string | null;
+  trial?: boolean;
   tier: number;
   scene?: {
     bg?: number;
@@ -37,6 +41,7 @@ type ZoneRow = {
     propDensity?: number;
     fogNear?: number;
     fogFar?: number;
+    variant?: string;
     decorations?: MapDecoration[];
   } | null;
 };
@@ -65,6 +70,7 @@ const PROP_KINDS = [
 const PALETTE: Record<string, string[]> = {
   dungeon: ["barrelL", "chest", "chestGold", "column", "pillar", "crates", "torch", "wall", "stairs"],
   nature: ["treeA", "treeB", "treesM", "rockA", "rockC", "hill", "hillsTrees"],
+  forest: ["tree1a", "tree2a", "tree3a", "tree4a", "bush1a", "rock1a", "rock3a", "grass1a", "bare1a"],
   city: ["buildingA", "buildingC", "bench", "bush", "streetlight", "waterTower"],
   space: ["moduleA", "moduleB", "pad", "landerA", "lights", "solar"],
   halloween: ["crypt", "arch", "shrine", "lanternH", "treeL", "skullCandle", "jack"],
@@ -79,7 +85,7 @@ function fromCssHex(css: string) {
   return Number.parseInt(css.replace(/^#/, ""), 16);
 }
 
-const STORAGE_MAP_ZONE = "sinergia-idle-admin-mapZoneId";
+const STORAGE_MAP_ZONE = "jogo-idle-admin-mapZoneId";
 
 type AdminMapEditorProps = {
   zones: ZoneRow[];
@@ -267,14 +273,14 @@ export function AdminMapEditor({
   function postToEditor(payload: Record<string, unknown>) {
     const win = iframeRef.current?.contentWindow;
     if (!win || !ready) return;
-    win.postMessage({ type: "sinergia-idle:map-editor", ...payload }, window.location.origin);
+    win.postMessage({ type: "jogo-idle:map-editor", ...payload }, window.location.origin);
   }
 
   function postCommand(command: string, extra: Record<string, unknown> = {}) {
     const win = iframeRef.current?.contentWindow;
     if (!win || !ready) return;
     win.postMessage(
-      { type: "sinergia-idle:map-editor-command", command, ...extra },
+      { type: "jogo-idle:map-editor-command", command, ...extra },
       window.location.origin,
     );
   }
@@ -299,16 +305,16 @@ export function AdminMapEditor({
     function onMessageEvent(event: MessageEvent) {
       if (event.origin !== window.location.origin) return;
       const data = event.data;
-      if (data?.type === "sinergia-idle:map-editor-ready") {
+      if (data?.type === "jogo-idle:map-editor-ready") {
         setReady(true);
         return;
       }
-      if (data?.type === "sinergia-idle:map-editor-decorations" && Array.isArray(data.decorations)) {
+      if (data?.type === "jogo-idle:map-editor-decorations" && Array.isArray(data.decorations)) {
         setDecorations(data.decorations);
         if (typeof data.selectedIndex === "number") setSelectedIndex(data.selectedIndex);
         return;
       }
-      if (data?.type === "sinergia-idle:map-editor-baked") {
+      if (data?.type === "jogo-idle:map-editor-baked") {
         skipThemeUntilRef.current = Date.now() + 250;
         if (typeof data.props === "string") setPropsKind(data.props);
         if (Array.isArray(data.decorations)) setDecorations(data.decorations);
@@ -318,14 +324,14 @@ export function AdminMapEditor({
         );
         return;
       }
-      if (data?.type === "sinergia-idle:map-editor-toast" && data.message) {
+      if (data?.type === "jogo-idle:map-editor-toast" && data.message) {
         onMessage(String(data.message));
         return;
       }
-      if (data?.type === "sinergia-idle:map-editor-selection") {
+      if (data?.type === "jogo-idle:map-editor-selection") {
         if (typeof data.selectedIndex === "number") setSelectedIndex(data.selectedIndex);
       }
-      if (data?.type === "sinergia-idle:map-editor-tool") {
+      if (data?.type === "jogo-idle:map-editor-tool") {
         if (data.tool === "navigate" || data.tool === "select" || data.tool === "place") {
           setTool(data.tool);
         }
@@ -418,7 +424,7 @@ export function AdminMapEditor({
     event.preventDefault();
     if (!zoneId) throw new Error("Selecione uma zona");
     await run(async () => {
-      const data = await idleFetch("/api/sinergia-idle/admin/config", {
+      const data = await idleFetch("/api/jogo-idle/admin/config", {
         method: "POST",
         body: JSON.stringify({ zone: { id: zoneId, scene: scenePayload } }),
       });
@@ -448,11 +454,18 @@ export function AdminMapEditor({
         >
           {zones.map((z) => (
             <option key={z.id} value={z.id}>
+              {z.chapterId ? `[${z.chapterId}] ` : ""}
               {z.name}
+              {z.trial ? " (ritual)" : ""}
             </option>
           ))}
         </select>
-        <span className="text-[0.65rem] text-[var(--studio-muted)]">ID: {zoneId}</span>
+        <span className="text-[0.65rem] text-[var(--studio-muted)]">
+          ID: {zoneId}
+          {zones.find((z) => z.id === zoneId)?.sceneProfileId
+            ? ` · ${zones.find((z) => z.id === zoneId)?.sceneProfileId}`
+            : ""}
+        </span>
         <div className="mx-1 h-5 w-px bg-[var(--studio-line)]" aria-hidden />
         {(
           [
@@ -514,7 +527,7 @@ export function AdminMapEditor({
           <iframe
             ref={iframeRef}
             title={`World Builder — ${zoneName}`}
-            src="/sinergia-idle/map-editor.html"
+            src="/jogo-idle/map-editor.html"
             className="absolute inset-0 h-full w-full border-0"
             tabIndex={0}
           />
@@ -612,7 +625,7 @@ export function AdminMapEditor({
               disabled={working || !zoneId}
               onClick={() =>
                 void run(async () => {
-                  const data = await idleFetch("/api/sinergia-idle/admin/config", {
+                  const data = await idleFetch("/api/jogo-idle/admin/config", {
                     method: "POST",
                     body: JSON.stringify({ zone: { id: zoneId, scene: null } }),
                   });

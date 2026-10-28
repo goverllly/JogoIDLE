@@ -1,16 +1,16 @@
 # HUD Builder — Fase 1 + 2
 
-Editor visual No-Code da HUD do Sinergia IDLE no Admin Studio.
+Editor visual No-Code da HUD do Jogo IDLE no Admin Studio.
 
 ## Arquitetura
 
 | Peça | Caminho |
 |------|---------|
-| Registry | `idle/lib/sinergia-idle/hud-registry.ts` |
-| Schema / validação | `idle/lib/sinergia-idle/hud-layout.ts` |
+| Registry | `idle/lib/jogo-idle/hud-registry.ts` |
+| Schema / validação | `idle/lib/jogo-idle/hud-layout.ts` |
 | Persistência | `catalog.overrides.__hud` (`draft`, `published`, `history`) |
-| Runtime (jogador) | `idle/public/sinergia-idle/hud-layout-runtime.js` |
-| Bridge (editor) | `idle/public/sinergia-idle/hud-builder-bridge.js` (`?hudBuilder=1`) |
+| Runtime (jogador) | `idle/public/jogo-idle/hud-layout-runtime.js` |
+| Bridge (editor) | `idle/public/jogo-idle/hud-builder-bridge.js` (`?hudBuilder=1`) |
 | Admin UI | `idle/admin-ui/src/admin/admin-hud-builder.tsx` |
 
 O canvas é a HUD real (`play.html`) em iframe. **Não** há React dentro de `play.html`.
@@ -82,12 +82,12 @@ Não há reparent entre colunas nesta fase. Não converte a HUD inteira para abs
 
 | Método | Rota | Auth |
 |--------|------|------|
-| GET | `/api/sinergia-idle/hud-layout` | Público (layout **publicado**) |
-| GET | `/api/sinergia-idle/admin/hud-layout` | Admin |
-| PUT | `/api/sinergia-idle/admin/hud-layout/draft` | Admin |
-| POST | `/api/sinergia-idle/admin/hud-layout/publish` | Admin (UI até Fase 5) |
-| POST | `/api/sinergia-idle/admin/hud-layout/restore` | Admin |
-| GET | `/api/sinergia-idle/admin/hud-layout/history` | Admin |
+| GET | `/api/jogo-idle/hud-layout` | Público (layout **publicado**) |
+| GET | `/api/jogo-idle/admin/hud-layout` | Admin |
+| PUT | `/api/jogo-idle/admin/hud-layout/draft` | Admin |
+| POST | `/api/jogo-idle/admin/hud-layout/publish` | Admin (UI até Fase 5) |
+| POST | `/api/jogo-idle/admin/hud-layout/restore` | Admin |
+| GET | `/api/jogo-idle/admin/hud-layout/history` | Admin |
 
 ## Protocolo `postMessage` (`v: 1`, origin travado)
 

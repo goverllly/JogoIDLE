@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Jogo IDLE — Crônicas das Quatro Eras</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Source+Sans+3:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/jogo-idle/styles.css" />
+    <link rel="stylesheet" href="/jogo-idle/hud.css" />
+    <link rel="stylesheet" href="/jogo-idle/theme-ref.css" />
+    <link rel="stylesheet" href="/jogo-idle/cronicas.css" />
+  </head>
+  <body class="cronicas-page">
+    <div class="cronicas-bg" aria-hidden="true"></div>
+    <div class="cronicas-shell">
+      <header class="cronicas-header">
+        <div class="cronicas-header__brand">
+          <p class="cronicas-eyebrow">Jogo IDLE</p>
+          <h1>Crônicas das Quatro Eras</h1>
+          <p class="cronicas-lede">Quatro portais. Quatro mundos. Uma jornada sazonal.</p>
+        </div>
+        <nav class="cronicas-nav" aria-label="Navegação">
+          <a class="cronicas-nav__link" href="/jogo-idle/lobby.html">Lobby</a>
+          <a class="cronicas-nav__link" href="/jogo-idle/play.html">Jogar</a>
+          <a class="cronicas-nav__link" href="/jogo-idle/galeria.html">Galeria</a>
+        </nav>
+      </header>
+
+      <section id="cronicas-season" class="cronicas-season" aria-label="Temporada" hidden></section>
+
+      <p id="cronicas-error" class="cronicas-banner cronicas-banner--err" role="alert" hidden></p>
+      <div id="cronicas-loading" class="cronicas-state">Abrindo as crônicas…</div>
+
+      <div id="cronicas-layout" class="cronicas-layout" hidden>
+        <div
+          id="cronicas-gallery"
+          class="cronicas-gallery"
+          role="listbox"
+          aria-label="Capítulos das Quatro Eras"
+          tabindex="0"
+        ></div>
+
+        <section id="cronicas-detail" class="cronicas-detail" aria-live="polite">
+          <p class="cronicas-detail__hint">Selecione um capítulo para ver os detalhes.</p>
+        </section>
+      </div>
+    </div>
+    <script type="module" src="/jogo-idle/cronicas.js"></script>
+  </body>
+</html>

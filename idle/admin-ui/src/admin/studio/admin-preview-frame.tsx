@@ -26,7 +26,7 @@ export function AdminPreviewFrame({
       <iframe
         ref={iframeRef}
         title={title}
-        src="/sinergia-idle/admin-studio/preview.html"
+        src="/jogo-idle/admin-studio/preview.html"
         className="absolute inset-0 h-full w-full border-0"
       />
       {!ready ? (

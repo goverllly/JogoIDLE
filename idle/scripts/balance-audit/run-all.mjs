@@ -28,7 +28,7 @@ import {
   DIVINDADE_GOLD_COST,
   MAX_REFINE,
   REFINE_STAT_BONUS,
-} from "../../lib/sinergia-idle/game/balance.ts";
+} from "../../lib/jogo-idle/game/balance.ts";
 
 import {
   CLASSES,
@@ -38,9 +38,9 @@ import {
   zoneBossWaveSize,
   monsterDefense,
   expectedPlayerPower,
-} from "../../lib/sinergia-idle/game/data.ts";
+} from "../../lib/jogo-idle/game/data.ts";
 
-import { RARITIES, DROP_CHANCE, listCatalog, getBagUpgradePrice, getRefinerPrice, getAttrResetPrice } from "../../lib/sinergia-idle/game/items.ts";
+import { RARITIES, DROP_CHANCE, listCatalog, getBagUpgradePrice, getRefinerPrice, getAttrResetPrice } from "../../lib/jogo-idle/game/items.ts";
 
 ensureOut();
 setBalanceOverrides(null); // defaults limpos
@@ -71,7 +71,7 @@ const meta = {
   },
   production: {
     accessible: false,
-    reason: "Schema Prisma / DB da SinergIA não montados neste repo standalone",
+    reason: "Schema Prisma / DB da plataforma não montados neste repo standalone",
   },
 };
 

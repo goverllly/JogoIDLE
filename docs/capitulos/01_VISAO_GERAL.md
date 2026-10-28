@@ -19,10 +19,10 @@ Campanha em **quatro capítulos desbloqueáveis**, cada um com **500 níveis ind
 
 | Cap. | ID | Nome | Classificação | Tema | Níveis | Arte |
 |------|-----|------|---------------|------|--------|------|
-| I | `floresta_esquecida` | A Floresta Esquecida | Mortal | Floresta | 1–500 | [`cap-I.png`](../../idle/public/sinergia-idle/assets/chapters/cap-I.png) |
-| II | `reino_mortos` | O Reino dos Mortos | Celestial | Cemitério | 1–500 | [`cap-II.png`](../../idle/public/sinergia-idle/assets/chapters/cap-II.png) |
-| III | `inferno_primordial` | O Inferno Primordial | Divino | Fogo | 1–500 | [`cap-III.png`](../../idle/public/sinergia-idle/assets/chapters/cap-III.png) |
-| IV | `abismo_vazio` | O Abismo do Vazio | Semideus | Buraco Negro | 1–500 | [`cap-IV.png`](../../idle/public/sinergia-idle/assets/chapters/cap-IV.png) |
+| I | `floresta_esquecida` | A Floresta Esquecida | Mortal | Floresta | 1–500 | [`cap-I.png`](../../idle/public/jogo-idle/assets/chapters/cap-I.png) |
+| II | `reino_mortos` | O Reino dos Mortos | Celestial | Cemitério | 1–500 | [`cap-II.png`](../../idle/public/jogo-idle/assets/chapters/cap-II.png) |
+| III | `inferno_primordial` | O Inferno Primordial | Divino | Fogo | 1–500 | [`cap-III.png`](../../idle/public/jogo-idle/assets/chapters/cap-III.png) |
+| IV | `abismo_vazio` | O Abismo do Vazio | Semideus | Buraco Negro | 1–500 | [`cap-IV.png`](../../idle/public/jogo-idle/assets/chapters/cap-IV.png) |
 
 **Total:** 2.000 passos de progressão conquistáveis ao longo dos capítulos.  
 **Ordem de poder / ranking:** Semideus > Divino > Celestial > Mortal (nunca comparar só o número do nível entre classificações diferentes).

@@ -1,5 +1,5 @@
-import { RARITIES, DROP_CHANCE } from "../../lib/sinergia-idle/game/items.ts";
-import { REFINE_STAT_BONUS, MAX_REFINE } from "../../lib/sinergia-idle/game/balance.ts";
+import { RARITIES, DROP_CHANCE } from "../../lib/jogo-idle/game/items.ts";
+import { REFINE_STAT_BONUS, MAX_REFINE } from "../../lib/jogo-idle/game/balance.ts";
 
 const RARITY_ORDER = Object.keys(RARITIES);
 const RARITY_WEIGHT = RARITY_ORDER.reduce((s, r) => s + RARITIES[r].weight, 0);

@@ -1,14 +1,16 @@
 # 03 — Regiões e cenários
 
-**Status:** proposta de catálogo. **Não criar zonas no código nesta etapa.**
+**Status:** implementado no runtime — 20 regiões + 3 trials em `chapter-zones.ts` / `BASE_ZONES`, com `chapterId`, aliases legados e presets 3D por região.
+
+**Nota de assets:** KayKit Forest + Kenney Graveyard/Nature + Quaternius Space **wired** em `kaykit-props.js` (ver `ASSETS-ROADMAP.md`). Cap II usa cemitério Kenney; Cap III Tree Lava Quaternius; Cap IV props espaciais. Não há meshes de magma fluido/singularidade dedicados.
 
 ---
 
-## Regra atual
+## Regra atual (runtime)
 
-17 zonas em `BASE_ZONES` / `regioes.csv` (idle): floresta → nexus, com `minLevel`, `requiresAscension`, `mortalOnly` (prova_divina).
+20 zonas de campanha (5× Cap. I–IV) + trials (`prova_divina`, `julgamento_almas`, `coracao_chama`) em `BASE_ZONES`, com `chapterId`, faixa Lv 1–500 no bucket do capítulo, `sceneProfileId`.
 
-Sem `chapterId`. Escala de poder ~centenas–dezenas de mil.
+Aliases: `floresta`→`bosque_sussurros`, … (ver `ZONE_ID_ALIASES`).
 
 ## Proposta: 5 regiões × 4 capítulos = 20
 
@@ -120,12 +122,12 @@ Mecânica Cap.II: maldições / resist espiritual (prep).
 
 ## Direção artística
 
-- Cap.I: verdes, musgo, luar verde — arte [`cap-I.png`](../../idle/public/sinergia-idle/assets/chapters/cap-I.png).
-- Cap.II: cinza-osso, lilás pálido, lápides — [`cap-II.png`](../../idle/public/sinergia-idle/assets/chapters/cap-II.png).
-- Cap.III: carvão, magma, ouro fundido — [`cap-III.png`](../../idle/public/sinergia-idle/assets/chapters/cap-III.png).
-- Cap.IV: negro, lente gravitacional, estrelas mortas — [`cap-IV.png`](../../idle/public/sinergia-idle/assets/chapters/cap-IV.png).
+- Cap.I: verdes, musgo, luar verde — arte [`cap-I.png`](../../idle/public/jogo-idle/assets/chapters/cap-I.png).
+- Cap.II: cinza-osso, lilás pálido, lápides — [`cap-II.png`](../../idle/public/jogo-idle/assets/chapters/cap-II.png).
+- Cap.III: carvão, magma, ouro fundido — [`cap-III.png`](../../idle/public/jogo-idle/assets/chapters/cap-III.png).
+- Cap.IV: negro, lente gravitacional, estrelas mortas — [`cap-IV.png`](../../idle/public/jogo-idle/assets/chapters/cap-IV.png).
 
-Artes de card (doc 02) ≠ background de arena; pipelines separados. Pasta: `/sinergia-idle/assets/chapters/`.
+Artes de card (doc 02) ≠ background de arena; pipelines separados. Pasta: `/jogo-idle/assets/chapters/`.
 
 ---
 

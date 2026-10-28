@@ -19,7 +19,7 @@ export function useAdminPreviewBridge(iframeRef: RefObject<HTMLIFrameElement | n
   useEffect(() => {
     function onMessage(event: MessageEvent) {
       if (event.origin !== window.location.origin) return;
-      if (event.data?.type === "sinergia-idle:admin-preview-ready") {
+      if (event.data?.type === "jogo-idle:admin-preview-ready") {
         setReady(true);
       }
     }
@@ -32,7 +32,7 @@ export function useAdminPreviewBridge(iframeRef: RefObject<HTMLIFrameElement | n
       const win = iframeRef.current?.contentWindow;
       if (!win || !ready) return;
       win.postMessage(
-        { type: "sinergia-idle:admin-preview", mode, payload },
+        { type: "jogo-idle:admin-preview", mode, payload },
         window.location.origin,
       );
     },

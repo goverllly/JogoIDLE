@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Studio — Criar Personagem</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Source+Sans+3:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/jogo-idle/styles/hud.css" />
+    <link rel="stylesheet" href="/jogo-idle/criar.css" />
+  </head>
+  <body class="studio-page">
+    <div class="studio-bg" aria-hidden="true"></div>
+    <div class="studio-shell">
+      <header class="studio-top">
+        <p class="studio-brand">Studio de Criação</p>
+        <nav class="studio-steps" aria-label="Etapas">
+          <span class="studio-step-pill is-on" data-step-pill="1">1 · Classe</span>
+          <span class="studio-step-pill" data-step-pill="2">2 · Aparência</span>
+          <span class="studio-step-pill" data-step-pill="3">3 · Confirmar</span>
+        </nav>
+        <a class="studio-back" href="/jogo-idle/lobby.html">← Lobby</a>
+      </header>
+
+      <div class="studio-main">
+        <!-- Identidade -->
+        <section class="studio-panel" id="panel-identity">
+          <div class="studio-panel-head">
+            <h2>Identidade</h2>
+            <p>Nome e classe do herói.</p>
+          </div>
+          <div class="studio-panel-body">
+            <label class="studio-label" for="hero-name">Nome</label>
+            <input id="hero-name" class="studio-input" maxlength="16" placeholder="Nome do herói" autocomplete="off" />
+
+            <p class="studio-label">Classe</p>
+            <div class="studio-class-grid" id="class-grid"></div>
+
+            <div class="studio-block" id="summary-block" hidden>
+              <p class="studio-label">Resumo</p>
+              <p class="studio-summary" id="summary-text"></p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Preview 3D -->
+        <section class="studio-panel studio-preview">
+          <div class="studio-panel-head">
+            <h2>Prévia 3D</h2>
+            <p>Arraste para girar · Roda para zoom</p>
+          </div>
+          <div class="studio-preview__stage">
+            <iframe
+              id="preview-frame"
+              title="Prévia do personagem"
+              src="/jogo-idle/preview.html"
+              allow="autoplay"
+            ></iframe>
+            <div class="studio-cam-bar">
+              <button type="button" data-cam="front">Frente</button>
+              <button type="button" data-cam="back">Costas</button>
+              <button type="button" data-cam="reset">Reset</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Aparência -->
+        <section class="studio-panel" id="panel-look">
+          <div class="studio-panel-head">
+            <h2>Aparência</h2>
+            <p>Opções suportadas pelo modelo da classe.</p>
+          </div>
+          <div class="studio-panel-body" id="look-body">
+            <p class="studio-label">Pele</p>
+            <div class="studio-swatch-row" id="swatch-skin"></div>
+
+            <p class="studio-label">Vestimenta</p>
+            <div class="studio-swatch-row" id="swatch-armor"></div>
+
+            <div id="metal-block">
+              <p class="studio-label" id="metal-label">Metal / elmo</p>
+              <div class="studio-swatch-row" id="swatch-metal"></div>
+            </div>
+
+            <p class="studio-label">Capa</p>
+            <div class="studio-swatch-row" id="swatch-cape"></div>
+
+            <p class="studio-label">Visibilidade</p>
+            <div class="studio-toggle-row">
+              <button type="button" class="studio-toggle" id="toggle-helmet">Elmo</button>
+              <button type="button" class="studio-toggle" id="toggle-cape">Capa</button>
+            </div>
+
+            <p class="studio-label">Pose de apresentação</p>
+            <div class="studio-stance-grid" id="stance-grid"></div>
+
+            <label class="studio-label" for="scale-range">Proporção visual <span id="scale-val">1.00</span></label>
+            <input id="scale-range" class="studio-range" type="range" min="0.9" max="1.12" step="0.01" value="1" />
+            <p class="studio-summary" style="margin-top:0.35rem">Só visual — não altera atributos, alcance ou hitbox.</p>
+          </div>
+        </section>
+      </div>
+
+      <footer class="studio-footer">
+        <p class="studio-warn" id="footer-msg">Etapa 1: escolha classe e nome.</p>
+        <div class="studio-footer-actions">
+          <button type="button" class="studio-btn studio-btn-ghost" id="btn-back" hidden>Voltar</button>
+          <button type="button" class="studio-btn studio-btn-ghost" id="btn-reset">Restaurar</button>
+          <button type="button" class="studio-btn studio-btn-next" id="btn-next">Continuar</button>
+          <button type="button" class="studio-btn studio-btn-create" id="btn-create" hidden>Confirmar e criar</button>
+        </div>
+        <p class="studio-err" id="err" hidden></p>
+      </footer>
+    </div>
+    <script type="module" src="/jogo-idle/criar.js"></script>
+  </body>
+</html>

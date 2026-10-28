@@ -10,9 +10,9 @@ export function AdminAdminsPanel({ emails }: AdminAdminsPanelProps) {
     <StudioCard>
       <h3 className="studio-2-section-title">Allowlist administrativa</h3>
       <p className="mb-3 text-[0.78rem] text-[var(--studio-muted)]">
-        Acesso ao Studio e às rotas <code>/api/sinergia-idle/admin/*</code> é validado no
+        Acesso ao Studio e às rotas <code>/api/jogo-idle/admin/*</code> é validado no
         servidor via e-mail. Inclui a lista do repositório e o CSV da env{" "}
-        <code>SINERGIA_IDLE_ADMIN_EMAILS</code>. CRUD de admins pela UI: fora do escopo da
+        <code>JOGO_IDLE_ADMIN_EMAILS</code>. CRUD de admins pela UI: fora do escopo da
         Fase 1.
       </p>
       <ul className="space-y-2">

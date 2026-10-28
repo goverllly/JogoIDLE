@@ -1,27 +1,34 @@
 // @ts-nocheck
 /**
- * Serviço IDLE standalone — mesma lógica de jogo, sem Prisma/auth/missões SinergIA.
+ * Serviço IDLE standalone — mesma lógica de jogo, sem Prisma/auth/missões de engajamento.
  */
 import {
   allocateAttributes,
   computeStats,
   createCharacter as createGameCharacter,
-  ascendToCelestial,
+  performClassificationRitual,
   drinkHpPotion,
   drinkManaPotion,
   ensureAttributeEconomy,
   publicCharacter,
   setAutoHpPotion as setAutoHpPotionDomain,
   useAttributeResetConsumable,
-} from "../lib/sinergia-idle/game/character";
-import { processFarm, startFarm, stopFarm } from "../lib/sinergia-idle/game/combat";
+} from "../lib/jogo-idle/game/character";
+import {
+  applyEnterChapter,
+  CHAPTER_CATALOG,
+  ensureChapters,
+  publicChaptersView,
+  validateEnterChapter,
+} from "../lib/jogo-idle/game/chapters";
+import { processFarm, startFarm, stopFarm } from "../lib/jogo-idle/game/combat";
 import {
   ensureJourney,
   publicJourney,
   resolveDisplayTotals,
   setJourneyPrivacy,
   takeFameDelta,
-} from "../lib/sinergia-idle/game/journey";
+} from "../lib/jogo-idle/game/journey";
 import {
   applyFameDelta,
   buildCategoryRanking,
@@ -29,15 +36,15 @@ import {
   FAME_HALL_CATEGORIES,
   publicFameOverview,
   reconcileFameFromCharacters,
-} from "../lib/sinergia-idle/game/fame";
+} from "../lib/jogo-idle/game/fame";
 import {
   buildZoneBoss,
   CLASSES,
   getZoneOverrides,
   ZONES,
   zoneBossWaveSize,
-} from "../lib/sinergia-idle/game/data";
-import { cosmeticsMeta } from "../lib/sinergia-idle/game/appearance";
+} from "../lib/jogo-idle/game/data";
+import { cosmeticsMeta } from "../lib/jogo-idle/game/appearance";
 import {
   buyBagUpgrade,
   buyPet,
@@ -51,9 +58,9 @@ import {
   sellJunk,
   sortInventory,
   setItemLocked,
-} from "../lib/sinergia-idle/game/inventory";
-import { applyInventoryAutomationPatch } from "../lib/sinergia-idle/inventory-automation";
-import { petIdFromSku, setActivePet, publicPets } from "../lib/sinergia-idle/game/pets";
+} from "../lib/jogo-idle/game/inventory";
+import { applyInventoryAutomationPatch } from "../lib/jogo-idle/inventory-automation";
+import { petIdFromSku, setActivePet, publicPets } from "../lib/jogo-idle/game/pets";
 import {
   applyCatalogStateSnapshot,
   catalogMeta,
@@ -62,28 +69,28 @@ import {
   listCatalog,
   merchantMeta,
   setCatalogPersistHandler,
-} from "../lib/sinergia-idle/game/items";
-import { getBalance, getBalanceOverrides } from "../lib/sinergia-idle/game/balance";
+} from "../lib/jogo-idle/game/items";
+import { getBalance, getBalanceOverrides } from "../lib/jogo-idle/game/balance";
 import {
   DEFAULT_MAINTENANCE_MESSAGE,
   getGameMaintenance,
   publicGameMaintenance,
-} from "../lib/sinergia-idle/game/maintenance";
-import { listSinergiaIdleAdminEmails } from "../lib/sinergia-idle/admin";
-import { unlockSkill, activateSkill } from "../lib/sinergia-idle/game/skills";
+} from "../lib/jogo-idle/game/maintenance";
+import { listJogoIdleAdminEmails } from "../lib/jogo-idle/admin";
+import { unlockSkill, activateSkill } from "../lib/jogo-idle/game/skills";
 import {
   queueCombatSkill as castCombatSkillDomain,
   setCombatAutoCast as setCombatAutoCastDomain,
-} from "../lib/sinergia-idle/game/combat-skills";
-import { monsterVisualMeta } from "../lib/sinergia-idle/game/monster-visuals";
-import { resetHuntPerf } from "../lib/sinergia-idle/hunt-perf";
+} from "../lib/jogo-idle/game/combat-skills";
+import { monsterVisualMeta } from "../lib/jogo-idle/game/monster-visuals";
+import { resetHuntPerf } from "../lib/jogo-idle/hunt-perf";
 import {
   ensureEngagementState,
   getIdleEngagementBonus,
-} from "../lib/sinergia-idle/engagement-bonus";
+} from "../lib/jogo-idle/engagement-bonus";
 import { store, type CharacterRow } from "./store";
 
-export const MODULE_KEY = "sinergiaidle";
+export const MODULE_KEY = "jogo-idleidle";
 export const MAX_CHARACTERS_PER_USER = 3;
 export const LOCAL_USER_ID = 1;
 export const LOCAL_USER_EMAIL = "local@idle.local";
@@ -133,6 +140,10 @@ function listMeta() {
         name: zone.name,
         description: zone.description,
         minLevel: zone.minLevel,
+        maxLevel: zone.maxLevel ?? null,
+        chapterId: zone.chapterId || null,
+        sceneProfileId: zone.sceneProfileId || null,
+        trial: Boolean(zone.trial),
         tier: zone.tier,
         requiresAscension: zone.requiresAscension || null,
         mortalOnly: Boolean(zone.mortalOnly),
@@ -390,7 +401,7 @@ export async function getMeta() {
     adminBalance: getBalance(),
     adminBalanceOverrides: getBalanceOverrides(),
     adminZoneOverrides: getZoneOverrides(),
-    adminEmails: listSinergiaIdleAdminEmails(),
+    adminEmails: listJogoIdleAdminEmails(),
   };
 }
 
@@ -400,6 +411,13 @@ export async function listCharacters(userId) {
     const character = fromRow(row);
     return { ...publicCharacter(blob(character)), isActive: row.isActive };
   });
+}
+
+/** Aparência de nascimento é imutável — sempre 403. */
+export async function updateAppearance(_userId, _input) {
+  const error = new Error("Aparência só pode ser definida na criação do personagem");
+  error.status = 403;
+  throw error;
 }
 
 export async function createCharacterForUser(userId, name, classId, appearance) {
@@ -685,14 +703,69 @@ export async function ascendActiveCharacter(userId) {
   const character = await loadActive(userId);
   const { opts } = await farmOptionsFor(userId, character);
   processFarm(blob(character), Date.now(), opts);
-  const result = ascendToCelestial(blob(character));
+  const result = performClassificationRitual(blob(character));
   character.lastSeenAt = new Date().toISOString();
   await persist(userId, character);
+  const chapterName =
+    CHAPTER_CATALOG[result.unlocksChapter]?.name || result.unlocksChapter;
   return {
-    message:
-      "Ritual da Divindade concluído — você é Celestial no nível 1. Atributos e equipamento permanecem; reconquiste as áreas até o Éter.",
+    message: `${result.ritualLabel} concluído — você é ${result.resultLabel || result.classification} no nível 1. ${chapterName} desbloqueado nas Crônicas.`,
     character: publicCharacter(blob(character)),
+    chapters: publicChaptersView(blob(character)),
     ...result,
+  };
+}
+
+export async function getActiveChapters(userId) {
+  await assertGameplayOpen();
+  const character = await loadActive(userId);
+  const { opts } = await farmOptionsFor(userId, character);
+  processFarm(blob(character), Date.now(), opts);
+  ensureChapters(blob(character));
+  character.lastSeenAt = new Date().toISOString();
+  await persist(userId, character);
+  return { chapters: publicChaptersView(blob(character)) };
+}
+
+/**
+ * Enter chapter: validate first (farm untouched on failure), then stop/persist farm and switch.
+ */
+export async function enterActiveChapter(userId, chapterId) {
+  await assertGameplayOpen();
+  await ensureCatalogLoaded();
+  const character = await loadActive(userId);
+  const { engagement, opts } = await farmOptionsFor(userId, character);
+  // Catch-up ticks without stopping yet
+  processFarm(blob(character), Date.now(), opts);
+
+  const validation = validateEnterChapter(blob(character), chapterId);
+  if (!validation.ok) {
+    const err = new Error(
+      `Capítulo bloqueado. Faltam: ${validation.missingRequirements.join("; ") || "requisitos"}`,
+    );
+    err.status = 403;
+    err.code = "CHAPTER_LOCKED";
+    err.missingRequirements = validation.missingRequirements;
+    throw err;
+  }
+
+  // Validation OK — now stop farm if active
+  if (blob(character).farmZoneId) {
+    stopFarm(blob(character), opts);
+  }
+
+  const result = applyEnterChapter(blob(character), validation.chapterId);
+  character.lastSeenAt = new Date().toISOString();
+  await persist(userId, character);
+  const chapterName = CHAPTER_CATALOG[validation.chapterId]?.name || validation.chapterId;
+  return {
+    message: result.switched
+      ? `Você entrou em ${chapterName}.`
+      : "Você já está neste capítulo.",
+    switched: result.switched,
+    chapters: result.view,
+    character: publicCharacter(blob(character)),
+    engagement,
   };
 }
 
