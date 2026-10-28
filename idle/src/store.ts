@@ -414,6 +414,7 @@ export const store = {
         backupDir: state.paths.backupDir,
         currentValid,
         policy: state.backupPolicy,
+        writeOptions: state.writeOptions,
       });
       state.lastValid = structuredClone(result.restored);
       state.block = null;

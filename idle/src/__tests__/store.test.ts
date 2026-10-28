@@ -1,5 +1,13 @@
 import assert from "node:assert/strict";
-import { mkdtempSync, writeFileSync, readFileSync, chmodSync, existsSync, rmSync } from "node:fs";
+import {
+  mkdtempSync,
+  writeFileSync,
+  readFileSync,
+  chmodSync,
+  existsSync,
+  rmSync,
+  readdirSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, it } from "node:test";
@@ -178,6 +186,21 @@ describe("store — atomic write failures", () => {
     assert.equal(readFileSync(ws.savePath, "utf8"), before);
     storeTestApi.setWriteOptions({});
   });
+
+  it("falhas de escrita não deixam .tmp órfãos no diretório do save", () => {
+    store.createCharacter(sampleChar({ gold: 1 }));
+    const listTmps = () =>
+      readdirSync(ws.root).filter((n) => n.includes(".tmp") || n.startsWith(".save-"));
+
+    storeTestApi.setWriteOptions({ failBeforeRename: true });
+    assert.throws(() => store.updateCharacter("c1", { gold: 2 }));
+    assert.deepEqual(listTmps(), []);
+
+    storeTestApi.setWriteOptions({ failDuringTempWrite: true });
+    assert.throws(() => store.updateCharacter("c1", { gold: 3 }));
+    assert.deepEqual(listTmps(), []);
+    storeTestApi.setWriteOptions({});
+  });
 });
 
 describe("store — permission", () => {
@@ -243,6 +266,31 @@ describe("store — concurrency / STALE_CHARACTER", () => {
       assert.equal((r as PromiseRejectedResult).reason?.code, "STALE_CHARACTER");
     }
   });
+
+  it("save legado com updatedAt ISO puro ainda funciona com STALE_CHARACTER", () => {
+    const legacyIso = "2024-01-15T12:00:00.000Z";
+    assert.equal(Number.isNaN(Date.parse(legacyIso)), false);
+    const doc = {
+      ...emptySave(),
+      characters: [sampleChar({ id: "legacy", updatedAt: legacyIso, gold: 3 })],
+    };
+    writeFileSync(ws.savePath, JSON.stringify(doc, null, 2), "utf8");
+    storeTestApi.resetForTests({
+      savePath: ws.savePath,
+      backupDir: ws.backupDir,
+      evidenceDir: ws.evidenceDir,
+    });
+    const row = store.findCharacter("legacy")!;
+    assert.equal(row.updatedAt, legacyIso);
+    // Date.parse on ISO#seq would be NaN — document residual risk; equality token must work.
+    const next = store.updateCharacter("legacy", { gold: 4 }, legacyIso);
+    assert.match(next.updatedAt, /#\d+$/);
+    assert.equal(Number.isNaN(Date.parse(next.updatedAt)), true);
+    assert.throws(() => store.updateCharacter("legacy", { gold: 5 }, legacyIso), (err: unknown) => {
+      assert.equal((err as { code?: string }).code, "STALE_CHARACTER");
+      return true;
+    });
+  });
 });
 
 describe("store — backup and restore", () => {
@@ -270,6 +318,50 @@ describe("store — backup and restore", () => {
     store.restoreFromBackupFile(bak.path);
     assert.equal(store.persistenceBlocked, false);
     assert.equal(store.findCharacter("c1")!.gold, 77);
+  });
+
+  it("deleteCharacter cria backup antes de remover", () => {
+    store.createCharacter(sampleChar({ id: "del-me", name: "Doomed", gold: 12 }));
+    assert.equal(store.listBackups().length, 0);
+    store.deleteCharacter(1, "del-me");
+    assert.ok(store.listBackups().length >= 1);
+    assert.equal(store.findCharacter("del-me"), null);
+  });
+
+  it("falha no rename durante restore preserva o principal", () => {
+    store.createCharacter(sampleChar({ gold: 40 }));
+    const bak = store.createBackupNow();
+    store.updateCharacter("c1", { gold: 80 });
+    const before = readFileSync(ws.savePath, "utf8");
+    storeTestApi.setWriteOptions({ failBeforeRename: true });
+    assert.throws(() => store.restoreFromBackupFile(bak.path));
+    assert.equal(readFileSync(ws.savePath, "utf8"), before);
+    assert.equal(store.findCharacter("c1")!.gold, 80);
+    storeTestApi.setWriteOptions({});
+  });
+});
+
+describe("store — smoke integração tmp", () => {
+  it("create → update → reinício → backup → corrupt → restore", () => {
+    store.createCharacter(sampleChar({ name: "Smoke", gold: 10 }));
+    store.updateCharacter("c1", { gold: 25 });
+    storeTestApi.resetForTests({
+      savePath: ws.savePath,
+      backupDir: ws.backupDir,
+      evidenceDir: ws.evidenceDir,
+    });
+    assert.equal(store.findCharacter("c1")!.gold, 25);
+    const bak = store.createBackupNow();
+    writeFileSync(ws.savePath, "{nope", "utf8");
+    storeTestApi.resetForTests({
+      savePath: ws.savePath,
+      backupDir: ws.backupDir,
+      evidenceDir: ws.evidenceDir,
+    });
+    assert.throws(() => store.listCharacters(1));
+    store.restoreFromBackupFile(bak.path);
+    assert.equal(store.findCharacter("c1")!.name, "Smoke");
+    assert.equal(store.findCharacter("c1")!.gold, 25);
   });
 });
 

@@ -10,6 +10,7 @@ import {
   atomicWriteJson,
   readSaveFile,
   STORE_SCHEMA_VERSION,
+  type AtomicWriteOptions,
   type SaveFile,
   validateSaveDocument,
 } from "./store-io.ts";
@@ -86,12 +87,13 @@ export function createBackupFromValidSave(
   backupDir: string,
   data: SaveFile,
   policy: BackupPolicy = DEFAULT_POLICY,
+  writeOptions: AtomicWriteOptions = {},
 ): BackupMeta {
   validateSaveDocument(data);
   ensureDir(backupDir);
   const fileName = backupFileName();
   const path = join(backupDir, fileName);
-  atomicWriteJson(path, data);
+  atomicWriteJson(path, data, writeOptions);
   pruneBackups(backupDir, policy.retention);
   const st = statSync(path);
   return {
@@ -130,6 +132,8 @@ export function restoreBackupToSavePath(opts: {
   /** Current in-memory valid data to preserve before overwrite; null if none. */
   currentValid: SaveFile | null;
   policy?: BackupPolicy;
+  /** Applied only to the principal replace write (not the safety backup of current). */
+  writeOptions?: AtomicWriteOptions;
 }): RestoreResult {
   const read = readSaveFile(opts.backupPath);
   if (read.kind === "missing") {
@@ -149,7 +153,7 @@ export function restoreBackupToSavePath(opts: {
     );
   }
 
-  atomicWriteJson(opts.savePath, read.data);
+  atomicWriteJson(opts.savePath, read.data, opts.writeOptions || {});
 
   const verify = readSaveFile(opts.savePath);
   if (verify.kind !== "ok") {
