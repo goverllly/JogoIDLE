@@ -52,15 +52,33 @@ import { adminAuthAls } from "./auth/admin-context.ts";
 import { getWorldSnapshot } from "../lib/jogo-idle/content";
 import {
   createEmptyHudDocument,
+  draftRevisionOf,
   findHudHistoryRevision,
+  getHudCatalogPayload,
   getHudDraft,
   getHudHistory,
   getHudPublished,
-  pushHudHistory,
+  replaceHudCatalogPayload,
   sanitizeHudLayoutDocument,
-  setHudDraft,
-  setHudPublished,
 } from "../lib/jogo-idle/hud-layout";
+
+/** Serialize HUD catalog mutations in this process. */
+let hudWriteChain = Promise.resolve();
+function withHudLock(fn) {
+  const run = hudWriteChain.then(() => fn());
+  hudWriteChain = run.then(
+    () => undefined,
+    () => undefined,
+  );
+  return run;
+}
+
+function conflict(code, message) {
+  const error = new Error(message);
+  error.status = 409;
+  error.code = code;
+  return error;
+}
 import { HUD_COMPONENTS } from "../lib/jogo-idle/hud-registry";
 import {
   LOCAL_USER_EMAIL,
@@ -648,102 +666,202 @@ export async function adminGetHudLayout(email) {
 }
 
 export async function adminSaveHudDraft(email, body) {
-  assertIdleAdmin(email);
-  await ensureCatalogLoaded();
-  const doc = sanitizeHudLayoutDocument(body?.layout ?? body, email);
-  if (!doc) {
-    const error = new Error("Layout inválido");
-    error.status = 400;
-    throw error;
-  }
-  const published = getHudPublished();
-  doc.status = "draft";
-  doc.updatedAt = new Date().toISOString();
-  doc.updatedBy = String(email || "").slice(0, 191);
-  doc.revision = published?.revision ?? doc.revision ?? 0;
-  if (published) doc.basedOnRevision = published.revision;
-  setHudDraft(doc);
-  await writeCatalogState(getCatalogStateSnapshot());
-  recordAdminAction(email, "hud_draft", `HUD rascunho salvo: ${doc.name}`, {
-    layoutId: doc.layoutId,
-    componentCount: Object.keys(doc.components || {}).length,
+  return withHudLock(async () => {
+    assertIdleAdmin(email);
+    await ensureCatalogLoaded();
+    const current = getHudDraft();
+    const expected =
+      body?.expectedDraftRevision != null ? Number(body.expectedDraftRevision) : null;
+    const currentRev = draftRevisionOf(current);
+    if (expected != null && Number.isFinite(expected) && expected !== currentRev) {
+      throw conflict(
+        "HUD_DRAFT_CONFLICT",
+        `Rascunho desatualizado (esperado ${expected}, atual ${currentRev})`,
+      );
+    }
+    const doc = sanitizeHudLayoutDocument(body?.layout ?? body, email);
+    if (!doc) {
+      const error = new Error("Layout inválido");
+      error.status = 400;
+      throw error;
+    }
+    const published = getHudPublished();
+    const snapshot = getHudCatalogPayload();
+    doc.status = "draft";
+    doc.updatedAt = new Date().toISOString();
+    doc.updatedBy = String(email || "").slice(0, 191);
+    doc.revision = published?.revision ?? doc.revision ?? 0;
+    if (published) doc.basedOnRevision = published.revision;
+    doc.draftRevision = currentRev + 1;
+    const nextPayload = {
+      ...snapshot,
+      draft: doc,
+    };
+    replaceHudCatalogPayload(nextPayload);
+    try {
+      await writeCatalogState(getCatalogStateSnapshot());
+    } catch (err) {
+      replaceHudCatalogPayload(snapshot);
+      throw err;
+    }
+    recordAdminAction(email, "hud_draft", `HUD rascunho salvo: ${doc.name}`, {
+      layoutId: doc.layoutId,
+      draftRevision: doc.draftRevision,
+      componentCount: Object.keys(doc.components || {}).length,
+    });
+    return {
+      message: "Rascunho da HUD salvo",
+      draft: getHudDraft(),
+      publishedRevision: published?.revision ?? null,
+    };
   });
-  return {
-    message: "Rascunho da HUD salvo",
-    draft: getHudDraft(),
-    publishedRevision: published?.revision ?? null,
-  };
 }
 
-export async function adminPublishHudLayout(email) {
-  assertIdleAdmin(email);
-  await ensureCatalogLoaded();
-  const draft = getHudDraft();
-  if (!draft) {
-    const error = new Error("Nenhum rascunho para publicar");
-    error.status = 400;
-    throw error;
-  }
-  const prev = getHudPublished();
-  if (prev) pushHudHistory(prev);
-  const next = structuredClone(draft);
-  next.status = "published";
-  next.revision = (prev?.revision ?? 0) + 1;
-  next.updatedAt = new Date().toISOString();
-  next.updatedBy = String(email || "").slice(0, 191);
-  setHudPublished(next);
-  setHudDraft({ ...structuredClone(next), status: "draft" });
-  await writeCatalogState(getCatalogStateSnapshot());
-  recordAdminAction(email, "hud_publish", `HUD publicada rev ${next.revision}`, {
-    revision: next.revision,
-    layoutId: next.layoutId,
+export async function adminPublishHudLayout(email, body = {}) {
+  return withHudLock(async () => {
+    assertIdleAdmin(email);
+    await ensureCatalogLoaded();
+    const draft = getHudDraft();
+    if (!draft) {
+      const error = new Error("Nenhum rascunho para publicar");
+      error.status = 400;
+      throw error;
+    }
+    const prev = getHudPublished();
+    const expectedPublished =
+      body?.expectedPublishedRevision != null
+        ? Number(body.expectedPublishedRevision)
+        : body?.expectedRevision != null
+          ? Number(body.expectedRevision)
+          : null;
+    const expectedDraft =
+      body?.expectedDraftRevision != null ? Number(body.expectedDraftRevision) : null;
+    const pubRev = prev?.revision ?? 0;
+    const draftRev = draftRevisionOf(draft);
+    if (expectedPublished != null && Number.isFinite(expectedPublished) && expectedPublished !== pubRev) {
+      throw conflict(
+        "HUD_REVISION_CONFLICT",
+        `Publicação desatualizada (esperado ${expectedPublished}, atual ${pubRev})`,
+      );
+    }
+    if (expectedDraft != null && Number.isFinite(expectedDraft) && expectedDraft !== draftRev) {
+      throw conflict(
+        "HUD_DRAFT_CONFLICT",
+        `Rascunho divergente na publicação (esperado ${expectedDraft}, atual ${draftRev})`,
+      );
+    }
+    const sanitized = sanitizeHudLayoutDocument(draft, email);
+    if (!sanitized) {
+      const error = new Error("Rascunho inválido — publicação abortada");
+      error.status = 400;
+      throw error;
+    }
+    const snapshot = getHudCatalogPayload();
+    const history = snapshot.history.map((h) => structuredClone(h));
+    if (prev) {
+      const archived = structuredClone(prev);
+      archived.status = "archived";
+      history.unshift(archived);
+      while (history.length > 20) history.pop();
+    }
+    const nextPublished = structuredClone(sanitized);
+    nextPublished.status = "published";
+    nextPublished.revision = pubRev + 1;
+    nextPublished.draftRevision = 0;
+    nextPublished.updatedAt = new Date().toISOString();
+    nextPublished.updatedBy = String(email || "").slice(0, 191);
+    delete nextPublished.basedOnRevision;
+    const nextDraft = structuredClone(nextPublished);
+    nextDraft.status = "draft";
+    nextDraft.draftRevision = 0;
+    nextDraft.basedOnRevision = nextPublished.revision;
+    replaceHudCatalogPayload({
+      draft: nextDraft,
+      published: nextPublished,
+      history,
+    });
+    try {
+      await writeCatalogState(getCatalogStateSnapshot());
+    } catch (err) {
+      replaceHudCatalogPayload(snapshot);
+      throw err;
+    }
+    recordAdminAction(email, "hud_publish", `HUD publicada rev ${nextPublished.revision}`, {
+      revision: nextPublished.revision,
+      layoutId: nextPublished.layoutId,
+    });
+    return {
+      message: `HUD publicada (rev ${nextPublished.revision})`,
+      published: getHudPublished(),
+      draft: getHudDraft(),
+    };
   });
-  return {
-    message: `HUD publicada (rev ${next.revision})`,
-    published: getHudPublished(),
-    draft: getHudDraft(),
-  };
 }
 
 export async function adminRestoreHudLayout(email, body) {
-  assertIdleAdmin(email);
-  await ensureCatalogLoaded();
-  if (body?.toDefault) {
-    setHudDraft(createEmptyHudDocument(email, "draft"));
-    await writeCatalogState(getCatalogStateSnapshot());
-    recordAdminAction(email, "hud_restore", "HUD rascunho restaurado ao padrão", {});
+  return withHudLock(async () => {
+    assertIdleAdmin(email);
+    await ensureCatalogLoaded();
+    const current = getHudDraft();
+    const expected =
+      body?.expectedDraftRevision != null ? Number(body.expectedDraftRevision) : null;
+    const currentRev = draftRevisionOf(current);
+    if (expected != null && Number.isFinite(expected) && expected !== currentRev) {
+      throw conflict(
+        "HUD_DRAFT_CONFLICT",
+        `Rascunho desatualizado (esperado ${expected}, atual ${currentRev})`,
+      );
+    }
+    const snapshot = getHudCatalogPayload();
+    const published = snapshot.published;
+    let nextDraft;
+    let actionMsg;
+    let actionMeta = {};
+    if (body?.toDefault) {
+      nextDraft = createEmptyHudDocument(email, "draft");
+      nextDraft.draftRevision = currentRev + 1;
+      nextDraft.revision = published?.revision ?? 0;
+      if (published) nextDraft.basedOnRevision = published.revision;
+      actionMsg = "HUD rascunho restaurado ao padrão";
+    } else {
+      const revision = Number(body?.revision);
+      if (!Number.isFinite(revision)) {
+        const error = new Error("Informe revision ou toDefault");
+        error.status = 400;
+        throw error;
+      }
+      const hit = findHudHistoryRevision(revision);
+      if (!hit) {
+        const error = new Error("Revisão não encontrada");
+        error.status = 404;
+        throw error;
+      }
+      nextDraft = structuredClone(hit);
+      nextDraft.status = "draft";
+      nextDraft.updatedAt = new Date().toISOString();
+      nextDraft.updatedBy = String(email || "").slice(0, 191);
+      nextDraft.draftRevision = currentRev + 1;
+      nextDraft.revision = published?.revision ?? nextDraft.revision ?? 0;
+      if (published) nextDraft.basedOnRevision = published.revision;
+      actionMsg = `HUD rascunho restaurado da rev ${revision}`;
+      actionMeta = { revision };
+    }
+    replaceHudCatalogPayload({ ...snapshot, draft: nextDraft });
+    try {
+      await writeCatalogState(getCatalogStateSnapshot());
+    } catch (err) {
+      replaceHudCatalogPayload(snapshot);
+      throw err;
+    }
+    recordAdminAction(email, "hud_restore", actionMsg, actionMeta);
     return {
-      message: "Rascunho restaurado ao layout padrão",
+      message: body?.toDefault
+        ? "Rascunho restaurado ao layout padrão"
+        : `Rascunho restaurado da rev ${body?.revision}`,
       draft: getHudDraft(),
       published: getHudPublished(),
     };
-  }
-  const revision = Number(body?.revision);
-  if (!Number.isFinite(revision)) {
-    const error = new Error("Informe revision ou toDefault");
-    error.status = 400;
-    throw error;
-  }
-  const hit = findHudHistoryRevision(revision);
-  if (!hit) {
-    const error = new Error("Revisão não encontrada");
-    error.status = 404;
-    throw error;
-  }
-  const draft = structuredClone(hit);
-  draft.status = "draft";
-  draft.updatedAt = new Date().toISOString();
-  draft.updatedBy = String(email || "").slice(0, 191);
-  setHudDraft(draft);
-  await writeCatalogState(getCatalogStateSnapshot());
-  recordAdminAction(email, "hud_restore", `HUD rascunho restaurado da rev ${revision}`, {
-    revision,
   });
-  return {
-    message: `Rascunho restaurado da rev ${revision}`,
-    draft: getHudDraft(),
-    published: getHudPublished(),
-  };
 }
 
 export { errorMessage, httpStatus, LOCAL_USER_EMAIL, LOCAL_USER_ID };

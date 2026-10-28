@@ -623,7 +623,7 @@ app.put("/api/jogo-idle/admin/hud-layout/draft", async (req, res) => {
 
 app.post("/api/jogo-idle/admin/hud-layout/publish", async (req, res) => {
   try {
-    ok(res, { success: true, ...(await adminPublishHudLayout(adminEmail(req))) });
+    ok(res, { success: true, ...(await adminPublishHudLayout(adminEmail(req), req.body || {})) });
   } catch (error) {
     fail(res, error);
   }

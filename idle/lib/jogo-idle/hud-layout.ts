@@ -89,7 +89,13 @@ export type HudLayoutDocument = {
   schemaVersion: number;
   layoutId: string;
   name: string;
+  /** Published revision (bumped only on publish). */
   revision: number;
+  /**
+   * Optimistic concurrency for draft saves. Independent of published `revision`.
+   * Missing on legacy docs → treat as 0.
+   */
+  draftRevision?: number;
   status: "draft" | "published" | "archived";
   updatedAt: string;
   updatedBy: string;
@@ -258,6 +264,7 @@ export function createEmptyHudDocument(
     layoutId: "combat-default",
     name: "HUD Principal",
     revision: 0,
+    draftRevision: 0,
     status,
     updatedAt: new Date().toISOString(),
     updatedBy: String(email || "system").slice(0, 191),
@@ -373,6 +380,12 @@ export function sanitizeHudLayoutDocument(
   const revision = Number(src.revision);
   if (Number.isFinite(revision) && revision >= 0) {
     base.revision = Math.floor(revision);
+  }
+  const draftRevision = Number(src.draftRevision);
+  if (Number.isFinite(draftRevision) && draftRevision >= 0) {
+    base.draftRevision = Math.floor(draftRevision);
+  } else {
+    base.draftRevision = 0;
   }
   if (src.status === "draft" || src.status === "published" || src.status === "archived") {
     base.status = src.status;
@@ -511,10 +524,25 @@ export function setHudPublished(doc: HudLayoutDocument | null) {
   hudState.published = doc ? structuredClone(doc) : null;
 }
 
+/** Replace entire in-memory HUD catalog (used for atomic publish with rollback). */
+export function replaceHudCatalogPayload(payload: HudCatalogPayload) {
+  hudState = {
+    draft: payload.draft ? structuredClone(payload.draft) : null,
+    published: payload.published ? structuredClone(payload.published) : null,
+    history: (payload.history || []).map((h) => structuredClone(h)),
+  };
+}
+
 export function pushHudHistory(doc: HudLayoutDocument) {
   const archived = structuredClone(doc);
   archived.status = "archived";
   hudState.history = [archived, ...hudState.history].slice(0, HUD_HISTORY_LIMIT);
+}
+
+export function draftRevisionOf(doc: HudLayoutDocument | null | undefined): number {
+  if (!doc) return 0;
+  const n = Number(doc.draftRevision);
+  return Number.isFinite(n) && n >= 0 ? Math.floor(n) : 0;
 }
 
 export function findHudHistoryRevision(revision: number): HudLayoutDocument | null {

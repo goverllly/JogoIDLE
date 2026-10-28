@@ -9,16 +9,30 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 async function idleFetch(path: string, init?: RequestInit) {
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    ...((init?.headers as Record<string, string>) || {}),
+  };
+  const method = (init?.method || "GET").toUpperCase();
+  if (method !== "GET" && method !== "HEAD") {
+    const csrf =
+      sessionStorage.getItem("jogo_idle_csrf") ||
+      document.cookie
+        .split(";")
+        .map((p) => p.trim())
+        .find((p) => p.startsWith("jogo_idle_csrf="))
+        ?.slice("jogo_idle_csrf=".length);
+    if (csrf) headers["X-CSRF-Token"] = decodeURIComponent(csrf);
+  }
   const res = await fetch(path, {
     ...init,
-    headers: {
-      "Content-Type": "application/json",
-      ...(init?.headers || {}),
-    },
+    credentials: "same-origin",
+    headers,
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok || data?.success === false) {
-    throw new Error(data?.error || `HTTP ${res.status}`);
+    const code = data?.code ? ` [${data.code}]` : "";
+    throw new Error((data?.error || `HTTP ${res.status}`) + code);
   }
   return data;
 }

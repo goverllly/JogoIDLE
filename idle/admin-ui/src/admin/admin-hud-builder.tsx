@@ -11,6 +11,20 @@ import {
   DEFAULT_SLOT_RARITY_FILL_MIX,
 } from "@/lib/jogo-idle/hud-layout";
 import {
+  applyEditableSlice,
+  applyOrders,
+  clearFreeProps,
+  editableSlice,
+  isEditableDirty,
+  isTrustedAdminBridgeMessage,
+  mergeComponentProps,
+  parseBreakpoint,
+  resolvedProps,
+  sliceFingerprint,
+  type EditableHudSlice,
+  type HudBp,
+} from "@/lib/jogo-idle/hud-builder-state";
+import {
   StudioBadge,
   StudioBtn,
   StudioField,
@@ -27,11 +41,8 @@ const VIEWPORT_PRESETS = [
   { id: "mobile", label: "390×844", w: 390, h: 844, breakpoint: "mobile" as const },
 ];
 
-const FREE_CLEAR_KEYS = ["position", "left", "top", "right", "bottom", "zIndex"] as const;
-
 type IdleFetch = (path: string, init?: RequestInit) => Promise<any>;
 type LayoutMode = "organized" | "free";
-type ComponentsSnap = HudLayoutDocument["components"];
 
 type AdminHudBuilderProps = {
   working: boolean;
@@ -46,6 +57,7 @@ function emptyDraft(): HudLayoutDocument {
     layoutId: "combat-default",
     name: "HUD Principal",
     revision: 0,
+    draftRevision: 0,
     status: "draft",
     updatedAt: new Date().toISOString(),
     updatedBy: "admin",
@@ -58,82 +70,17 @@ function emptyDraft(): HudLayoutDocument {
   };
 }
 
-function mergeComponentProps(
-  draft: HudLayoutDocument,
-  id: string,
-  props: HudStyleProps,
-  breakpoint: "desktop" | "tablet" | "mobile",
-): HudLayoutDocument {
-  const next = structuredClone(draft);
-  const entry = next.components[id] || { base: {} };
-  if (breakpoint === "desktop") {
-    entry.base = { ...entry.base, ...props };
-  } else {
-    entry.overrides = entry.overrides || {};
-    entry.overrides[breakpoint] = { ...(entry.overrides[breakpoint] || {}), ...props };
-  }
-  next.components[id] = entry;
-  return next;
-}
-
-function applyOrders(
-  draft: HudLayoutDocument,
-  orders: Record<string, number>,
-  breakpoint: "desktop" | "tablet" | "mobile",
-): HudLayoutDocument {
-  let next = draft;
-  for (const [id, order] of Object.entries(orders)) {
-    next = mergeComponentProps(next, id, { order: String(order) }, breakpoint);
-  }
-  return next;
-}
-
-function resolvedProps(
-  draft: HudLayoutDocument,
-  id: string,
-  breakpoint: "desktop" | "tablet" | "mobile",
-): HudStyleProps {
-  const entry = draft.components[id];
-  if (!entry) return {};
-  const merged = { ...entry.base };
-  if (breakpoint === "tablet" || breakpoint === "mobile") {
-    Object.assign(merged, entry.overrides?.tablet || {});
-  }
-  if (breakpoint === "mobile") {
-    Object.assign(merged, entry.overrides?.mobile || {});
-  }
-  return merged;
-}
-
-function clearFreeProps(
-  draft: HudLayoutDocument,
-  id: string,
-  breakpoint: "desktop" | "tablet" | "mobile",
-): HudLayoutDocument {
-  const next = structuredClone(draft);
-  const entry = next.components[id] || { base: {} };
-  if (breakpoint === "desktop") {
-    for (const key of FREE_CLEAR_KEYS) {
-      delete (entry.base as Record<string, unknown>)[key];
-    }
-  } else {
-    entry.overrides = entry.overrides || {};
-    const ov = { ...(entry.overrides[breakpoint] || {}) };
-    for (const key of FREE_CLEAR_KEYS) {
-      delete (ov as Record<string, unknown>)[key];
-    }
-    entry.overrides[breakpoint] = ov;
-  }
-  next.components[id] = entry;
-  return next;
-}
-
 export function AdminHudBuilder({ working, idleFetch, onMessage, run }: AdminHudBuilderProps) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const draftRef = useRef<HudLayoutDocument>(emptyDraft());
   const baselineRef = useRef("");
   const suppressSyncRef = useRef(false);
-  const nudgeOriginRef = useRef<ComponentsSnap | null>(null);
+  const nudgeOriginRef = useRef<EditableHudSlice | null>(null);
+  const bridgeSessionRef = useRef<string | null>(null);
+  const lastBridgeSeqRef = useRef(0);
+  const [historyEntries, setHistoryEntries] = useState<
+    Array<{ revision: number; name: string; updatedAt: string }>
+  >([]);
 
   const [ready, setReady] = useState(false);
   const [draft, setDraft] = useState<HudLayoutDocument>(emptyDraft);
@@ -148,19 +95,19 @@ export function AdminHudBuilder({ working, idleFetch, onMessage, run }: AdminHud
   const [presetId, setPresetId] = useState("fullhd");
   const [query, setQuery] = useState("");
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
-  const [past, setPast] = useState<ComponentsSnap[]>([]);
-  const [future, setFuture] = useState<ComponentsSnap[]>([]);
+  const [past, setPast] = useState<EditableHudSlice[]>([]);
+  const [future, setFuture] = useState<EditableHudSlice[]>([]);
 
   const preset = VIEWPORT_PRESETS.find((p) => p.id === presetId) || VIEWPORT_PRESETS[0];
-  const breakpoint = preset.breakpoint;
+  const breakpoint: HudBp = preset.breakpoint;
 
   draftRef.current = draft;
 
-  const markDirty = useCallback((components: ComponentsSnap, baseline: string) => {
-    setDirty(JSON.stringify(components || {}) !== baseline);
+  const markDirtyFromDoc = useCallback((doc: HudLayoutDocument) => {
+    setDirty(isEditableDirty(doc, baselineRef.current));
   }, []);
 
-  const pushHistory = useCallback((before: ComponentsSnap) => {
+  const pushHistory = useCallback((before: EditableHudSlice) => {
     setPast((p) => [...p.slice(-49), structuredClone(before)]);
     setFuture([]);
   }, []);
@@ -168,14 +115,20 @@ export function AdminHudBuilder({ working, idleFetch, onMessage, run }: AdminHud
   const commitDraft = useCallback(
     (next: HudLayoutDocument, opts?: { history?: boolean; sync?: boolean }) => {
       if (opts?.history !== false) {
-        pushHistory(draftRef.current.components);
+        pushHistory(editableSlice(draftRef.current));
       }
       if (opts?.sync === false) suppressSyncRef.current = true;
       setDraft(next);
-      markDirty(next.components, baselineRef.current);
+      markDirtyFromDoc(next);
     },
-    [markDirty, pushHistory],
+    [markDirtyFromDoc, pushHistory],
   );
+
+  function applyServerDraft(next: HudLayoutDocument) {
+    baselineRef.current = sliceFingerprint(editableSlice(next));
+    setDraft(next);
+    setDirty(false);
+  }
 
   const postToHud = useCallback(
     (payload: Record<string, unknown>) => {
@@ -189,15 +142,20 @@ export function AdminHudBuilder({ working, idleFetch, onMessage, run }: AdminHud
   const loadDraft = useCallback(async () => {
     const data = await idleFetch("/api/jogo-idle/admin/hud-layout");
     const next = (data.draft as HudLayoutDocument) || emptyDraft();
-    const base = JSON.stringify(next.components || {});
-    baselineRef.current = base;
-    setDraft(next);
+    applyServerDraft(next);
     setPast([]);
     setFuture([]);
     setPublishedRevision(
       typeof data.publishedRevision === "number" ? data.publishedRevision : null,
     );
-    setDirty(false);
+    const hist = Array.isArray(data.history) ? data.history : [];
+    setHistoryEntries(
+      hist.map((h: { revision?: number; name?: string; updatedAt?: string }) => ({
+        revision: Number(h.revision) || 0,
+        name: String(h.name || ""),
+        updatedAt: String(h.updatedAt || ""),
+      })),
+    );
   }, [idleFetch]);
 
   useEffect(() => {
@@ -206,42 +164,70 @@ export function AdminHudBuilder({ working, idleFetch, onMessage, run }: AdminHud
 
   useEffect(() => {
     function onMessageEvent(event: MessageEvent) {
-      if (event.origin !== window.location.origin) return;
-      const data = event.data;
-      if (!data || data.v !== MSG_V) return;
+      const trusted = isTrustedAdminBridgeMessage({
+        origin: event.origin,
+        expectedOrigin: window.location.origin,
+        source: event.source,
+        expectedSource: iframeRef.current?.contentWindow,
+        data: event.data,
+        expectedSessionId: bridgeSessionRef.current,
+        lastSeq: lastBridgeSeqRef.current,
+      });
+      // ready may arrive before session is known — allow first ready without session
+      let data: Record<string, unknown>;
+      if (!trusted.ok) {
+        const raw = event.data;
+        if (
+          trusted.reason === "session" &&
+          raw &&
+          typeof raw === "object" &&
+          (raw as { type?: string }).type === "jogo-idle:hud-builder-ready" &&
+          event.origin === window.location.origin &&
+          event.source === iframeRef.current?.contentWindow
+        ) {
+          data = raw as Record<string, unknown>;
+        } else {
+          return;
+        }
+      } else {
+        data = trusted.data;
+        if (trusted.seq > 0) lastBridgeSeqRef.current = trusted.seq;
+      }
 
       if (data.type === "jogo-idle:hud-builder-ready") {
+        if (typeof data.sessionId === "string" && data.sessionId) {
+          bridgeSessionRef.current = data.sessionId;
+          lastBridgeSeqRef.current = 0;
+        }
         setReady(true);
         return;
       }
       if (data.type === "jogo-idle:hud-builder-selection") {
         setSelectedId(typeof data.id === "string" ? data.id : null);
-        setComputed(data.computed && typeof data.computed === "object" ? data.computed : null);
+        setComputed(data.computed && typeof data.computed === "object" ? (data.computed as Record<string, string>) : null);
         return;
       }
       if (data.type === "jogo-idle:hud-builder-transform") {
         if (data.props && typeof data.props === "object") {
-          setComputed((prev) => ({ ...(prev || {}), ...data.props }));
+          setComputed((prev) => ({ ...(prev || {}), ...(data.props as Record<string, string>) }));
         }
         return;
       }
       if (data.type === "jogo-idle:hud-builder-transform-end") {
         const id = typeof data.id === "string" ? data.id : null;
         if (!id) return;
-        const before = draftRef.current.components;
+        const bp = parseBreakpoint(data.breakpoint) || breakpoint;
         let next = structuredClone(draftRef.current);
         if (data.kind === "reorder" && data.orders && typeof data.orders === "object") {
-          next = applyOrders(next, data.orders as Record<string, number>, "desktop");
+          next = applyOrders(next, data.orders as Record<string, number>, bp);
         } else if (data.props && typeof data.props === "object") {
-          next = mergeComponentProps(next, id, data.props as HudStyleProps, "desktop");
+          next = mergeComponentProps(next, id, data.props as HudStyleProps, bp);
         }
         commitDraft(next, { sync: false });
-        setComputed((prev) => ({ ...(prev || {}), ...(data.props || {}) }));
-        void before;
+        setComputed((prev) => ({ ...(prev || {}), ...((data.props as object) || {}) }));
         return;
       }
       if (data.type === "jogo-idle:hud-builder-transform-cancel") {
-        // Bridge restored snapshot; re-sync admin draft → iframe
         postToHud({
           type: "jogo-idle:hud-builder-set-layout",
           layout: draftRef.current,
@@ -307,10 +293,10 @@ export function AdminHudBuilder({ working, idleFetch, onMessage, run }: AdminHud
     setPast((p) => {
       if (!p.length) return p;
       const prev = p[p.length - 1];
-      setFuture((f) => [structuredClone(draftRef.current.components), ...f].slice(0, 50));
-      const next = { ...draftRef.current, components: structuredClone(prev) };
+      setFuture((f) => [editableSlice(draftRef.current), ...f].slice(0, 50));
+      const next = applyEditableSlice(draftRef.current, prev);
       setDraft(next);
-      markDirty(next.components, baselineRef.current);
+      markDirtyFromDoc(next);
       return p.slice(0, -1);
     });
   }
@@ -319,10 +305,10 @@ export function AdminHudBuilder({ working, idleFetch, onMessage, run }: AdminHud
     setFuture((f) => {
       if (!f.length) return f;
       const nxt = f[0];
-      setPast((p) => [...p, structuredClone(draftRef.current.components)].slice(-50));
-      const next = { ...draftRef.current, components: structuredClone(nxt) };
+      setPast((p) => [...p, editableSlice(draftRef.current)].slice(-50));
+      const next = applyEditableSlice(draftRef.current, nxt);
       setDraft(next);
-      markDirty(next.components, baselineRef.current);
+      markDirtyFromDoc(next);
       return f.slice(1);
     });
   }
@@ -336,34 +322,100 @@ export function AdminHudBuilder({ working, idleFetch, onMessage, run }: AdminHud
 
   async function onSaveDraft() {
     await run(async () => {
-      const data = await idleFetch("/api/jogo-idle/admin/hud-layout/draft", {
-        method: "PUT",
-        body: JSON.stringify({ layout: draft }),
+      try {
+        const data = await idleFetch("/api/jogo-idle/admin/hud-layout/draft", {
+          method: "PUT",
+          body: JSON.stringify({
+            layout: draft,
+            expectedDraftRevision: draft.draftRevision ?? 0,
+          }),
+        });
+        const saved = (data.draft as HudLayoutDocument) || draft;
+        applyServerDraft(saved);
+        if (typeof data.publishedRevision === "number") setPublishedRevision(data.publishedRevision);
+        onMessage(data.message || "Rascunho salvo");
+      } catch (err) {
+        const msg = String((err as Error)?.message || err);
+        if (/409|HUD_DRAFT_CONFLICT|conflito/i.test(msg)) {
+          const reload = window.confirm(
+            "Conflito de rascunho (outro admin salvou). Recarregar a versão do servidor? (Cancelar mantém sua edição local suja.)",
+          );
+          if (reload) await loadDraft();
+          throw err;
+        }
+        throw err;
+      }
+    });
+  }
+
+  async function onPublish() {
+    if (dirty) {
+      onMessage("Salve o rascunho antes de publicar.");
+      return;
+    }
+    if (
+      !window.confirm(
+        `Publicar a HUD atual para todos os jogadores?\nRevisão publicada esperada: ${publishedRevision ?? 0}\nRascunho: ${draft.draftRevision ?? 0}`,
+      )
+    ) {
+      return;
+    }
+    await run(async () => {
+      const data = await idleFetch("/api/jogo-idle/admin/hud-layout/publish", {
+        method: "POST",
+        body: JSON.stringify({
+          expectedPublishedRevision: publishedRevision ?? 0,
+          expectedDraftRevision: draft.draftRevision ?? 0,
+        }),
       });
-      const saved = (data.draft as HudLayoutDocument) || draft;
-      const base = JSON.stringify(saved.components || {});
-      baselineRef.current = base;
-      setDraft(saved);
-      setDirty(false);
-      if (typeof data.publishedRevision === "number") setPublishedRevision(data.publishedRevision);
-      onMessage(data.message || "Rascunho salvo");
+      const savedDraft = (data.draft as HudLayoutDocument) || draft;
+      applyServerDraft(savedDraft);
+      if (data.published && typeof data.published.revision === "number") {
+        setPublishedRevision(data.published.revision);
+      }
+      await loadDraft();
+      onMessage(data.message || "HUD publicada");
     });
   }
 
   async function onRestoreDefault() {
-    if (!window.confirm("Restaurar o rascunho ao layout padrão (sem overrides)?")) return;
+    if (!window.confirm("Restaurar o rascunho ao layout padrão (sem overrides)? O publicado não muda."))
+      return;
     await run(async () => {
+      pushHistory(editableSlice(draftRef.current));
       const data = await idleFetch("/api/jogo-idle/admin/hud-layout/restore", {
         method: "POST",
-        body: JSON.stringify({ toDefault: true }),
+        body: JSON.stringify({
+          toDefault: true,
+          expectedDraftRevision: draftRef.current.draftRevision ?? 0,
+        }),
       });
       const next = (data.draft as HudLayoutDocument) || emptyDraft();
-      const base = JSON.stringify(next.components || {});
-      baselineRef.current = base;
-      pushHistory(draftRef.current.components);
-      setDraft(next);
-      setDirty(false);
+      applyServerDraft(next);
       onMessage(data.message || "Layout padrão restaurado");
+    });
+  }
+
+  async function onRestoreRevision(revision: number) {
+    if (
+      !window.confirm(
+        `Restaurar a rev ${revision} no rascunho? O layout publicado permanece até você publicar de novo.`,
+      )
+    ) {
+      return;
+    }
+    await run(async () => {
+      pushHistory(editableSlice(draftRef.current));
+      const data = await idleFetch("/api/jogo-idle/admin/hud-layout/restore", {
+        method: "POST",
+        body: JSON.stringify({
+          revision,
+          expectedDraftRevision: draftRef.current.draftRevision ?? 0,
+        }),
+      });
+      const next = (data.draft as HudLayoutDocument) || emptyDraft();
+      applyServerDraft(next);
+      onMessage(data.message || `Rascunho restaurado da rev ${revision}`);
     });
   }
 
@@ -397,7 +449,7 @@ export function AdminHudBuilder({ working, idleFetch, onMessage, run }: AdminHud
         const cur = resolvedProps(draftRef.current, selectedId, breakpoint);
         if (layoutMode === "free" || cur.position === "absolute") {
           if (!nudgeOriginRef.current) {
-            nudgeOriginRef.current = structuredClone(draftRef.current.components);
+            nudgeOriginRef.current = editableSlice(draftRef.current);
           }
           const left = Number.parseFloat(String(cur.left || "0")) || 0;
           const top = Number.parseFloat(String(cur.top || "0")) || 0;
@@ -417,10 +469,9 @@ export function AdminHudBuilder({ working, idleFetch, onMessage, run }: AdminHud
             },
             breakpoint,
           );
-          // Don't push history on every key repeat — flush on keyup
           suppressSyncRef.current = false;
           setDraft(next);
-          markDirty(next.components, baselineRef.current);
+          markDirtyFromDoc(next);
           postToHud({
             type: "jogo-idle:hud-builder-patch",
             id: selectedId,
@@ -432,9 +483,8 @@ export function AdminHudBuilder({ working, idleFetch, onMessage, run }: AdminHud
             breakpoint,
           });
         } else {
-          // Organizado: nudge margins
           if (!nudgeOriginRef.current) {
-            nudgeOriginRef.current = structuredClone(draftRef.current.components);
+            nudgeOriginRef.current = editableSlice(draftRef.current);
           }
           const mt = Number.parseFloat(String(cur.marginTop || "0")) || 0;
           const ml = Number.parseFloat(String(cur.marginLeft || "0")) || 0;
@@ -450,7 +500,7 @@ export function AdminHudBuilder({ working, idleFetch, onMessage, run }: AdminHud
           };
           const next = mergeComponentProps(draftRef.current, selectedId, props, breakpoint);
           setDraft(next);
-          markDirty(next.components, baselineRef.current);
+          markDirtyFromDoc(next);
           postToHud({
             type: "jogo-idle:hud-builder-patch",
             id: selectedId,
@@ -476,7 +526,7 @@ export function AdminHudBuilder({ working, idleFetch, onMessage, run }: AdminHud
       window.removeEventListener("keydown", onKey);
       window.removeEventListener("keyup", onKeyUp);
     };
-  }, [breakpoint, dirty, layoutMode, markDirty, mode, postToHud, selectedId, working]);
+  }, [breakpoint, dirty, layoutMode, markDirtyFromDoc, mode, postToHud, selectedId, working]);
 
   const tree = useMemo(() => buildHudLayerTree(), []);
   const selected = selectedId ? getHudComponent(selectedId) : null;
@@ -615,7 +665,12 @@ export function AdminHudBuilder({ working, idleFetch, onMessage, run }: AdminHud
           >
             Salvar Rascunho
           </StudioBtn>
-          <StudioBtn disabled title="Publicação: Fase 5">
+          <StudioBtn
+            type="button"
+            disabled={working || dirty}
+            title={dirty ? "Salve o rascunho antes de publicar" : "Publicar para jogadores"}
+            onClick={() => void onPublish()}
+          >
             Publicar
           </StudioBtn>
         </div>
@@ -708,6 +763,32 @@ export function AdminHudBuilder({ working, idleFetch, onMessage, run }: AdminHud
         </div>
 
         <aside className="studio-2-hud__inspector">
+          <StudioFormSection title="Revisões">
+            <p className="mb-2 text-[0.65rem] text-[var(--studio-muted)]">
+              Publicado: rev {publishedRevision ?? "—"} · Rascunho: {draft.draftRevision ?? 0}
+              {dirty ? " · alterações não salvas" : ""}
+            </p>
+            {historyEntries.length ? (
+              <ul className="mb-2 max-h-28 space-y-1 overflow-auto text-[0.7rem]">
+                {historyEntries.map((h) => (
+                  <li key={h.revision} className="flex items-center justify-between gap-1">
+                    <span>
+                      rev {h.revision} · {h.name || "HUD"}
+                    </span>
+                    <StudioBtn
+                      type="button"
+                      disabled={working}
+                      onClick={() => void onRestoreRevision(h.revision)}
+                    >
+                      Restaurar
+                    </StudioBtn>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="mb-2 text-[0.65rem] text-[var(--studio-muted)]">Sem histórico ainda.</p>
+            )}
+          </StudioFormSection>
           <StudioFormSection title="Tokens visuais">
             <StudioField label={`Preenchimento raridade (${draft.tokens?.slotRarityFillMix ?? DEFAULT_SLOT_RARITY_FILL_MIX}%)`}>
               <input
