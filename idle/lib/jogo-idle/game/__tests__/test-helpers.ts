@@ -50,6 +50,25 @@ export function combatReadyCharacter(
   return c;
 }
 
+/**
+ * Tank Lv.1 no Bosque — sobrevive catch-up longo (evita faint encerrar a sessão).
+ * Usar em testes de teto 2h / 5k ticks / chunks.
+ */
+export function tankFarmCharacter(
+  classId: "GUERREIRO" | "BARBARO" | "MAGO" | "ARQUEIRO" = "GUERREIRO",
+) {
+  const c = freshCharacter(classId, `Tank_${classId.slice(0, 3)}`);
+  c.attributes = {
+    str: classId === "MAGO" ? 5 : 40,
+    int: classId === "MAGO" ? 40 : 5,
+    dex: classId === "ARQUEIRO" ? 80 : 20,
+    con: 220,
+  };
+  c.autoRestartFarm = false;
+  computeStats(c);
+  return c;
+}
+
 export function beginFarm(
   character: any,
   zoneId = "bosque_sussurros",
