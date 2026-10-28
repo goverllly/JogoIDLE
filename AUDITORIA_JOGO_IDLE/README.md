@@ -2,12 +2,27 @@
 
 Documentação técnica extraída do **código e configuração reais** do projeto, para auditoria externa independente (arquitetura, mecânicas, economia, HUD, admin, segurança, performance e UX).
 
+**Fonte canônica:** branch `main` do repositório público [goverllly/JogoIDLE](https://github.com/goverllly/JogoIDLE). Preferir o GitHub a qualquer ZIP antigo.
+
 | Campo | Valor |
 |-------|--------|
 | Data de geração (UTC) | 2026-10-28 |
-| Commit aproximado | `76c580f` |
+| Commit de referência | `ffc9640` (rename + este pacote) |
 | Escopo runtime | `idle/` (standalone Express em `:8787`) |
+| Paths de código/cliente | `idle/lib/jogo-idle/`, `idle/public/jogo-idle/`, API `/api/jogo-idle/*` |
 | Fora do escopo de runtime | Root Vite/Phaser “Véu de Cinzas” (`package.json` name `veu-de-cinzas`) — projeto **irmão** no monorepo |
+
+## Nomenclatura (importante para revisores)
+
+| Antes (roteiros / ZIPs antigos) | Na `main` atual |
+|---------------------------------|-----------------|
+| “Sinergia IDLE” / SinergIA | **Jogo IDLE** |
+| `idle/lib/sinergia-idle/` | `idle/lib/jogo-idle/` |
+| `idle/public/sinergia-idle/` | `idle/public/jogo-idle/` |
+| `/api/sinergia-idle/*` | `/api/jogo-idle/*` |
+| Pasta `AUDITORIA_SINERGIA_IDLE/` | Esta pasta: **`AUDITORIA_JOGO_IDLE/`** |
+
+Não existe mais `sinergia-idle` nem `AUDITORIA_SINERGIA_IDLE` na `main`. Se um roteiro citar esses nomes, trate como alias histórico e use os paths `jogo-idle` desta tabela.
 
 ## Como navegar
 

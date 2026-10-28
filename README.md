@@ -8,10 +8,13 @@ Dois fronts no mesmo repositório:
 ## Jogo IDLE
 
 ```bash
-cd idle && npm install && npm run dev
+cd idle && npm install && npm run admin:build && npm run dev
 ```
 
 Abre http://localhost:8787 — lobby → criar personagem → jogar. Save em `idle/data/save.json`.
+
+- Cliente/API: `idle/public/jogo-idle/`, `idle/lib/jogo-idle/`, `/api/jogo-idle/*`
+- Pacote de auditoria externa: [`AUDITORIA_JOGO_IDLE/`](AUDITORIA_JOGO_IDLE/README.md) (não usar o nome antigo `AUDITORIA_SINERGIA_IDLE` / paths `sinergia-idle` — removidos na `main`)
 
 Na raiz: `npm run dev:idle`.
 
