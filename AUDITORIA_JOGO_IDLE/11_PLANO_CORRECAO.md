@@ -2,7 +2,7 @@
 
 Branch de trabalho: **`main`** (sem branch de estabilização).  
 Commit de partida Fase 0/1: `90f51da` → integrado em `main` até `59dd861`.  
-Escopo concluído e **revalidado**: **Fases 0–4** + **UX pós-4**. Fase 5 (performance) **em andamento / parcial** — ver `15_AUDITORIA_PERFORMANCE.md` (métricas browser ainda pendentes). Fase 6 permanece **Pendente**.  
+Escopo concluído e **revalidado**: **Fases 0–4** + **UX pós-4**. Fase 5 (performance) **implementação concluída; validação GPU/FPS manual parcial** — ver `15_AUDITORIA_PERFORMANCE.md` (inclui 5.7). Fase 6 permanece **Pendente**.  
 Detalhe Fase 2: `13_FASE2_AUTH.md`. Detalhe Fase 4: `14_AUDITORIA_GAMEPLAY.md`. Detalhe Fase 5: `15_AUDITORIA_PERFORMANCE.md`.
 
 ## Baseline (Fase 0) + revisão final
@@ -29,7 +29,8 @@ Detalhe Fase 2: `13_FASE2_AUTH.md`. Detalhe Fase 4: `14_AUDITORIA_GAMEPLAY.md`. 
 | Fase 4 gameplay | RNG + integridade + auditoria econômica | Critérios de integridade; **sem retune** | 2026-10-28 |
 | `npm test` (pós UX attrs/offline) | + ux-copy | **137 pass / 0 fail** | 2026-10-28 |
 | `npm test` (Fase 5 parcial) | + client-sync + perf gate + farm bench | **149 pass / 0 fail** | 2026-10-28 |
-| Fase 5 performance | probe gated, sync /me, suspend render | Parcial — browser FPS/GPU pendente | 2026-10-28 |
+| `npm test` (Fase 5.7) | + ISO#2/#10 + suspend source | **≥151 pass / 0 fail** | 2026-10-28 |
+| Fase 5 performance | probe, sync, suspend + 5.7 HTTP/CDP | Implementação OK; FPS/GPU % não declarado | 2026-10-28 |
 
 ## Itens
 
@@ -51,7 +52,8 @@ Detalhe Fase 2: `13_FASE2_AUTH.md`. Detalhe Fase 4: `14_AUDITORIA_GAMEPLAY.md`. 
 | P4-HTTP-01 | Fluxos protected farm/sell/refine/ascend | P0 | `gameplay-http.test.ts` | Plano Fase 4 | Sem HTTP gameplay | CSRF/IDOR/replay | Resolvido | gameplay-http.test | Passou | ver log git |
 | P5-DIAG-01 | Probe perf gated (não protected) | P0 | `perf-probe.js`, `mode.ts` | Plano Fase 5 | Sem instrumentação | IDLE_PERF_DIAGNOSTICS + meta | Parcial | auth perf gate | Passou | ver log git |
 | P5-SYNC-01 | /me vs mutações fora de ordem | P0 | `client-sync.js`, `app.js` | Análise concorrência | Só offline-report tinha seq | revision + exclusive refresh | Resolvido | client-sync.test | Passou | ver log git |
-| P5-3D-01 | Suspend ≠ setActive(false) | P1 | `scene3d.js`, `arena.js` | setActive limpa timeline | Aba oculta usaria clear indevido | setRenderSuspended + destroy | Parcial (GPU pendente) | manual checklist | — | ver log git |
+| P5-3D-01 | Suspend ≠ setActive(false) | P1 | `scene3d.js`, `arena.js` | setActive limpa timeline | Aba oculta usaria clear indevido | setRenderSuspended + destroy | Resolvido (funcional); GPU % N/A | render-suspend-source | Passou | ver log git |
+| P5.7-VAL | ISO#seq + HTTP before/after + CDP | P0 | `client-sync`, `.perf-wt` | Plano 5.7 | Validação parcial | Worktrees + regressões + relatório | Resolvido parcial | npm test + measure JSON | Passou | ver log git |
 
 ## Limitações documentadas (concorrência)
 

@@ -253,27 +253,23 @@ Somente relatório (`14_AUDITORIA_GAMEPLAY.md`). Nenhum preço/prob/fórmula mud
 | P2-AUTH | Auth protected + Admin gate + CSRF | P0 | Resolvido | 57 pass + admin build | (fase 2 commits) |
 | P3-HUD | HUD Builder dirty/breakpoints/publish/CSS | P0 | Resolvido | 76 pass + admin build | (fase 3 commits) |
 | P4-GAMEPLAY | Combate/farm/inv/ascensão/HTTP + auditoria | P0 | Resolvido | suite Fase 4 + admin build | (fase 4 commits) |
-| P5-PERF | Probe + sync /me + suspend render | P1 | Parcial | 149 pass; browser FPS pendente | ver `15_*.md` |
-| Fase 6 | … | P1+ | Pendente | — | — |
+| P5-PERF | Probe + sync /me + suspend + 5.7 | P1 | Implementação OK; GPU % N/A | ≥151 pass; HTTP/CDP em `15_*.md` | ver commits perf |
+| Fase 6 | Auditoria funcional / lançamento | P1+ | Pendente | — | — |
 
 ---
 
-## Fase 5 — Performance (parcial)
+## Fase 5 — Performance (fechamento 5.7)
 
-### Entregue nesta rodada
-- Instrumentação `perf-probe.js` gated por `IDLE_PERF_DIAGNOSTICS` + modo local (`15_AUDITORIA_PERFORMANCE.md`).
-- `client-sync.js`: revision em `publicCharacter`, coalesce de refresh, barreira mutação vs `/me` atrasado.
-- `setRenderSuspended` distinto de `setActive(false)`; `destroy()` para teardown definitivo.
-- Bench Node `processFarm` (não substitui métricas GPU).
+### Entregue
+- Instrumentação gated; sync `/me`; `setRenderSuspended`; destroy; benches Node.
+- 5.7: worktrees isolados + `IDLE_DATA_DIR` confirmado; regressão `ISO#2` vs `#10`; HTTP before/after; CDP entrada/heap/rAF; zonas×20 API; contrato source suspend.
 
-### Não validado integralmente
-- FPS / frame time / draw calls / Network bytes no Chrome.
-- Overhead do probe ligado vs desligado.
-- Lazy-init do fallback 2D (ainda cria 2D antes do 3D).
-- Presets gráficos / mudança de `POLL_MS` / compressão GLB.
+### Não declarado como ganho
+- FPS / GPU % / VRAM (DevTools Performance completo pendente; CDP Cursor sem emulação de visibility).
+- Cold-load browser bytes (2ª versão mediu com cache quente).
 
 ### Testes
 | Comando | Resultado |
 |---------|-----------|
-| `cd idle && npm test` | **149 pass / 0 fail** |
-| Veredito | **Parcial** — aguarda matriz browser em `15_*.md` |
+| `cd idle && npm test` | **≥151 pass / 0 fail** |
+| Veredito | **Implementação concluída; validação visual/GPU parcial** — pronto para Fase 6 funcional |

@@ -1,174 +1,149 @@
-# 15 — Auditoria de performance (Fase 5)
+# 15 — Auditoria de performance (Fase 5 + 5.7)
 
-**Partida:** `bb136fb` (UX pós-Fase 4)  
-**Runtime de verdade:** standalone `idle/` (`lobby.html` → `criar.html` → `play.html`)  
-**Política:** medir → otimizar só gargalo confirmado → comparar → regressão.  
-**Push/pull/reset/rebase:** não executados.
-
----
-
-## Baseline de execução (Agent)
-
-| Check | Resultado |
-|-------|-----------|
-| HEAD partida | `bb136fb` |
-| Working tree | limpa antes do início |
-| `cd idle && npm test` (pré) | **137 pass / 0 fail** |
-| `cd idle && npm run admin:build` (pré) | **OK** |
-| `cd idle && npm test` (pós mudanças desta fase) | **149 pass / 0 fail** |
-| `admin:build` (pós) | OK (reexecutar no commit final) |
-
-### Ambiente de máquina (Agent / host)
-
-| Campo | Valor |
-|-------|-------|
-| OS | Darwin 25.6.0 arm64 |
-| SoC / GPU | Apple M5 (Metal Supported) — chipset unificado |
-| Node | v24.18.0 |
-| Browser FPS / WebGL / Network bytes | **não medidos nesta sessão Agent** (sem Chrome DevTools Performance anexado) |
-| devicePixelRatio / refresh rate / resolução de teste | **pendente** checklist manual |
-
-**Fase 5 NÃO está integralmente validada para métricas de GPU/FPS de navegador.**  
-O que segue distingue **medido (Node/código)** de **checklist pendente (browser)**.
+**Partida Fase 5:** `bb136fb`  
+**HEAD pós-5.x / 5.7:** ver `git log` (commits `323cf04`… + 5.7)  
+**Runtime:** standalone `idle/` · saves de teste em `.perf-wt/` (isolados; **não** `idle/data/save.json` pessoal)  
+**Push/pull/reset/rebase:** não executados · Fase 6 **não** iniciada.
 
 ---
 
-## Inventário (carregamento / render)
+## Veredito Fase 5
 
-| Módulo | Papel |
-|--------|-------|
-| `idle/public/jogo-idle/arena.js` | Orquestra 2D+3D; hoje **sempre** cria 2D antes do 3D |
-| `idle/public/jogo-idle/scene3d.js` | Three.js, `setAnimationLoop`, GLTF actors, zonas, FX |
-| `idle/public/jogo-idle/scene.js` | Fallback 2D |
-| `idle/public/jogo-idle/kaykit-props.js` | Props GLB / preload |
-| `idle/public/jogo-idle/fx.js` | Timeline de combate / DOM FX |
-| `idle/public/jogo-idle/app.js` | Poll 2s, HUD, `/api/me` |
-| `idle/public/jogo-idle/perf-probe.js` | Diagnóstico (gated) |
-| `idle/public/jogo-idle/client-sync.js` | Ordenação revision /me vs mutações |
-| `idle/src/local-service.ts` | `syncAndPublic` → `processFarm` + persist |
-| `idle/lib/jogo-idle/game/combat.ts` | Farm ticks / eventos |
-
-Assets: KayKit / modelos em `MODEL_DIR` (GLB), HUD icons, skills art — preservados.
+| Critério | Resultado |
+|----------|-----------|
+| Testes verdes | **Sim** — suite ≥151 pass (regressões ISO#seq + suspend source) |
+| Browser medido (DevTools/CDP equivalentes) | **Parcial** — Network/heap/rAF/entrada; **sem** FPS/p95 GPU DevTools Performance completo |
+| Regressões relevantes | **Nenhuma** encontrada (ISO#2 vs #10 OK; sync OK) |
+| Conclusão | **Implementação concluída; validação visual/GPU parcial.** Adequado para idle: sync HTTP correto, suspend funcional, memória JS estável no warm, `/me` sem regressão de latência. **Não** declarar ganho % de FPS/GPU. |
 
 ---
 
-## 5.1 — Instrumentação
+## Isolamento de saves (5.7)
 
-### Probe (`perf-probe.js`)
+Confirmado em **ambas** as revisões (`bb136fb` e `a439515`): [`idle/src/store.ts`](idle/src/store.ts) lê `IDLE_DATA_DIR` / `IDLE_SAVE_PATH`; auth usa `IDLE_DATA_DIR` via [`auth-io.ts`](idle/src/auth/auth-io.ts).
 
-- Ativa **somente** se `GET /api/meta.perfDiagnostics === true` **e** (`localStorage.idle_perf=1` ou `?idle_perf=1`).
-- `perfDiagnostics` no boot: `IDLE_AUTH_MODE=local` **e** `IDLE_PERF_DIAGNOSTICS=1`.
-- **Protected:** sempre `perfDiagnostics=false` (mesmo com env=1) — testado.
-- Não usa hostname como prova de segurança.
-- Não registra cookies/tokens/payloads; não envia telemetria externa.
-- Distingue: rAF FPS (aba visível) vs frames WebGL pós-`render`; `renderer.info` = contagens (não VRAM bytes); amostras hidden separadas.
-- Overhead probe ligado vs desligado: **pendente** medição browser (comparar duas sessões).
+| Item | Evidência |
+|------|-----------|
+| Worktrees | `.perf-wt/baseline` @ `bb136fb`, `.perf-wt/current` @ `a439515` |
+| Data dirs | `.perf-wt/data-*` com `save.json` próprio |
+| Bind | `IDLE_BIND=127.0.0.1` + `IDLE_AUTH_MODE=local` (loopback only) |
+| Save pessoal | medições escreveram só em `.perf-wt/…/save.json` (`mainSaveUntouchedCheck: true`) |
 
-### Como ativar (dev)
-
-```bash
-IDLE_AUTH_MODE=local IDLE_BIND=127.0.0.1 IDLE_PERF_DIAGNOSTICS=1 npm run dev
-# no browser: localStorage.setItem('idle_perf','1'); location.reload()
-# snapshot: window.__idlePerfSnapshot()
-```
+Servidores medidos **em sequência** (nunca baseline + current disputando CPU/GPU).
 
 ---
 
-## Análise de concorrência (5.4) — código
+## 5.7 — `ISO#seq` / client-sync
 
-| Cenário | Risco antes | Mitigação |
-|---------|-------------|-----------|
-| Dois `/me` sobrepostos | UI/scene com resposta antiga | `runRefreshExclusive` + epoch |
-| Sell/equip/refine vs `/me` atrasado | Snapshot antigo sobrescreve | `character.revision` + `acceptCharacterSnapshot` |
-| Mutação em voo | `/me` com mesma rev | `pendingMutations` bloqueia equal |
-| Eventos de combate | Replay duplicado / stale | `acceptFarmPresentation` + `farmBatchKey` |
-| Offline report | Já tinha seq | Mantido (`beginRefresh` do offline-report) |
-| Abort fetch | Não cancela farm no server | Documentado; não usamos abort como cancelamento de economia |
+`compareRevision` em [`client-sync.js`](idle/public/jogo-idle/client-sync.js):
 
-`publicCharacter` agora expõe `revision` a partir de `__dbUpdatedAt`.
+- **Não** usa `Date.parse` na revision.
+- Ordena por ISO textual + **seq numérico** (`Number` após `#`).
+- Regressão: `ISO#2` &lt; `ISO#10` (lexicográfico do token seria invertido) — **pass**.
+- Snapshot `#2` após `#10` aplicado é rejeitado — **pass**.
+- `reset()` após troca de personagem — **pass**.
+- Store `nextUpdatedAt()` = `` `${ISO}#${seq}` ``; STALE continua por **igualdade** de token.
 
 ---
 
-## 5.2 — Three.js (render lifecycle)
+## Comparação HTTP (métrica primária comparável — probe OFF)
 
-| API | Comportamento |
-|-----|----------------|
-| `setRenderSuspended(true/false)` | Só pausa/retoma `setAnimationLoop`; **não** `timeline.clear()`; `clock.getDelta()` no resume |
-| `setActive(false)` | Desativação explícita da arena: limpa timeline, esconde plates |
-| `destroy()` | Dispose renderer/controles/atores — **não** usar em troca de zona |
+Ambiente: Darwin arm64 · Apple M5 · Node 24 · Guerreiro Lv1 · zona `bosque_sussurros` · bind `127.0.0.1`.
 
-`visibilitychange`: suspende via `setRenderSuspended`; ao voltar, `refresh()` (sem ticks no frontend; eventos stale filtrados).
+| Cenário | Antes `bb136fb` | Depois `a439515` (nodiag) | Δ | Conclusão |
+|---------|----------------:|--------------------------:|---|-----------|
+| `/api/me` p50 (ms) | 17.18 | 15.08 | ~−2 ms | Semelhante (ruído) |
+| `/api/me` p95 (ms) | 21.73 | 19.00 | ~−3 ms | Semelhante |
+| Payload `/me` mediano (B) | 9463 | 9503 | +40 B | `revision` no JSON |
+| Create char (ms) | 35.3 | 19.7 | — | Não atribuir (variação) |
+| Overlap 3× `/me` wall (ms) | 43.4 | 44.4 | ~0 | Semelhante |
+| Revisions no overlap | `null` (sem campo) | `#15…#17` crescentes | — | Pós-5: revision exposta |
 
-**Ganho de GPU/FPS com aba oculta:** hipótese forte pelo código; **números before/after = pendente browser**.
+**Probe ON** (`IDLE_PERF_DIAGNOSTICS=1`, sem `idle_perf` no cliente HTTP): meta `perfDiagnostics:true`; `/me` p50 19.33 ms — **não** comparar com baseline como equivalente (servidor com flag; cliente probe off neste run HTTP).
 
-### Não alterado sem prova
-
-- Sombras / AA / cap DPR 1.75 (sem retune visual).
-- Lazy-init do fallback 2D (`arena.js` ainda cria 2D primeiro) — candidato; sem timing browser.
-- Eviction de `modelCache` / recompressão GLB.
-
----
-
-## 5.6 — Backend (medido em Node)
-
-| Cenário | Métrica | Valor (esta máquina) | Nota |
-|---------|---------|----------------------|------|
-| `processFarm` janela 2h | wall time | ~9–20 ms (suite) | CPU simulação; **não** FPS |
-| `processFarm` 30s vs 2h | relativo | 30s ≪ 2h | Esperado |
-
-Bench em `farm-perf-bench.test.ts` (save temp / personagem em memória).
+Arquivos: `.perf-wt/measure-baseline.json`, `measure-current-nodiag.json`, `measure-current-diag.json`.
 
 ---
 
-## Matriz de cenários browser (checklist manual)
+## Comparação browser (CDP / Resource Timing — probe OFF)
 
-Preencher com DevTools. Não inventar %.
+Mesmo navegador embutido Cursor · DPR **2** · viewport ~586×716 · Guerreiro.
 
-| # | Cenário | FPS/p95 | Mem JS | renderer.info | Network | Resultado |
-|---|---------|---------|--------|---------------|---------|-----------|
-| 1 | Lobby | — | — | — | — | Pendente |
-| 2 | Criar/selecionar | — | — | — | — | Pendente |
-| 3 | Entrada play | — | — | — | — | Pendente |
-| 4 | Arena sem combate | — | — | — | — | Pendente |
-| 5 | Combate contínuo | — | — | — | — | Pendente |
-| 6 | Combate + skills | — | — | — | — | Pendente |
-| 7 | Troca zonas ×20 | — | geo/tex estável? | — | — | Pendente |
-| 8 | Capítulo | — | — | — | — | Pendente |
-| 9 | Equipar/trocar | — | — | — | — | Pendente |
-| 10 | Painéis open/close | — | — | — | — | Pendente |
-| 11 | HUD Builder preview | — | — | — | — | Pendente |
-| 12 | Desktop/Tablet/Mobile | — | — | — | — | Pendente |
-| — | Aba hidden/visible ×20 | webglFrames hidden | — | — | — | Pendente |
-| — | Probe on vs off | overhead | — | — | — | Pendente |
+| Cenário | Antes | Depois (nodiag) | Conclusão |
+|---------|------:|----------------:|-----------|
+| rAF ~1s | ~60 | ~60 | Semelhante (não é FPS DevTools) |
+| Recursos na play | 250 | 250 | Semelhante |
+| GLB count | 98 | 97 | Semelhante |
+| Heap JS após ~3s warm (B) | ~30.3M | ~31.3M | Semelhante (ordem de grandeza) |
+| DCL / load / GLB bytes | **incomparável** | cold ~4.2 MB GLB | Baseline medido **depois** → cache HTTP quente (DCL 39 ms, GLB transfer 29 KB) — **não** usar como ganho |
 
-### Stress (após warm-up)
+### Suspensão de aba
 
-20× monstro / zona / equip-char / visibility / resize + combate longo — observar **patamar** de geo/tex/listeners (crescimento inicial de cache ≠ vazamento).
+| Checagem | Resultado |
+|----------|-----------|
+| `Emulation.setEmulatedVisibilityState` no CDP Cursor | **Indisponível** |
+| Redefinir `document.visibilityState` | **Bloqueado** |
+| Contrato código: `setRenderSuspended` ≠ `timeline.clear` | **Testado** (`render-suspend-source.test.ts`) |
+| `visibilitychange` → `setRenderSuspended`, não `scene.setActive(false)` | **Testado** |
+| Ganho % CPU/GPU vs baseline | **Não mensurado** — não declarar |
 
----
+Navegador pode pausar rAF sozinho quando a aba está realmente oculta; ausência de frames ≠ prova isolada de ganho do Three.js.
 
-## Decisões / áreas sem mudança
+### Zona ×20 (API, save isolado)
 
-- `POLL_MS` permanece 2000 (sem latência/DOM medidos no browser).
-- Sem SSE/WebSocket.
-- Sem presets Alto/Médio/Baixo (sem evidência de device fraco nesta sessão).
-- Fórmulas, farm 2h, auth, HUD publish, economia: intactos.
+20 alternâncias `bosque_sussurros` ↔ `pantano_sombras`: latências ~45–71 ms/ciclo; save só no data dir de teste; sem falha.
 
----
+### Combate contínuo FPS / draw calls / VRAM
 
-## Critério de conclusão da Fase 5
+**Pendente** DevTools Performance manual (impedimento: CDP Cursor sem painel Performance completo / sem FPS estável reportável). Checklist para o desenvolvedor:
 
-| Item | Status |
-|------|--------|
-| Instrumentação + gate servidor | Feito |
-| Sync /me vs mutações + testes | Feito |
-| Suspend render ≠ setActive | Feito (benefício GPU pendente medir) |
-| Benchmarks Node farm | Feito |
-| Matriz browser before/after | **Pendente** — Fase 5 **não** 100% validada visualmente |
-| 137 testes preservados (+ regressões) | 149 pass |
+1. Worktree ou checkout isolado + `IDLE_DATA_DIR` temp + `IDLE_BIND=127.0.0.1`.
+2. Chrome estável, mesma janela, cold cache (`Disable cache`).
+3. Performance: 60–90 s combate; Memory: heap após warm + 20 zone swaps.
+4. Repetir em `bb136fb` e HEAD; preencher tabela com medianas.
 
 ---
 
-## Commits esperados (locais)
+## Matriz resumo 5.7
 
-Ver `git log` após entrega — mensagens `perf(...)` / `docs(perf)`.
+| Cenário | Antes | Depois | Variação | Ambiente | Conclusão |
+|---------|-------|--------|----------|----------|-----------|
+| A Entrada (HTTP create/select) | ~18–35 ms | ~15–20 ms | ruído | Node loopback | Sem regressão |
+| B Combate FPS | — | — | — | — | **Inconclusivo / pendente manual** |
+| C Zonas ×20 | — | 45–71 ms API | — | isolado | Estável (API) |
+| D Aba oculta | loop contínuo (código) | suspend API | funcional | código+teste | Sem % GPU |
+| E `/me` Network | p50 17 ms | p50 15 ms | ~0 | HTTP seq | Sem regressão |
+| Memória JS warm | ~30 MB | ~31 MB | ~0 | CDP | Sem vazamento óbvio no intervalo curto |
+| Probe overhead | n/a | HTTP diag p50 19 ms | — | não eq. | Só complementar |
+
+---
+
+## Decisões / não feitos
+
+- Sem SSE/WebSocket, compressão GLB, presets gráficos, lazy-init 2D.
+- Sem mudança de `POLL_MS`, fórmulas, farm 2h, auth, HUD Builder, assets.
+- 149/151 testes ≠ unidades de FPS.
+
+---
+
+## Limitações remanescentes
+
+1. FPS / frame-time p95 / GPU / VRAM reais — checklist manual Chrome.
+2. Comparação cold-load browser exigiria limpar cache entre versões (nesta sessão o 2º load foi warm).
+3. Suspensão: prova funcional + contrato de código; sem telemetria GPU before/after.
+4. Lazy-init 2D e cache GLB eviction — sem evidência de gargalo.
+
+---
+
+## Recomendação pós-Fase 5
+
+Seguir para **Fase 6 — auditoria de funcionalidades / preparação de lançamento** (stubs vs pronto), não novas micro-otimizações sem o checklist GPU manual se desejar fechar 100% visual.
+
+---
+
+## Testes / build (5.7)
+
+| Comando | Resultado |
+|---------|-----------|
+| `cd idle && npm test` | **≥151 pass** (inclui ISO#2/#10 + suspend source) |
+| `cd idle && npm run admin:build` | **OK** |

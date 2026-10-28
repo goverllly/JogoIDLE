@@ -37,3 +37,6 @@ idle/admin-ui/dist
 *.njsproj
 *.sln
 *.sw?
+
+# Phase 5.7 local perf worktrees
+.perf-wt/

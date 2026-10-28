@@ -16,6 +16,35 @@ describe("5.4 client-sync — revision ordering", () => {
     assert.ok(compareRevision("2026-01-02T00:00:00.000Z#1", "2026-01-01T00:00:00.000Z#9") > 0);
   });
 
+  it("ISO#2 < ISO#10 (seq numérico, não lexicográfico)", () => {
+    const iso = "2026-01-01T00:00:00.000Z";
+    // Lexicográfico: "#10" < "#2" (errado). Numérico: 2 < 10 (correto).
+    assert.ok(`${iso}#10` < `${iso}#2`, "premissa: ordem string lex é invertida");
+    assert.ok(compareRevision(`${iso}#2`, `${iso}#10`) < 0);
+    assert.ok(compareRevision(`${iso}#10`, `${iso}#2`) > 0);
+    const sync = createClientSync();
+    assert.equal(
+      sync.acceptCharacterSnapshot({ id: "c1", revision: `${iso}#10` }),
+      true,
+    );
+    assert.equal(
+      sync.acceptCharacterSnapshot({ id: "c1", revision: `${iso}#2` }),
+      false,
+      "snapshot atrasado #2 não sobrescreve #10",
+    );
+  });
+
+  it("reset após troca de personagem descarta revision anterior", () => {
+    const sync = createClientSync();
+    sync.acceptCharacterSnapshot({ id: "c1", revision: "2026-01-01T00:00:00.000Z#10" });
+    sync.reset();
+    assert.equal(sync.getAppliedRevision(), null);
+    assert.equal(
+      sync.acceptCharacterSnapshot({ id: "c2", revision: "2026-01-01T00:00:00.000Z#1" }),
+      true,
+    );
+  });
+
   it("resposta /me atrasada não sobrescreve mutação mais nova", () => {
     const sync = createClientSync();
     sync.beginMutation();
