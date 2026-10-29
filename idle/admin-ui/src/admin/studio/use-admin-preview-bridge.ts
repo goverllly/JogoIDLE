@@ -49,5 +49,10 @@ export function useAdminPreviewBridge(iframeRef: RefObject<HTMLIFrameElement | n
     [post],
   );
 
-  return { ready, showItem, showMonster };
+  return { ready, showItem, showMonster, framePreview: () => {
+    iframeRef.current?.contentWindow?.postMessage(
+      { type: "jogo-idle:admin-preview-frame" },
+      window.location.origin,
+    );
+  } };
 }

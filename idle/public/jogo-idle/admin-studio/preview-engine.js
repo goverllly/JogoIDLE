@@ -26,7 +26,7 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x1a1510);
+scene.background = new THREE.Color(0x071524);
 
 const camera = new THREE.PerspectiveCamera(36, 1, 0.05, 40);
 camera.position.set(1.6, 1.4, 2.4);
@@ -36,8 +36,14 @@ controls.enableDamping = true;
 controls.autoRotate = false;
 controls.autoRotateSpeed = 1.15;
 controls.target.set(0, 0.7, 0);
-controls.minDistance = 0.8;
-controls.maxDistance = 8;
+controls.minDistance = 0.15;
+controls.maxDistance = 40;
+
+let framedRoot = null;
+let userOrbit = false;
+controls.addEventListener('start', () => {
+  userOrbit = true;
+});
 
 scene.add(new THREE.HemisphereLight(0xffe8c8, 0x2a2018, 0.85));
 const key = new THREE.DirectionalLight(0xfff0d0, 1.35);
@@ -62,6 +68,8 @@ const loader = new GLTFLoader();
 const gltfCache = new Map();
 let mode = 'item';
 let loadToken = 0;
+/** visual+raridade ou visual de monstro já desenhados. Trocar o nome não recarrega o GLTF. */
+let shownKey = '';
 /** Item custom em GLB real (não billboard) — gira lentamente. */
 let liveItemRoot = null;
 
@@ -71,6 +79,7 @@ function resize() {
   renderer.setSize(w, h, false);
   camera.aspect = w / Math.max(1, h);
   camera.updateProjectionMatrix();
+  if (framedRoot && !userOrbit) frameInView(framedRoot);
 }
 new ResizeObserver(resize).observe(canvas.parentElement || document.body);
 resize();
@@ -83,10 +92,13 @@ function clearStage() {
     const child = stage.children[0];
     stage.remove(child);
     child.traverse((o) => {
-      if (o.isMesh) {
-        o.geometry?.dispose?.();
-        const mats = Array.isArray(o.material) ? o.material : [o.material];
-        for (const m of mats) m?.dispose?.();
+      if (!o.isMesh) return;
+      if (!o.userData.sharedGeometry) o.geometry?.dispose?.();
+      if (!o.userData.disposeMaterial) return;
+      const mats = Array.isArray(o.material) ? o.material : [o.material];
+      for (const m of mats) {
+        if (o.userData.disposeMap) m?.map?.dispose?.();
+        m?.dispose?.();
       }
     });
   }
@@ -98,6 +110,8 @@ function prepareOriginalMaterials(root) {
     if (!o.isMesh) return;
     o.castShadow = true;
     o.receiveShadow = true;
+    o.userData.sharedGeometry = true;
+    o.userData.disposeMaterial = true;
     if (!o.material) return;
     o.material = Array.isArray(o.material)
       ? o.material.map((m) => m.clone())
@@ -123,42 +137,56 @@ async function loadGltf(url) {
   return gltf;
 }
 
-function fitObject(root, targetSize = 1.6, { clearance = 0.04 } = {}) {
-  // Reset antes de medir — evita acumular scale/posição em reloads.
+function placeOnGround(root) {
   root.scale.setScalar(1);
   root.position.set(0, 0, 0);
+  root.rotation.set(0, 0, 0);
   root.updateMatrixWorld(true);
   const box = new THREE.Box3().setFromObject(root);
-  const size = new THREE.Vector3();
-  const center = new THREE.Vector3();
-  box.getSize(size);
-  box.getCenter(center);
-  const maxDim = Math.max(size.x, size.y, size.z) || 1;
-  const scale = targetSize / maxDim;
-  root.scale.setScalar(scale);
-  root.position.set(-center.x * scale, -box.min.y * scale + clearance, -center.z * scale);
+  if (box.isEmpty()) return;
+  const center = box.getCenter(new THREE.Vector3());
+  root.position.set(-center.x, -box.min.y, -center.z);
+  root.updateMatrixWorld(true);
 }
 
-function frameLiveItem(root) {
+function frameInView(root) {
+  root.updateMatrixWorld(true);
   const box = new THREE.Box3().setFromObject(root);
-  const size = new THREE.Vector3();
-  const center = new THREE.Vector3();
-  box.getSize(size);
-  box.getCenter(center);
-  const maxDim = Math.max(size.x, size.y, size.z, 0.4);
+  if (box.isEmpty()) return;
+  const size = box.getSize(new THREE.Vector3());
+  const center = box.getCenter(new THREE.Vector3());
+  const aspect = Math.max(0.25, camera.aspect || 1);
+  const vFov = THREE.MathUtils.degToRad(camera.fov);
+  const hFov = 2 * Math.atan(Math.tan(vFov / 2) * aspect);
+  const margin = 1.32;
+  const halfH = Math.max(size.y, 0.04) * 0.5;
+  const halfW = Math.max(size.x, size.z, 0.04) * 0.5;
+  const dist = Math.max(halfH / Math.tan(vFov / 2), halfW / Math.tan(hFov / 2)) * margin;
   controls.target.copy(center);
-  camera.position.set(center.x + maxDim * 1.05, center.y + maxDim * 0.45, center.z + maxDim * 1.45);
+  camera.position.set(center.x + dist * 0.22, center.y + halfH * 0.15, center.z + dist);
+  camera.near = Math.max(0.01, dist / 80);
+  camera.far = Math.max(40, dist * 14);
+  controls.minDistance = Math.max(0.05, dist * 0.25);
+  controls.maxDistance = dist * 5;
+  camera.updateProjectionMatrix();
   controls.update();
+  framedRoot = root;
+  userOrbit = false;
 }
 
 async function showItem({ visual, rarity = 'common', name = '' } = {}) {
+  const key = `item\0${visual || ''}\0${rarity}`;
+  labelEl.textContent = name || visual || 'Item';
+  if (key === shownKey) return;
   const token = ++loadToken;
+  shownKey = '';
   clearStage();
   // Itens não usam o disco de chão — ele cortava o GLB / billboard.
   floor.visible = false;
-  labelEl.textContent = name || visual || 'Item';
   if (!visual || !canRenderItem3d(visual)) {
-    setEmpty(true, 'Sem visual 3D — escolha um visual no formulário');
+    if (token !== loadToken) return;
+    shownKey = key;
+    setEmpty(true, 'Sem modelo 3D para este item');
     return;
   }
   setEmpty(false);
@@ -170,11 +198,13 @@ async function showItem({ visual, rarity = 'common', name = '' } = {}) {
       if (token !== loadToken) return;
       const root = gltf.scene.clone(true);
       prepareOriginalMaterials(root);
-      fitObject(root, 1.55, { clearance: 0.06 });
+      placeOnGround(root);
+      if (token !== loadToken) return;
       stage.add(root);
       liveItemRoot = root;
       controls.autoRotate = true;
-      frameLiveItem(root);
+      frameInView(root);
+      shownKey = key;
       return;
     }
 
@@ -190,9 +220,17 @@ async function showItem({ visual, rarity = 'common', name = '' } = {}) {
     const mat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, side: THREE.DoubleSide });
     const mesh = new THREE.Mesh(new THREE.PlaneGeometry(1.4, 1.4), mat);
     mesh.position.y = 0.85;
+    mesh.userData.disposeMaterial = true;
+    mesh.userData.disposeMap = true;
+    if (token !== loadToken) {
+      mesh.geometry?.dispose?.();
+      mat.map?.dispose?.();
+      mat.dispose();
+      return;
+    }
     stage.add(mesh);
-    controls.target.set(0, 0.85, 0);
-    camera.position.set(0, 1.1, 2.2);
+    frameInView(mesh);
+    shownKey = key;
   } catch {
     if (token !== loadToken) return;
     setEmpty(true, 'Falha ao carregar preview do item');
@@ -200,27 +238,34 @@ async function showItem({ visual, rarity = 'common', name = '' } = {}) {
 }
 
 async function showMonster({ visualId, name = '' } = {}) {
-  const token = ++loadToken;
-  clearStage();
-  floor.visible = true;
   const id = resolveMonsterVisualId({ visualId, name });
   const meta = getMonsterVisual(id) || getMonsterVisual(DEFAULT_MONSTER_VISUAL);
+  const key = `monster\0${meta.id}`;
   labelEl.textContent = `${name || meta.label} · ${meta.id}`;
+  if (key === shownKey) return;
+  const token = ++loadToken;
+  shownKey = '';
+  clearStage();
+  floor.visible = true;
   setEmpty(false);
   try {
-    const gltf = await loadGltf(monsterModelUrl(id));
+    const gltf = await loadGltf(monsterModelUrl(meta.id));
     if (token !== loadToken) return;
     const root = gltf.scene.clone(true);
     root.traverse((o) => {
-      if (o.isMesh) {
-        o.castShadow = true;
-        o.receiveShadow = true;
-      }
+      if (!o.isMesh) return;
+      o.castShadow = true;
+      o.receiveShadow = true;
+      o.userData.sharedGeometry = true;
+      o.userData.disposeMaterial = true;
+      if (!o.material) return;
+      o.material = Array.isArray(o.material) ? o.material.map((m) => m.clone()) : o.material.clone();
     });
-    fitObject(root, 1.85);
+    if (token !== loadToken) return;
+    placeOnGround(root);
     stage.add(root);
-    controls.target.set(0, 0.9, 0);
-    camera.position.set(1.8, 1.5, 2.6);
+    frameInView(root);
+    shownKey = key;
   } catch {
     if (token !== loadToken) return;
     setEmpty(true, 'Falha ao carregar modelo do monstro');
@@ -230,6 +275,10 @@ async function showMonster({ visualId, name = '' } = {}) {
 window.addEventListener('message', (event) => {
   if (event.origin !== window.location.origin) return;
   const data = event.data;
+  if (data?.type === 'jogo-idle:admin-preview-frame') {
+    if (framedRoot) frameInView(framedRoot);
+    return;
+  }
   if (data?.type !== 'jogo-idle:admin-preview') return;
   mode = data.mode === 'monster' ? 'monster' : 'item';
   if (mode === 'monster') {

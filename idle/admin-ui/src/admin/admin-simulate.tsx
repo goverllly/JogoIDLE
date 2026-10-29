@@ -1,6 +1,6 @@
 
 import { FormEvent, useMemo, useState } from "react";
-import { StudioBtn, StudioCard, StudioEmpty } from "./studio/studio-ui";
+import { StudioBtn, StudioEmpty } from "./studio/studio-ui";
 import type { AdminZone } from "./admin-types";
 
 type SimulateResult = {
@@ -20,15 +20,25 @@ type SimulateResult = {
 type AdminSimulatePanelProps = {
   zones: AdminZone[];
   working: boolean;
+  dropPct: number;
+  mobHits: string;
+  bossHits: string;
+  refineDropPct: string;
   idleFetch: (path: string, init?: RequestInit) => Promise<any>;
   onMessage: (msg: string | null) => void;
+  onOpenLiveOps: () => void;
 };
 
 export function AdminSimulatePanel({
   zones,
   working,
+  dropPct,
+  mobHits,
+  bossHits,
+  refineDropPct,
   idleFetch,
   onMessage,
+  onOpenLiveOps,
 }: AdminSimulatePanelProps) {
   const [zoneId, setZoneId] = useState(zones[0]?.id || "");
   const zone = useMemo(() => zones.find((z) => z.id === zoneId) || zones[0], [zones, zoneId]);
@@ -82,12 +92,23 @@ export function AdminSimulatePanel({
   }
 
   return (
-    <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(260px,340px)]">
-      <StudioCard>
-        <h3 className="studio-2-section-title">Perfil × monstro</h3>
-        <form onSubmit={onRun} className="grid gap-3 sm:grid-cols-2">
-          <div>
-            <label className="studio-2-label">Zona</label>
+    <div className="ops">
+      <header className="ops-head">
+        <div>
+          <p className="ed-kicker">Laboratório</p>
+          <h2>Simulador</h2>
+        </div>
+      </header>
+      <p className="ed-note">
+        Referência atual: drop {dropPct.toFixed(1)}%, mob {mobHits} golpes, boss {bossHits} golpes, refinador {refineDropPct}%.{" "}
+        <button type="button" className="ops-inline" onClick={onOpenLiveOps}>Editar em Live Ops</button>
+      </p>
+      <div className="ops-two">
+      <section className="ops-panel">
+        <div className="ops-panel__head"><h3>Configuração</h3><p>A simulação não grava personagem nem mundo.</p></div>
+        <form onSubmit={onRun} className="ops-form">
+          <label>
+            Zona
             <select
               className="studio-2-select"
               value={zone?.id || zoneId}
@@ -102,9 +123,9 @@ export function AdminSimulatePanel({
                 </option>
               ))}
             </select>
-          </div>
-          <div>
-            <label className="studio-2-label">Alvo</label>
+          </label>
+          <label>
+            Monstro
             <select
               className="studio-2-select"
               value={monsterKey}
@@ -116,37 +137,37 @@ export function AdminSimulatePanel({
                 </option>
               ))}
             </select>
-          </div>
-          <div>
-            <label className="studio-2-label">Nível herói</label>
+          </label>
+          <label>
+            Nível
             <input className="studio-2-input" value={level} onChange={(e) => setLevel(e.target.value)} />
-          </div>
-          <div>
-            <label className="studio-2-label">Ataque</label>
+          </label>
+          <label>
+            ATK
             <input className="studio-2-input" value={attack} onChange={(e) => setAttack(e.target.value)} />
-          </div>
-          <div>
-            <label className="studio-2-label">Defesa</label>
+          </label>
+          <label>
+            DEF
             <input className="studio-2-input" value={defense} onChange={(e) => setDefense(e.target.value)} />
-          </div>
-          <div>
-            <label className="studio-2-label">HP máx.</label>
+          </label>
+          <label>
+            HP
             <input className="studio-2-input" value={maxHp} onChange={(e) => setMaxHp(e.target.value)} />
-          </div>
-          <div className="sm:col-span-2">
-            <StudioBtn variant="gold" disabled={busy || working} type="submit">
-              {busy ? "Simulando…" : "Rodar simulação"}
-            </StudioBtn>
+          </label>
+          <div className="ops-form__bar ops-span-2">
+            <span>50 iterações no motor atual.</span>
+            <StudioBtn variant="gold" loading={busy} disabled={working} type="submit">Simular</StudioBtn>
           </div>
         </form>
-      </StudioCard>
+      </section>
 
-      <StudioCard>
-        <h3 className="studio-2-section-title">Resultado</h3>
+      <section className="ops-panel">
+        <div className="ops-panel__head"><h3>Resultados</h3></div>
         {!result ? (
           <StudioEmpty>Execute uma simulação para ver TTK e ritmo de farm.</StudioEmpty>
         ) : (
-          <dl className="space-y-2 text-[0.8rem]">
+          <>
+          <dl className="ops-facts">
             <div className="flex justify-between gap-2">
               <dt className="text-[var(--studio-muted)]">Alvo</dt>
               <dd>
@@ -180,14 +201,20 @@ export function AdminSimulatePanel({
                 {(Math.round(result.estimatedDropChance * 1000) / 10).toFixed(1)}%
               </dd>
             </div>
-            <ul className="mt-2 space-y-1 text-[0.68rem] text-[var(--studio-muted)]">
-              {result.notes.map((n) => (
-                <li key={n}>· {n}</li>
+            <div className="flex justify-between gap-2">
+              <dt className="text-[var(--studio-muted)]">Monstro</dt>
+              <dd className="tabular-nums">HP {result.monster?.hp ?? "—"} · ATK {result.monster?.attack ?? "—"} · DEF {result.monster?.defense ?? "—"}</dd>
+            </div>
+            </dl>
+            <ul className="ed-note">
+              {(result.notes || []).map((n) => (
+                <li key={n}>{n}</li>
               ))}
             </ul>
-          </dl>
+          </>
         )}
-      </StudioCard>
+      </section>
+      </div>
     </div>
   );
 }

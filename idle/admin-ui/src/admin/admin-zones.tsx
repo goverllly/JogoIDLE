@@ -1,7 +1,7 @@
 
 import { FormEvent, useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
-import { StudioBtn, StudioCard } from "./studio/studio-ui";
+import { StudioBtn, StudioCard, StudioModal } from "./studio/studio-ui";
 import type { AdminZone } from "./admin-types";
 
 type AdminZonesPanelProps = {
@@ -39,6 +39,7 @@ export function AdminZonesPanel({
   const [bossAtkMult, setBossAtkMult] = useState("");
   const [bossDropMult, setBossDropMult] = useState("");
   const [refinePct, setRefinePct] = useState("");
+  const [clearAsk, setClearAsk] = useState<null | { id: string; name: string; minLevel: number; tier: number }>(null);
 
   useEffect(() => {
     if (!zone) return;
@@ -72,13 +73,18 @@ export function AdminZonesPanel({
     });
   }
 
-  async function onClear() {
+  function requestClear() {
     if (!zone) return;
-    if (!window.confirm(`Remover overrides da zona ${zone.name}?`)) return;
+    setClearAsk({ id: zone.id, name: zone.name, minLevel: zone.minLevel, tier: zone.tier });
+  }
+
+  async function confirmClear() {
+    if (!clearAsk) return;
+    const target = clearAsk;
     await onSaveZoneFull({
-      id: zone.id,
-      minLevel: zone.minLevel,
-      tier: zone.tier,
+      id: target.id,
+      minLevel: target.minLevel,
+      tier: target.tier,
       dropChance: null,
       requiresAscension: null,
       bossHpMult: null,
@@ -87,6 +93,7 @@ export function AdminZonesPanel({
       refineDropChance: null,
       clear: true,
     });
+    setClearAsk(null);
   }
 
   return (
@@ -95,7 +102,7 @@ export function AdminZonesPanel({
         <div className="studio-2-catalog__head">
           <strong className="text-sm">Zonas</strong>
           <p className="text-[0.68rem] text-[var(--studio-muted)]">
-            Criação de zonas novas: Fase 3. Aqui só overrides.
+            Overrides das zonas existentes. A cena do mapa não entra nesta limpeza.
           </p>
         </div>
         <div className="studio-2-catalog__list">
@@ -128,69 +135,102 @@ export function AdminZonesPanel({
         {!zone ? (
           <p className="text-[var(--studio-muted)]">Selecione uma zona.</p>
         ) : (
-          <form onSubmit={onSubmit} className="space-y-3">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <div>
-                <h3 className="studio-2-section-title mb-0">{zone.name}</h3>
+            <form onSubmit={onSubmit} className="zone-form">
+              <div className="zone-form__head">
+                <div>
+                  <h3 className="studio-2-section-title mb-0">{zone.name}</h3>
+                  <p className="text-[0.68rem] text-[var(--studio-muted)]">
+                    {zone.id}
+                    {zone.chapterId ? ` · Cap. ${zone.chapterId}` : ""}
+                    {zone.sceneProfileId ? ` · perfil ${zone.sceneProfileId}` : ""}
+                    {zone.trial ? " · trial" : ""}
+                  </p>
+                </div>
+                <div className="zone-form__actions">
+                  <StudioBtn variant="danger" type="button" disabled={working} onClick={requestClear}>
+                    Limpar overrides
+                  </StudioBtn>
+                  <StudioBtn variant="gold" disabled={working} type="submit">
+                    Salvar zona
+                  </StudioBtn>
+                </div>
+              </div>
+              <section className="zone-group">
+                <h4>Progressão</h4>
+                <div className="zone-group__grid">
+                  <div>
+                    <label className="studio-2-label">Nível mínimo</label>
+                    <input className="studio-2-input" value={minLevel} onChange={(e) => setMinLevel(e.target.value)} />
+                  </div>
+                  <div>
+                    <label className="studio-2-label">Tier</label>
+                    <input className="studio-2-input" value={tier} onChange={(e) => setTier(e.target.value)} />
+                  </div>
+                  <div>
+                    <label className="studio-2-label">Ascensão</label>
+                    <select className="studio-2-select" value={ascension} onChange={(e) => setAscension(e.target.value)}>
+                      <option value="">Nenhuma</option>
+                      <option value="CELESTIAL">CELESTIAL</option>
+                    </select>
+                  </div>
+                </div>
+              </section>
+              <section className="zone-group">
+                <h4>Recompensas</h4>
+                <div className="zone-group__grid">
+                  <div>
+                    <label className="studio-2-label">Drop da zona % (vazio = global)</label>
+                    <input className="studio-2-input" value={dropPct} onChange={(e) => setDropPct(e.target.value)} />
+                  </div>
+                  <div>
+                    <label className="studio-2-label">Refine drop %</label>
+                    <input className="studio-2-input" value={refinePct} onChange={(e) => setRefinePct(e.target.value)} placeholder="override" />
+                  </div>
+                </div>
+              </section>
+              <section className="zone-group">
+                <h4>Boss</h4>
+                <div className="zone-group__grid">
+                  <div>
+                    <label className="studio-2-label">HP ×</label>
+                    <input className="studio-2-input" value={bossHpMult} onChange={(e) => setBossHpMult(e.target.value)} placeholder="override" />
+                  </div>
+                  <div>
+                    <label className="studio-2-label">ATK ×</label>
+                    <input className="studio-2-input" value={bossAtkMult} onChange={(e) => setBossAtkMult(e.target.value)} placeholder="override" />
+                  </div>
+                  <div>
+                    <label className="studio-2-label">Drop ×</label>
+                    <input className="studio-2-input" value={bossDropMult} onChange={(e) => setBossDropMult(e.target.value)} placeholder="override" />
+                  </div>
+                </div>
                 <p className="text-[0.68rem] text-[var(--studio-muted)]">
-                  id: {zone.id}
-                  {zone.chapterId ? ` · Cap. ${zone.chapterId}` : ""}
-                  {zone.sceneProfileId ? ` · perfil ${zone.sceneProfileId}` : ""}
-                  {zone.trial ? " · trial" : ""}
+                  Boss resolvido: {zone.boss?.name || "—"} · HP {zone.boss?.hp ?? "—"} · onda{" "}
+                  {zone.bossWaveSize ?? "—"}
+                  {zone.bossWaveSizeOverridden ? " (override)" : ""}
                 </p>
-              </div>
-              <StudioBtn variant="danger" type="button" disabled={working} onClick={() => void onClear()}>
-                Limpar overrides
-              </StudioBtn>
-            </div>
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              <div>
-                <label className="studio-2-label">Nível mínimo</label>
-                <input className="studio-2-input" value={minLevel} onChange={(e) => setMinLevel(e.target.value)} />
-              </div>
-              <div>
-                <label className="studio-2-label">Tier</label>
-                <input className="studio-2-input" value={tier} onChange={(e) => setTier(e.target.value)} />
-              </div>
-              <div>
-                <label className="studio-2-label">Drop zona % (vazio = global)</label>
-                <input className="studio-2-input" value={dropPct} onChange={(e) => setDropPct(e.target.value)} />
-              </div>
-              <div>
-                <label className="studio-2-label">Ascensão</label>
-                <select className="studio-2-select" value={ascension} onChange={(e) => setAscension(e.target.value)}>
-                  <option value="">Nenhuma</option>
-                  <option value="CELESTIAL">CELESTIAL</option>
-                </select>
-              </div>
-              <div>
-                <label className="studio-2-label">Boss HP × (opcional)</label>
-                <input className="studio-2-input" value={bossHpMult} onChange={(e) => setBossHpMult(e.target.value)} placeholder="override" />
-              </div>
-              <div>
-                <label className="studio-2-label">Boss ATK ×</label>
-                <input className="studio-2-input" value={bossAtkMult} onChange={(e) => setBossAtkMult(e.target.value)} placeholder="override" />
-              </div>
-              <div>
-                <label className="studio-2-label">Boss drop ×</label>
-                <input className="studio-2-input" value={bossDropMult} onChange={(e) => setBossDropMult(e.target.value)} placeholder="override" />
-              </div>
-              <div>
-                <label className="studio-2-label">Refine drop %</label>
-                <input className="studio-2-input" value={refinePct} onChange={(e) => setRefinePct(e.target.value)} placeholder="override" />
-              </div>
-            </div>
-            <p className="text-[0.68rem] text-[var(--studio-muted)]">
-              Boss resolvido: {zone.boss?.name || "—"} · HP {zone.boss?.hp ?? "—"} · onda{" "}
-              {zone.bossWaveSize ?? "—"}
-              {zone.bossWaveSizeOverridden ? " (override)" : ""}
-            </p>
-            <StudioBtn variant="gold" disabled={working} type="submit">
-              Salvar zona
-            </StudioBtn>
-          </form>
+              </section>
+            </form>
         )}
       </StudioCard>
+      <StudioModal
+        open={clearAsk != null}
+        title="Limpar overrides da zona"
+        description={clearAsk ? `${clearAsk.name} · ${clearAsk.id}` : undefined}
+        busy={working}
+        onClose={() => !working && setClearAsk(null)}
+        footer={
+          <>
+            <StudioBtn type="button" disabled={working} onClick={() => setClearAsk(null)}>Cancelar</StudioBtn>
+            <StudioBtn variant="danger" type="button" loading={working} onClick={() => void confirmClear()}>Limpar overrides</StudioBtn>
+          </>
+        }
+      >
+        <p>
+          Voltam ao padrão o nível mínimo, o tier, o drop da zona, a ascensão exigida e os multiplicadores de boss e refinador.
+          A cena, os monstros e as decorações não entram neste envio.
+        </p>
+      </StudioModal>
     </div>
   );
 }

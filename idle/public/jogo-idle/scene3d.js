@@ -11,9 +11,10 @@ import {
   buildKayKitZone,
   zonePropSeed,
   kayKitResolvedCount,
-  spawnKayKitDecoration,
+  appendManualDecorations,
   preloadDecorationPacks,
 } from './kaykit-props.js';
+import { manualsVisibleInPlay } from './zone-compose.js';
 import {
   HERO_HEIGHT,
   MONSTER_HEIGHT,
@@ -953,9 +954,11 @@ export function createScene3D(root, { goldTarget, onTarget = () => {}, onTargetH
   // ——— Cenário ———
   function disposeGroup(group) {
     group.traverse((o) => {
-      // A geometria dos sprites é compartilhada por todos os sprites do Three.js.
-      if (!o.isSprite) o.geometry?.dispose();
-      if (o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach((m) => m.dispose());
+      if (o.isInstancedMesh && o.instanceMatrix) o.instanceMatrix = null;
+      if (!o.isSprite && !o.userData?.sharedGeometry) o.geometry?.dispose();
+      if (o.material && !o.userData?.sharedMaterial) {
+        (Array.isArray(o.material) ? o.material : [o.material]).forEach((m) => m.dispose());
+      }
     });
     scene.remove(group);
   }
@@ -1415,7 +1418,7 @@ export function createScene3D(root, { goldTarget, onTarget = () => {}, onTargetH
       particle,
       density,
       variant: o.variant || base.variant || undefined,
-      // Só aplica decorações se o admin enviou o array (evita zerar bioma procedural).
+      decorationMode: o.decorationMode === 'overlay' || o.decorationMode === 'off' ? o.decorationMode : undefined,
       decorations: Array.isArray(o.decorations) ? o.decorations : undefined,
     };
   }
@@ -1430,14 +1433,13 @@ export function createScene3D(root, { goldTarget, onTarget = () => {}, onTargetH
     const propsKind = cfg.props || 'ruins';
     const seed = rng(zonePropSeed(id, propsKind, density));
 
-    // Decorações editáveis só no modo bare (bioma assado). Em ice/forest/etc.
-    // ignora decorations persistidas de bakes antigos — senão Picos Gelados
-    // continua com barris/escadas de ruína mesmo com props=ice.
-    const useDecorations = propsKind === 'bare' && Array.isArray(cfg.decorations) && cfg.decorations.length > 0;
+    const showManuals = manualsVisibleInPlay(propsKind, cfg.decorationMode)
+      && Array.isArray(cfg.decorations)
+      && cfg.decorations.length > 0;
 
     await preloadKayKitProps(propsKind);
     if (token !== applyZoneToken) return;
-    if (useDecorations) await preloadDecorationPacks(cfg.decorations);
+    if (showManuals) await preloadDecorationPacks(cfg.decorations);
     if (token !== applyZoneToken) return;
 
     let built = buildKayKitZone(propsKind, seed, { density, variant: cfg.variant });
@@ -1457,12 +1459,7 @@ export function createScene3D(root, { goldTarget, onTarget = () => {}, onTargetH
       const build = PROPS[propsKind] || PROPS.ruins;
       built = build(seed);
     }
-    if (useDecorations) {
-      for (const deco of cfg.decorations) {
-        const obj = spawnKayKitDecoration(deco.pack, deco.key, deco);
-        if (obj) built.add(shadowed(obj));
-      }
-    }
+    if (showManuals) appendManualDecorations(built, cfg.decorations);
     if (token !== applyZoneToken) {
       if (built) disposeGroup(built);
       return;

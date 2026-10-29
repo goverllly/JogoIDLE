@@ -1,10 +1,10 @@
-
 import { useEffect, useState } from "react";
-import { StudioBadge, StudioCard, StudioEmpty } from "./studio/studio-ui";
-import type { AdminZone, SeasonSummary } from "./admin-types";
+import { StudioIcon } from "./studio/studio-icons";
+import { StudioBtn, StudioEmpty } from "./studio/studio-ui";
+import type { AdminTabId, AdminZone, SeasonSummary } from "./admin-types";
 
 type AdminActionRow = {
-  id: string;
+  id?: string;
   at: string;
   adminEmail: string;
   action: string;
@@ -17,8 +17,9 @@ type AdminOverviewProps = {
   dropChance: number;
   activeCharacterCount: number;
   currentSeason: SeasonSummary | null;
-  targetLabel?: string;
+  maintenanceEnabled: boolean;
   idleFetch: (path: string, init?: RequestInit) => Promise<any>;
+  onOpenTab: (tab: AdminTabId) => void;
 };
 
 export function AdminOverviewPanel({
@@ -27,8 +28,9 @@ export function AdminOverviewPanel({
   dropChance,
   activeCharacterCount,
   currentSeason,
-  targetLabel,
+  maintenanceEnabled,
   idleFetch,
+  onOpenTab,
 }: AdminOverviewProps) {
   const [actions, setActions] = useState<AdminActionRow[]>([]);
   const [creatureCount, setCreatureCount] = useState<number | null>(null);
@@ -40,11 +42,11 @@ export function AdminOverviewPanel({
       setLoading(true);
       try {
         const [act, snap] = await Promise.all([
-          idleFetch("/api/jogo-idle/admin/actions?limit=12"),
+          idleFetch("/api/jogo-idle/admin/actions?limit=8"),
           idleFetch("/api/jogo-idle/admin/world-snapshot"),
         ]);
         if (cancelled) return;
-        setActions(Array.isArray(act?.actions) ? act.actions : []);
+        setActions(Array.isArray(act?.actions) ? act.actions.slice(0, 8) : []);
         const n = snap?.snapshot?.counts?.creatures;
         setCreatureCount(typeof n === "number" ? n : null);
       } catch {
@@ -61,95 +63,56 @@ export function AdminOverviewPanel({
     };
   }, [idleFetch]);
 
-  const monsterFallback = zones.reduce(
-    (acc, z) => acc + (z.monsters?.length || 0) + (z.boss ? 1 : 0),
-    0,
-  );
+  const monsterFallback = zones.reduce((acc, zone) => acc + (zone.monsters?.length || 0) + (zone.boss ? 1 : 0), 0);
+  const cards: Array<{ icon: "zones" | "monsters" | "items" | "characters" | "season"; label: string; value: string | number; hint: string }> = [
+    { icon: "zones", label: "Zonas", value: zones.length, hint: "Zonas carregadas no admin" },
+    { icon: "monsters", label: "Monstros", value: creatureCount ?? monsterFallback, hint: creatureCount == null ? "Soma das listas de zona" : "Contagem do snapshot" },
+    { icon: "items", label: "Itens", value: itemCount, hint: "Templates do catálogo" },
+    { icon: "characters", label: "Jogadores", value: activeCharacterCount, hint: "Personagens ativos nesta sessão" },
+    { icon: "season", label: "Temporada", value: currentSeason ? `${currentSeason.year} T${currentSeason.quarter}` : "—", hint: currentSeason ? `${currentSeason.status} · ${currentSeason.slug}` : "Nenhuma temporada aberta" },
+  ];
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap items-end justify-between gap-2">
-        <div>
-          <h2 className="studio-2-section-title mb-0 text-[1.15rem] text-[var(--studio-gold)]">
-            Visão Geral
-          </h2>
-          <p className="text-[0.72rem] text-[var(--studio-muted)]">
-            Central operacional — apenas métricas com fonte real no backend.
-          </p>
-        </div>
-        {targetLabel ? (
-          <StudioCard className="min-w-[180px] py-2" label="Alvo ativo" value={<span className="text-base">{targetLabel}</span>} />
-        ) : null}
+    <div className="ops">
+      <div className="ops-kpis">
+        {cards.map((card) => (
+          <article key={card.label} className="ops-kpi">
+            <StudioIcon name={card.icon} />
+            <span>{card.label}</span>
+            <strong>{card.value}</strong>
+            <small>{card.hint}</small>
+          </article>
+        ))}
+        <article className="ops-kpi">
+          <StudioIcon name="loot" />
+          <span>Drop global</span>
+          <strong>{(Math.round(dropChance * 1000) / 10).toFixed(1)}%</strong>
+          <small>Somente leitura. Edição em Live Ops.</small>
+        </article>
       </div>
-      <div className="studio-2-kpi-grid">
-        <StudioCard label="Zonas" value={zones.length} hint="IDs fixos (Fase 1)" />
-        <StudioCard
-          label="Monstros"
-          value={creatureCount ?? monsterFallback}
-          hint="Projetados das zonas"
-        />
-        <StudioCard label="Itens" value={itemCount} hint="Templates do catálogo" />
-        <StudioCard
-          label="Drop global"
-          value={`${(Math.round(dropChance * 1000) / 10).toFixed(1)}%`}
-          hint="Chance base de gear"
-        />
-        <StudioCard
-          label="Temporada"
-          value={currentSeason ? `${currentSeason.year}-T${currentSeason.quarter}` : "—"}
-          hint={currentSeason?.status || "Sem temporada OPEN"}
-        />
-        <StudioCard
-          label="Personagens ativos"
-          value={activeCharacterCount}
-          hint="Com sessão recente no admin"
-        />
+      <div className="ops-shortcuts" aria-label="Acesso rápido">
+        <button type="button" onClick={() => onOpenTab("map")}><StudioIcon name="map" /><span><strong>Mundo</strong><small>Cenário da zona</small></span></button>
+        <button type="button" onClick={() => onOpenTab("items")}><StudioIcon name="items" /><span><strong>Catálogo</strong><small>Itens e modelos</small></span></button>
+        <button type="button" onClick={() => onOpenTab("characters")}><StudioIcon name="characters" /><span><strong>Jogadores</strong><small>Personagens ativos</small></span></button>
+        <button type="button" onClick={() => onOpenTab("economy")}><StudioIcon name="economy" /><span><strong>Live Ops</strong><small>Drop, TTK e eventos</small></span></button>
       </div>
-
-      <div className="grid gap-3 lg:grid-cols-2">
-        <StudioCard>
-          <h3 className="studio-2-section-title">Atividade recente</h3>
-          {loading ? (
-            <StudioEmpty>Carregando auditoria…</StudioEmpty>
-          ) : actions.length === 0 ? (
-            <StudioEmpty>Nenhuma ação administrativa registrada.</StudioEmpty>
-          ) : (
-            <ul className="space-y-2 text-sm">
-              {actions.map((a) => (
-                <li
-                  key={a.id}
-                  className="border-b border-[rgba(96,140,190,0.2)] pb-2 last:border-0"
-                >
-                  <div className="flex flex-wrap items-center gap-2">
-                    <StudioBadge>{a.action}</StudioBadge>
-                    <span className="text-[0.7rem] text-[var(--studio-muted)]">
-                      {new Date(a.at).toLocaleString("pt-BR")}
-                    </span>
-                  </div>
-                  <p className="mt-1 text-[0.78rem]">{a.summary}</p>
-                  <p className="text-[0.65rem] text-[var(--studio-muted)]">{a.adminEmail}</p>
-                </li>
-              ))}
-            </ul>
-          )}
-        </StudioCard>
-
-        <StudioCard>
-          <h3 className="studio-2-section-title">Pipeline de conteúdo</h3>
-          <p className="mb-2 text-[0.72rem] text-[var(--studio-muted)]">
-            Fluxo draft → revisão → publicado chega na Fase 4. Hoje as alterações
-            aplicam-se ao vivo via overrides.
-          </p>
-          <div className="studio-2-pipeline" aria-disabled="true">
-            {["Rascunho", "Em revisão", "Publicado"].map((col) => (
-              <div key={col} className="studio-2-pipeline__col">
-                <h4>{col}</h4>
-                <p className="text-[0.68rem] text-[var(--studio-muted)]">Disponível na Fase 4</p>
-              </div>
-            ))}
+      <section className="ops-panel ops-activity-panel">
+          <div className="ops-panel__head">
+            <h3>Atividade recente</h3>
+            <StudioBtn type="button" onClick={() => onOpenTab("logs")}>Abrir logs</StudioBtn>
           </div>
-        </StudioCard>
-      </div>
+          {loading ? <StudioEmpty>Carregando auditoria…</StudioEmpty> : null}
+          {!loading && actions.length === 0 ? <StudioEmpty>Nenhuma ação administrativa registrada.</StudioEmpty> : null}
+          <ul className="ops-activity">
+            {actions.map((row, index) => (
+              <li key={row.id || `${row.at}-${index}`}>
+                <strong>{row.action}</strong>
+                <span>{row.summary}</span>
+                <small>{row.adminEmail || "—"} · {row.at ? new Date(row.at).toLocaleString("pt-BR") : "—"}</small>
+              </li>
+            ))}
+          </ul>
+      </section>
     </div>
   );
 }

@@ -1262,6 +1262,19 @@ function normalizeRefineTargets(raw, stats) {
   return ['str', 'dex', 'int', 'con'].filter((k) => stats[k] > 0);
 }
 
+/** Copia o bônus já gravado. Não recalcula o valor de combate. */
+function copySkillElementBonus(raw) {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+  const out = {};
+  for (const [key, value] of Object.entries(raw)) {
+    const name = String(key || '').trim().slice(0, 24);
+    const amount = Number(value);
+    if (!name || !Number.isFinite(amount)) continue;
+    out[name] = amount;
+  }
+  return Object.keys(out).length ? out : null;
+}
+
 function normalizeTemplate(input, { id, creating }) {
   const name = String(input.name || '').trim();
   if (name.length < 2 || name.length > 40) throw new Error('Nome deve ter entre 2 e 40 caracteres');
@@ -1292,6 +1305,7 @@ function normalizeTemplate(input, { id, creating }) {
     typeof input.art === 'string' && input.art.trim().startsWith('/')
       ? input.art.trim().slice(0, 200)
       : null;
+  const skillElementBonus = copySkillElementBonus(input.skillElementBonus);
   return {
     id,
     name,
@@ -1311,6 +1325,7 @@ function normalizeTemplate(input, { id, creating }) {
     price,
     ...(dropChance != null ? { dropChance } : {}),
     ...(stackable ? { stackable: true } : {}),
+    ...(skillElementBonus ? { skillElementBonus } : {}),
   };
 }
 

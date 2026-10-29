@@ -1,5 +1,7 @@
 /** Temas visuais de zona (mapa) — persistidos em zone overrides. */
 
+import manifestJson from "../../../public/jogo-idle/admin-studio/prop-manifest.json";
+
 export const ZONE_PROP_KINDS = [
   "bare",
   "ruins",
@@ -24,7 +26,14 @@ export const ZONE_PROP_KINDS = [
 export const ZONE_PROP_PACKS = ["dungeon", "nature", "forest", "city", "space", "halloween"] as const;
 
 export type ZonePropKind = (typeof ZONE_PROP_KINDS)[number];
-export type ZonePropPack = (typeof ZONE_PROP_PACKS)[number];
+/** Packs históricos. O conjunto aceito no save é o dos placeables do manifesto. */
+export type ZonePropPack = string;
+
+export const DECORATION_MODES = ["off", "overlay"] as const;
+export type DecorationMode = (typeof DECORATION_MODES)[number];
+
+export const DECORATION_LAYERS = ["vegetacao", "estrutura", "decoracao", "efeito"] as const;
+export type DecorationLayer = (typeof DECORATION_LAYERS)[number];
 
 export type ZoneDecoration = {
   pack: ZonePropPack;
@@ -35,6 +44,8 @@ export type ZoneDecoration = {
   scale?: number;
   rotY?: number;
   tint?: number | null;
+  /** Camada opcional. Ausente: o editor infere pela categoria do manifesto. */
+  layer?: DecorationLayer;
 };
 
 export const ZONE_PARTICLE_MODES = ["float", "embers", "snow", "rise"] as const;
@@ -58,11 +69,55 @@ export type ZoneScene = {
   propDensity?: number;
   /** Variante de layout (ex. clearing/dense/swamp) para kinds com sub-layouts. */
   variant?: string;
+  /**
+   * Ausente: regra antiga (lista manual só no bioma bare).
+   * off: a mesma regra, gravada de propósito. overlay: bioma procedural mais a lista.
+   */
+  decorationMode?: DecorationMode;
   decorations?: ZoneDecoration[];
 };
 
-/** Bioma assado no editor pode gerar dezenas de props editáveis (floresta densa ~120+). */
-const MAX_DECORATIONS = 160;
+/**
+ * Teto mantido na Fase 5. A geometria do GLTF já é compartilhada pelo clone,
+ * e o jogo instancia repetidos compatíveis. Subir o número sem medir o frame
+ * de uma zona densa continuaria a ser um chute. 160 cabe o bake de floresta
+ * densa (~120) com folga curta para objetos manuais.
+ */
+export const MAX_ZONE_DECORATIONS = 160;
+const MAX_DECORATIONS = MAX_ZONE_DECORATIONS;
+
+export function decorationCountOverflow(raw: unknown): boolean {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return false;
+  const list = (raw as { decorations?: unknown }).decorations;
+  return Array.isArray(list) && list.length > MAX_DECORATIONS;
+}
+
+const PROP_PACK_RE = /^[a-z][A-Za-z0-9]{0,40}$/;
+const PROP_KEY_RE = /^[A-Za-z][A-Za-z0-9_]{0,47}$/;
+
+type ManifestAsset = {
+  class?: string;
+  compat?: string;
+  pack?: string;
+  key?: string;
+};
+
+const PLACEABLE_PROP_IDS = new Set<string>();
+for (const asset of ((manifestJson as { assets?: ManifestAsset[] }).assets || [])) {
+  if (asset?.class !== "placeable" || asset.compat !== "ok") continue;
+  if (typeof asset.pack !== "string" || typeof asset.key !== "string") continue;
+  if (!PROP_PACK_RE.test(asset.pack) || !PROP_KEY_RE.test(asset.key)) continue;
+  PLACEABLE_PROP_IDS.add(`${asset.pack}/${asset.key}`);
+}
+
+/** Pack/key precisa existir como placeable no manifesto do build. Não aceita path nem URL. */
+export function isAllowedPropRef(pack: string, key: string): boolean {
+  if (!PROP_PACK_RE.test(pack) || !PROP_KEY_RE.test(key)) return false;
+  if (pack.includes("..") || key.includes("..") || pack.includes("/") || key.includes("\\") || key.includes("/") || key.includes("\\")) {
+    return false;
+  }
+  return PLACEABLE_PROP_IDS.has(`${pack}/${key}`);
+}
 
 function parseHex(value: unknown): number | undefined {
   if (typeof value === "number" && Number.isFinite(value)) {
@@ -131,16 +186,20 @@ export function sanitizeZoneScene(raw: unknown): ZoneScene | null {
     if (v) scene.variant = v;
   }
 
+  if (input.decorationMode === "off" || input.decorationMode === "overlay") {
+    scene.decorationMode = input.decorationMode;
+  }
+
   if (Array.isArray(input.decorations)) {
     const decorations: ZoneDecoration[] = [];
     for (const row of input.decorations.slice(0, MAX_DECORATIONS)) {
       if (!row || typeof row !== "object") continue;
       const d = row as Record<string, unknown>;
       const pack = String(d.pack || "");
-      const key = String(d.key || "").trim().slice(0, 48);
-      if (!(ZONE_PROP_PACKS as readonly string[]).includes(pack) || !key) continue;
-  const x = parseFloatClamped(d.x, -24, 24);
-  const z = parseFloatClamped(d.z, -24, 24);
+      const key = String(d.key || "").trim();
+      if (!isAllowedPropRef(pack, key)) continue;
+      const x = parseFloatClamped(d.x, -24, 24);
+      const z = parseFloatClamped(d.z, -24, 24);
       if (x == null || z == null) continue;
       const item: ZoneDecoration = {
         pack: pack as ZonePropPack,
@@ -156,6 +215,9 @@ export function sanitizeZoneScene(raw: unknown): ZoneScene | null {
       if (scale != null) item.scale = scale;
       if (rotY != null) item.rotY = rotY;
       if (tint !== undefined) item.tint = tint;
+      if (typeof d.layer === "string" && (DECORATION_LAYERS as readonly string[]).includes(d.layer)) {
+        item.layer = d.layer as DecorationLayer;
+      }
       decorations.push(item);
     }
     if (decorations.length) scene.decorations = decorations;

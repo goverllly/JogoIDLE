@@ -1,9 +1,14 @@
 /**
  * Preview 3D do editor de mapa admin — bioma estável + decorações com raycast.
- * Ferramentas: navigate | select | place (brush só arma ao escolher na paleta).
+ * Ferramentas: navigate | select | move | rotate | scale | place.
+ * Atalhos: 1 navegar, 2 selecionar, 3 inserir, 4 mover, 5 girar, 6 escalar,
+ * Q/E giram, Delete exclui, Ctrl/Cmd+D duplica, Ctrl/Cmd+Z desfaz (no React),
+ * G grade, F enquadra a seleção, Shift+F enquadra o cenário, Escape cancela.
+ * Gizmos não existem no runtime do jogo.
  */
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { createEditorGizmo } from './admin-studio/map-gizmo.js';
 import {
   preloadKayKitProps,
   buildKayKitZone,
@@ -12,6 +17,7 @@ import {
   extractKayKitPlacements,
   zonePropSeed,
 } from './kaykit-props.js';
+import { layerForDecoration, manualsVisibleInPlay } from './zone-compose.js';
 import {
   HERO_X,
   MONSTER_X,
@@ -61,6 +67,10 @@ let zoneGroup = new THREE.Group();
 scene.add(zoneGroup);
 let decoGroup = new THREE.Group();
 scene.add(decoGroup);
+const previewGroup = new THREE.Group();
+previewGroup.name = 'prop-preview';
+scene.add(previewGroup);
+let previewToken = 0;
 
 const overlayGroup = new THREE.Group();
 overlayGroup.name = '__overlays';
@@ -69,13 +79,27 @@ scene.add(overlayGroup);
 let decorations = [];
 let brush = { pack: 'nature', key: 'treeA', scale: 1 };
 let brushArmed = false;
-/** @type {'navigate'|'select'|'place'} */
+/** @type {'navigate'|'select'|'move'|'rotate'|'scale'|'place'} */
 let tool = 'navigate';
 let selectedIndex = -1;
-let dragging = false;
+let editorEpoch = 0;
+let editorSeq = 1;
+let snapEnabled = false;
+let posStep = 1;
+let rotStepDeg = 15;
+let scaleStep = 0.1;
+let gridOn = false;
+let grid = null;
+/** @type {null | { part: string, x: number, z: number, rotY: number, scale: number, hitX: number, hitZ: number, angle: number, dist: number }} */
+let gesture = null;
+let liveFrame = 0;
 let lastZoneId = '';
 let lastPropsKind = '';
 let lastDensity = null;
+let lastVariant = '';
+let decorationMode = null;
+const hiddenLayers = new Set();
+const lockedLayers = new Set();
 let showPlayCamera = false;
 let playCamHelper = null;
 let playCamGhost = null;
@@ -117,16 +141,90 @@ function buildOverlays() {
 
 buildOverlays();
 
+const gizmo = createEditorGizmo();
+scene.add(gizmo.root);
+const selectionBox = new THREE.BoxHelper(ground, 0xf4d6a0);
+selectionBox.visible = false;
+if (!Array.isArray(selectionBox.material)) selectionBox.material.depthTest = false;
+selectionBox.renderOrder = 999;
+scene.add(selectionBox);
+
+function clamp(value, min, max) {
+  return Math.min(max, Math.max(min, Number(value) || 0));
+}
+
+function snapTo(value, step, enabled = snapEnabled) {
+  if (!enabled || !step) return value;
+  return Math.round(value / step) * step;
+}
+
+function nextEditorId() {
+  editorSeq += 1;
+  return `ed${editorSeq.toString(36)}`;
+}
+
+function ensureEditorId(item) {
+  if (!item.editorId) item.editorId = nextEditorId();
+  return item;
+}
+
+function selectedId() {
+  return selectedIndex >= 0 ? decorations[selectedIndex]?.editorId || null : null;
+}
+
+function rebuildGrid() {
+  if (grid) {
+    scene.remove(grid);
+    grid.geometry?.dispose?.();
+    const mats = Array.isArray(grid.material) ? grid.material : [grid.material];
+    for (const material of mats) material?.dispose?.();
+  }
+  const divisions = Math.max(2, Math.round(28 / (posStep || 1)));
+  grid = new THREE.GridHelper(28, divisions, 0xd6aa50, 0x2a4a38);
+  grid.position.y = 0.03;
+  grid.visible = gridOn;
+  grid.traverse((node) => {
+    node.raycast = () => {};
+  });
+  scene.add(grid);
+}
+
+rebuildGrid();
+
+function refreshGizmo() {
+  gizmo.setMode(tool);
+  const mesh = selectedIndex >= 0 ? decoMeshes[selectedIndex] : null;
+  const blocked = selectedIndex >= 0 && layerLocked(decorations[selectedIndex]);
+  gizmo.attach(mesh && mesh.visible && !blocked ? mesh : null);
+}
+
+function layerLocked(decoration) {
+  return Boolean(decoration) && lockedLayers.has(layerForDecoration(decoration));
+}
+
+function applyDecorationVisibility() {
+  const play = manualsVisibleInPlay(lastPropsKind, decorationMode);
+  for (let i = 0; i < decorations.length; i++) {
+    const mesh = decoMeshes[i];
+    if (!mesh) continue;
+    const layer = layerForDecoration(decorations[i]);
+    mesh.visible = play && !hiddenLayers.has(layer);
+  }
+  refreshGizmo();
+}
+
 function updateHint() {
   if (!hintEl) return;
-  if (tool === 'navigate') {
-    hintEl.textContent = 'Navegar — orbite/zoom · props não são colocados';
-  } else if (tool === 'select') {
-    hintEl.textContent = 'Selecionar — clique prop · arraste · Q/E rotaciona · Delete remove';
-  } else {
+  const snapNote = snapEnabled ? ` · snap ${posStep}` : '';
+  if (tool === 'navigate') hintEl.textContent = `Navegar — orbite e zoom${snapNote}`;
+  else if (tool === 'select') hintEl.textContent = `Selecionar — clique, arraste no chão, Q/E gira${snapNote}`;
+  else if (tool === 'move') hintEl.textContent = `Mover — setas X/Z ou o plano${snapNote}`;
+  else if (tool === 'rotate') hintEl.textContent = `Rotacionar — anel dourado ou Q/E${snapNote}`;
+  else if (tool === 'scale') hintEl.textContent = `Escalar — alça uniforme${snapNote}`;
+  else {
     hintEl.textContent = brushArmed
-      ? `Colocar — clique no chão (${brush.pack}/${brush.key})`
-      : 'Colocar — escolha um prop na paleta para armar o pincel';
+      ? `Inserir — clique no chão (${brush.pack}/${brush.key})`
+      : 'Inserir — escolha um asset e clique no chão';
   }
 }
 
@@ -158,16 +256,35 @@ function snapToPlayCamera() {
   controls.update();
 }
 
-function setTool(next) {
-  tool = next === 'select' || next === 'place' ? next : 'navigate';
-  if (tool !== 'select') {
-    dragging = false;
-    controls.enabled = true;
+const TOOLS = ['navigate', 'select', 'move', 'rotate', 'scale', 'place'];
+
+function stopLive() {
+  if (!liveFrame) return;
+  cancelAnimationFrame(liveFrame);
+  liveFrame = 0;
+}
+
+/** Abandona o gesto sem devolver a transformação e sem avisar o React. */
+function abortGesture() {
+  stopLive();
+  gesture = null;
+  controls.enabled = true;
+  canvas.style.cursor = '';
+}
+
+function setTool(next, notify = true) {
+  tool = TOOLS.includes(next) ? next : 'navigate';
+  if (gesture) cancelGesture();
+  controls.enabled = true;
+  if (tool !== 'place') {
+    brushArmed = false;
+    clearPreview();
   }
-  if (tool !== 'place') brushArmed = false;
+  refreshGizmo();
   updateHint();
+  if (!notify) return;
   window.parent?.postMessage(
-    { type: 'jogo-idle:map-editor-tool', tool, brushArmed },
+    { type: 'jogo-idle:map-editor-tool', tool, brushArmed, epoch: editorEpoch, zoneId: lastZoneId },
     window.location.origin,
   );
 }
@@ -193,20 +310,45 @@ function resize() {
 new ResizeObserver(resize).observe(canvas.parentElement || document.body);
 resize();
 
-function postDecorations() {
+function postDecorations(commit) {
   window.parent?.postMessage(
     {
       type: 'jogo-idle:map-editor-decorations',
       decorations: decorations.map((d) => ({ ...d })),
       selectedIndex,
+      selectedId: selectedId(),
+      commit: Boolean(commit),
+      epoch: editorEpoch,
+      zoneId: lastZoneId,
     },
     window.location.origin,
   );
 }
 
+function postLive() {
+  if (liveFrame) return;
+  liveFrame = requestAnimationFrame(() => {
+    liveFrame = 0;
+    postDecorations(false);
+  });
+}
+
 function postSelection() {
   window.parent?.postMessage(
-    { type: 'jogo-idle:map-editor-selection', selectedIndex },
+    {
+      type: 'jogo-idle:map-editor-selection',
+      selectedIndex,
+      selectedId: selectedId(),
+      epoch: editorEpoch,
+      zoneId: lastZoneId,
+    },
+    window.location.origin,
+  );
+}
+
+function postShortcut(action) {
+  window.parent?.postMessage(
+    { type: 'jogo-idle:map-editor-shortcut', action, epoch: editorEpoch, zoneId: lastZoneId },
     window.location.origin,
   );
 }
@@ -218,9 +360,51 @@ function postBaked(propsKind) {
       props: propsKind,
       decorations: decorations.map((d) => ({ ...d })),
       selectedIndex,
+      selectedId: selectedId(),
+      epoch: editorEpoch,
+      zoneId: lastZoneId,
     },
     window.location.origin,
   );
+}
+
+function detachPreview(group) {
+  while (group.children.length) {
+    const child = group.children[0];
+    group.remove(child);
+    child.traverse((node) => {
+      if (!node.isMesh || !node.material) return;
+      const mats = Array.isArray(node.material) ? node.material : [node.material];
+      for (const material of mats) material.dispose?.();
+    });
+  }
+}
+
+function clearPreview() {
+  previewToken += 1;
+  detachPreview(previewGroup);
+}
+
+async function showPropPreview(pack, key, scale) {
+  const token = ++previewToken;
+  detachPreview(previewGroup);
+  await preloadDecorationPacks([{ pack, key }]);
+  if (token !== previewToken) return;
+  const obj = spawnKayKitDecoration(pack, key, { scale, x: 0, y: 0, z: 0 });
+  if (!obj || token !== previewToken) {
+    if (token === previewToken) {
+      window.parent?.postMessage(
+        { type: 'jogo-idle:map-editor-toast', message: `Não foi possível pré-visualizar ${pack}/${key}` },
+        window.location.origin,
+      );
+    }
+    return;
+  }
+  obj.position.set(11, 0, 6);
+  obj.traverse((node) => {
+    node.raycast = () => {};
+  });
+  previewGroup.add(obj);
 }
 
 function clearGroup(group) {
@@ -229,7 +413,6 @@ function clearGroup(group) {
     group.remove(child);
     child.traverse((o) => {
       if (o.isMesh) {
-        o.geometry?.dispose?.();
         const mats = Array.isArray(o.material) ? o.material : [o.material];
         for (const m of mats) m?.dispose?.();
       }
@@ -238,54 +421,70 @@ function clearGroup(group) {
 }
 
 function rebuildDecorations() {
-  const keep = selectedIndex;
   clearGroup(decoGroup);
   decoMeshes.length = 0;
   for (let i = 0; i < decorations.length; i++) {
     const d = decorations[i];
+    ensureEditorId(d);
     const obj = spawnKayKitDecoration(d.pack, d.key, d);
-    if (!obj) continue;
+    if (!obj) {
+      decoMeshes.push(null);
+      continue;
+    }
     obj.userData.decoIndex = i;
-    obj.traverse((o) => {
-      o.userData.decoIndex = i;
+    obj.userData.editorId = d.editorId;
+    obj.traverse((node) => {
+      node.userData.decoIndex = i;
+      node.userData.editorId = d.editorId;
     });
     decoGroup.add(obj);
     decoMeshes.push(obj);
-    if (i === keep) {
-      obj.traverse((o) => {
-        if (o.isMesh && o.material) {
-          o.material = o.material.clone();
-          if (o.material.emissive) {
-            o.material.emissive.setHex(0xf59e0b);
-            o.material.emissiveIntensity = 0.45;
-          }
-        }
-      });
-    }
   }
-  selectedIndex = keep >= 0 && keep < decorations.length ? keep : -1;
+  if (selectedIndex >= decorations.length) selectedIndex = -1;
+  applyDecorationVisibility();
 }
 
 function applyThemeColors(sceneCfg) {
   if (sceneCfg.bg != null) scene.background = new THREE.Color(sceneCfg.bg);
   if (sceneCfg.ground != null) ground.material.color.setHex(sceneCfg.ground);
   if (sceneCfg.hemiSky != null) hemi.color.setHex(sceneCfg.hemiSky);
+  if (sceneCfg.hemiGround != null) hemi.groundColor.setHex(sceneCfg.hemiGround);
+  if (sceneCfg.hemiIntensity != null) hemi.intensity = Number(sceneCfg.hemiIntensity) || hemi.intensity;
   if (sceneCfg.sunColor != null) sun.color.setHex(sceneCfg.sunColor);
+  if (sceneCfg.sunIntensity != null) sun.intensity = Number(sceneCfg.sunIntensity) || sun.intensity;
+  if (sceneCfg.fogNear != null || sceneCfg.fogFar != null) {
+    const near = Number(sceneCfg.fogNear ?? scene.fog?.near ?? 10);
+    const far = Number(sceneCfg.fogFar ?? scene.fog?.far ?? 34);
+    const color = sceneCfg.bg != null ? sceneCfg.bg : scene.background;
+    scene.fog = new THREE.Fog(color, near, far);
+  }
+  if ('decorationMode' in sceneCfg) {
+    decorationMode = sceneCfg.decorationMode === 'overlay' || sceneCfg.decorationMode === 'off'
+      ? sceneCfg.decorationMode
+      : null;
+  }
 }
 
-async function rebuildZone(zoneId, propsKind, density) {
+async function rebuildZone(zoneId, propsKind, density, variant) {
   await preloadKayKitProps(propsKind);
   clearGroup(zoneGroup);
   const seed = mulberry32(zonePropSeed(zoneId, propsKind, density));
-  const built = buildKayKitZone(propsKind, seed, { density });
+  const built = buildKayKitZone(propsKind, seed, { density, variant: variant || undefined });
   zoneGroup.add(built);
   lastZoneId = zoneId || '';
   lastPropsKind = propsKind;
   lastDensity = density;
+  lastVariant = variant || '';
 }
 
 async function applyMessage(data) {
-  if (data.tool) setTool(data.tool);
+  const mode = data.mode === 'theme' ? 'theme' : data.mode === 'brush' ? 'brush' : 'full';
+  if (data.zoneId && lastZoneId && data.zoneId !== lastZoneId && mode !== 'full') return;
+  const incomingEpoch = data.epoch != null ? Number(data.epoch) || 0 : 0;
+  if (mode === 'full' && incomingEpoch && editorEpoch && incomingEpoch < editorEpoch) return;
+  if (mode === 'full') abortGesture();
+  if (incomingEpoch) editorEpoch = incomingEpoch;
+  if (data.tool) setTool(data.tool, false);
   if (data.brushArmed != null) {
     brushArmed = Boolean(data.brushArmed);
     updateHint();
@@ -299,7 +498,6 @@ async function applyMessage(data) {
   }
   if (data.showPlayCamera != null) setShowPlayCamera(data.showPlayCamera);
 
-  const mode = data.mode === 'theme' ? 'theme' : data.mode === 'brush' ? 'brush' : 'full';
   if (mode === 'brush') {
     updateHint();
     return;
@@ -308,23 +506,25 @@ async function applyMessage(data) {
   const sceneCfg = data.scene || {};
   applyThemeColors(sceneCfg);
 
-  const propsKind = sceneCfg.props || 'ruins';
-  const density = Math.max(0.5, Math.min(2, Number(sceneCfg.propDensity) || 1));
+  const propsKind = sceneCfg.props || lastPropsKind || 'ruins';
+  const density = Math.max(0.5, Math.min(2, Number(sceneCfg.propDensity) || lastDensity || 1));
+  const variant = typeof sceneCfg.variant === 'string' ? sceneCfg.variant : (mode === 'full' ? '' : lastVariant);
   const zoneId = data.zoneId || lastZoneId;
   const zoneChanged =
-    zoneId !== lastZoneId || propsKind !== lastPropsKind || density !== lastDensity;
+    zoneId !== lastZoneId || propsKind !== lastPropsKind || density !== lastDensity || variant !== lastVariant;
 
   if (zoneChanged || mode === 'full') {
-    await rebuildZone(zoneId, propsKind, density);
+    await rebuildZone(zoneId, propsKind, density, variant);
   }
 
   if (mode === 'full' && Array.isArray(sceneCfg.decorations)) {
-    decorations = sceneCfg.decorations.slice(0, MAX_DECOS);
+    decorations = sceneCfg.decorations.slice(0, MAX_DECOS).map((row) => ensureEditorId({ ...row }));
     if (decorations.length) await preloadDecorationPacks(decorations);
     selectedIndex = -1;
     rebuildDecorations();
     postSelection();
   }
+  applyDecorationVisibility();
 }
 
 function setPointerFromEvent(event) {
@@ -342,7 +542,9 @@ function groundHit(event) {
 
 function pickDecoration(event) {
   setPointerFromEvent(event);
-  const hits = raycaster.intersectObjects(decoMeshes, true);
+  const meshes = decoMeshes.filter(Boolean);
+  if (!meshes.length) return -1;
+  const hits = raycaster.intersectObjects(meshes, true);
   if (!hits.length) return -1;
   let obj = hits[0].object;
   while (obj && obj.userData.decoIndex == null) obj = obj.parent;
@@ -386,7 +588,7 @@ async function bakeBiome({ selectAt = null } = {}) {
   if (!extracted.length) return false;
 
   const room = Math.max(0, MAX_DECOS - decorations.length);
-  const take = extracted.slice(0, room);
+  const take = extracted.slice(0, room).map((row) => ensureEditorId({ ...row }));
   if (!take.length) {
     window.parent?.postMessage(
       {
@@ -414,183 +616,446 @@ async function bakeBiome({ selectAt = null } = {}) {
   return true;
 }
 
+function indexById(id) {
+  if (!id) return -1;
+  return decorations.findIndex((item) => item.editorId === id);
+}
+
 function selectDecoration(idx) {
-  selectedIndex = idx;
-  rebuildDecorations();
+  selectedIndex = idx >= 0 && idx < decorations.length ? idx : -1;
+  refreshGizmo();
   postSelection();
 }
 
-function removeSelected() {
-  if (selectedIndex < 0) return;
-  decorations.splice(selectedIndex, 1);
+function writeTransform(index) {
+  const d = decorations[index];
+  const mesh = decoMeshes[index];
+  if (!d || !mesh) return;
+  mesh.position.x = d.x;
+  mesh.position.z = d.z;
+  mesh.rotation.y = d.rotY || 0;
+  mesh.scale.setScalar(d.scale || 1);
+}
+
+function removeAt(index) {
+  if (index < 0 || index >= decorations.length) return;
+  if (layerLocked(decorations[index])) {
+    window.parent?.postMessage(
+      { type: 'jogo-idle:map-editor-toast', message: 'Esta camada está bloqueada. O objeto não foi excluído.' },
+      window.location.origin,
+    );
+    return;
+  }
+  decorations.splice(index, 1);
   selectedIndex = -1;
   rebuildDecorations();
-  postDecorations();
-  postSelection();
+  postDecorations(true);
+}
+
+function removeSelected() {
+  removeAt(selectedIndex);
+}
+
+function duplicateAt(index) {
+  if (index < 0 || index >= decorations.length) return;
+  if (layerLocked(decorations[index])) {
+    window.parent?.postMessage(
+      { type: 'jogo-idle:map-editor-toast', message: 'Esta camada está bloqueada. A cópia não foi criada.' },
+      window.location.origin,
+    );
+    return;
+  }
+  if (decorations.length >= MAX_DECOS) {
+    window.parent?.postMessage(
+      {
+        type: 'jogo-idle:map-editor-toast',
+        message: `Limite de ${MAX_DECOS} decorações. A cópia não foi criada.`,
+      },
+      window.location.origin,
+    );
+    return;
+  }
+  const src = decorations[index];
+  const copy = ensureEditorId({
+    pack: src.pack,
+    key: src.key,
+    x: clamp((Number(src.x) || 0) + 0.75, -24, 24),
+    z: Number(src.z) || 0,
+    scale: src.scale,
+    rotY: src.rotY,
+  });
+  if (typeof src.y === 'number') copy.y = src.y;
+  if (src.tint != null) copy.tint = src.tint;
+  if (src.layer) copy.layer = src.layer;
+  if (snapEnabled) {
+    copy.x = clamp(snapTo(copy.x, posStep), -24, 24);
+    copy.z = clamp(snapTo(copy.z, posStep), -24, 24);
+  }
+  decorations.splice(index + 1, 0, copy);
+  selectedIndex = index + 1;
+  rebuildDecorations();
+  postDecorations(true);
+  window.parent?.postMessage(
+    { type: 'jogo-idle:map-editor-toast', message: 'Objeto duplicado.' },
+    window.location.origin,
+  );
+}
+
+function focusSelection() {
+  const mesh = decoMeshes[selectedIndex];
+  if (!mesh) return;
+  const box = new THREE.Box3().setFromObject(mesh);
+  if (box.isEmpty()) return;
+  const center = box.getCenter(new THREE.Vector3());
+  const size = box.getSize(new THREE.Vector3());
+  const dist = Math.max(size.x, size.y, size.z, 1) * 2.4;
+  camera.position.set(center.x + dist * 0.75, center.y + dist * 0.55, center.z + dist);
+  controls.target.copy(center);
+  controls.update();
+}
+
+function focusScene() {
+  camera.position.set(8, 10, 12);
+  controls.target.set(0, 0, 0);
+  camera.fov = 42;
+  camera.updateProjectionMatrix();
+  controls.update();
+}
+
+function typingTarget(event) {
+  const tag = event.target?.tagName;
+  return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || event.target?.isContentEditable;
+}
+
+function beginGesture(part, event) {
+  const d = decorations[selectedIndex];
+  if (layerLocked(d)) return;
+  const hit = groundHit(event);
+  if (!d || !hit) return;
+  gesture = {
+    part,
+    x: d.x,
+    z: d.z,
+    rotY: d.rotY || 0,
+    scale: d.scale || 1,
+    hitX: hit.point.x,
+    hitZ: hit.point.z,
+    angle: Math.atan2(hit.point.x - d.x, hit.point.z - d.z),
+    dist: Math.max(0.25, Math.hypot(hit.point.x - d.x, hit.point.z - d.z)),
+  };
+  controls.enabled = false;
+  canvas.style.cursor = 'grabbing';
+}
+
+function moveGesture(event) {
+  if (!gesture || selectedIndex < 0) return;
+  const d = decorations[selectedIndex];
+  const hit = groundHit(event);
+  if (!d || !hit) return;
+  if (gesture.part === 'x' || gesture.part === 'z' || gesture.part === 'xz') {
+    const dx = hit.point.x - gesture.hitX;
+    const dz = hit.point.z - gesture.hitZ;
+    if (gesture.part !== 'z') d.x = clamp(snapTo(gesture.x + dx, posStep), -24, 24);
+    if (gesture.part !== 'x') d.z = clamp(snapTo(gesture.z + dz, posStep), -24, 24);
+    if (gesture.part === 'x') d.z = gesture.z;
+    if (gesture.part === 'z') d.x = gesture.x;
+  } else if (gesture.part === 'rot') {
+    const angle = Math.atan2(hit.point.x - gesture.x, hit.point.z - gesture.z);
+    let rotY = gesture.rotY + (angle - gesture.angle);
+    const step = snapEnabled ? (rotStepDeg * Math.PI) / 180 : 0;
+    rotY = snapTo(rotY, step, snapEnabled);
+    d.rotY = clamp(rotY, -Math.PI * 4, Math.PI * 4);
+  } else if (gesture.part === 'scale') {
+    const dist = Math.max(0.2, Math.hypot(hit.point.x - gesture.x, hit.point.z - gesture.z));
+    d.scale = clamp(snapTo(gesture.scale * (dist / gesture.dist), scaleStep), 0.15, 4);
+  }
+  writeTransform(selectedIndex);
+  postLive();
+}
+
+function cancelGesture() {
+  stopLive();
+  if (!gesture || selectedIndex < 0) {
+    gesture = null;
+    controls.enabled = true;
+    return;
+  }
+  const d = decorations[selectedIndex];
+  if (d) {
+    d.x = gesture.x;
+    d.z = gesture.z;
+    d.rotY = gesture.rotY;
+    d.scale = gesture.scale;
+    writeTransform(selectedIndex);
+    postDecorations(false);
+  }
+  gesture = null;
+  controls.enabled = true;
+  canvas.style.cursor = '';
+}
+
+function finishGesture() {
+  stopLive();
+  if (!gesture) return;
+  gesture = null;
+  controls.enabled = true;
+  canvas.style.cursor = '';
+  postDecorations(true);
 }
 
 canvas.addEventListener('pointerdown', async (event) => {
   if (event.button !== 0) return;
   canvas.focus?.();
+  if (tool === 'navigate') return;
 
-  if (tool === 'navigate') {
-    // OrbitControls cuida do drag; não seleciona/coloca.
+  if (tool === 'place') {
+    event.stopPropagation();
+    if (!brushArmed) {
+      window.parent?.postMessage(
+        { type: 'jogo-idle:map-editor-toast', message: 'Escolha um asset para inserir.' },
+        window.location.origin,
+      );
+      return;
+    }
+    const hit = groundHit(event);
+    if (!hit) return;
+    await preloadDecorationPacks([{ pack: brush.pack, key: brush.key }]);
+    if (decorations.length >= MAX_DECOS) {
+      window.parent?.postMessage(
+        { type: 'jogo-idle:map-editor-toast', message: `Limite de ${MAX_DECOS} decorações. Nada foi inserido.` },
+        window.location.origin,
+      );
+      return;
+    }
+    decorations.push(ensureEditorId({
+      pack: brush.pack,
+      key: brush.key,
+      x: clamp(snapTo(hit.point.x, posStep), -24, 24),
+      z: clamp(snapTo(hit.point.z, posStep), -24, 24),
+      scale: clamp(brush.scale || 1, 0.15, 4),
+      rotY: 0,
+    }));
+    selectedIndex = decorations.length - 1;
+    brushArmed = false;
+    clearPreview();
+    rebuildDecorations();
+    postDecorations(true);
+    setTool('select');
+    if (!manualsVisibleInPlay(lastPropsKind, decorationMode)) {
+      window.parent?.postMessage(
+        {
+          type: 'jogo-idle:map-editor-overlay-offer',
+          count: decorations.length,
+          epoch: editorEpoch,
+          zoneId: lastZoneId,
+        },
+        window.location.origin,
+      );
+    }
+    return;
+  }
+
+  setPointerFromEvent(event);
+  const part = gizmo.pick(raycaster);
+  if (part && selectedIndex >= 0) {
+    event.stopPropagation();
+    beginGesture(part, event);
+    return;
+  }
+
+  const decoIdx = pickDecoration(event);
+  if (decoIdx >= 0) {
+    event.stopPropagation();
+    if (layerLocked(decorations[decoIdx])) {
+      window.parent?.postMessage(
+        { type: 'jogo-idle:map-editor-toast', message: 'Esta camada está bloqueada.' },
+        window.location.origin,
+      );
+      return;
+    }
+    if (decoIdx !== selectedIndex) selectDecoration(decoIdx);
+    if (tool === 'select' || tool === 'move') beginGesture('xz', event);
     return;
   }
 
   if (tool === 'select') {
-    const decoIdx = pickDecoration(event);
-    if (decoIdx >= 0) {
-      selectDecoration(decoIdx);
-      dragging = true;
-      controls.enabled = false;
-      canvas.setPointerCapture?.(event.pointerId);
-      return;
-    }
     const biomeRoot = pickBiomeRoot(event);
     if (biomeRoot) {
+      event.stopPropagation();
       const at = { x: biomeRoot.position.x, z: biomeRoot.position.z };
       const ok = await bakeBiome({ selectAt: at });
-      if (ok && selectedIndex >= 0) {
-        setTool('select');
-      }
+      if (ok && selectedIndex >= 0) setTool('select');
       return;
     }
-    selectedIndex = -1;
-    rebuildDecorations();
-    postSelection();
-    return;
   }
 
-  // tool === 'place'
-  if (!brushArmed) {
-    window.parent?.postMessage(
-      {
-        type: 'jogo-idle:map-editor-toast',
-        message: 'Escolha um prop na paleta para armar o pincel',
-      },
-      window.location.origin,
-    );
-    return;
+  if (selectedIndex >= 0) {
+    selectedIndex = -1;
+    refreshGizmo();
+    postSelection();
   }
-  const hit = groundHit(event);
-  if (!hit) return;
-  await preloadDecorationPacks([{ pack: brush.pack }]);
-  if (decorations.length >= MAX_DECOS) {
-    window.parent?.postMessage(
-      {
-        type: 'jogo-idle:map-editor-toast',
-        message: `Limite de ${MAX_DECOS} decorações`,
-      },
-      window.location.origin,
-    );
-    return;
-  }
-  decorations.push({
-    pack: brush.pack,
-    key: brush.key,
-    x: hit.point.x,
-    z: hit.point.z,
-    scale: brush.scale || 1,
-    rotY: 0,
-  });
-  selectedIndex = -1;
-  brushArmed = false;
-  rebuildDecorations();
-  postDecorations();
-  postSelection();
-  setTool('select');
-  window.parent?.postMessage(
-    { type: 'jogo-idle:map-editor-tool', tool: 'select', brushArmed: false },
-    window.location.origin,
-  );
-});
+}, true);
 
 canvas.addEventListener('pointermove', (event) => {
-  if (!dragging || selectedIndex < 0) return;
-  const hit = groundHit(event);
-  if (!hit) return;
-  const d = decorations[selectedIndex];
-  if (!d) return;
-  d.x = hit.point.x;
-  d.z = hit.point.z;
-  const mesh = decoMeshes[selectedIndex];
-  if (mesh) {
-    mesh.position.x = d.x;
-    mesh.position.z = d.z;
+  if (gesture) {
+    moveGesture(event);
+    return;
   }
+  if (tool === 'navigate' || tool === 'place') {
+    canvas.style.cursor = '';
+    return;
+  }
+  setPointerFromEvent(event);
+  canvas.style.cursor = gizmo.pick(raycaster) || pickDecoration(event) >= 0 ? 'grab' : '';
 });
 
-function endDrag(event) {
-  if (!dragging) return;
-  dragging = false;
-  controls.enabled = true;
-  try {
-    if (event?.pointerId != null) canvas.releasePointerCapture?.(event.pointerId);
-  } catch {
-    /* ignore */
+function endPointer(event) {
+  if (!gesture) return;
+  finishGesture(event);
+}
+canvas.addEventListener('pointerup', endPointer);
+canvas.addEventListener('pointercancel', endPointer);
+
+function rotateSelected(direction) {
+  if (selectedIndex < 0) return;
+  if (layerLocked(decorations[selectedIndex])) return;
+  const delta = snapEnabled ? (rotStepDeg * Math.PI) / 180 : Math.PI / 12;
+  const d = decorations[selectedIndex];
+  d.rotY = clamp((Number(d.rotY) || 0) + direction * delta, -Math.PI * 4, Math.PI * 4);
+  writeTransform(selectedIndex);
+  postDecorations(true);
+}
+
+function patchSelected(data) {
+  const idx = data.editorId ? indexById(data.editorId) : selectedIndex;
+  if (idx < 0 || !decorations[idx]) return;
+  const layerOnly = data.layer != null && data.x == null && data.z == null && data.rotY == null && data.scale == null;
+  if (!layerOnly && layerLocked(decorations[idx])) {
+    window.parent?.postMessage(
+      { type: 'jogo-idle:map-editor-toast', message: 'Esta camada está bloqueada.' },
+      window.location.origin,
+    );
+    return;
   }
-  postDecorations();
+  selectedIndex = idx;
+  const d = decorations[idx];
+  if (data.x != null) d.x = clamp(data.x, -24, 24);
+  if (data.z != null) d.z = clamp(data.z, -24, 24);
+  if (data.rotY != null) d.rotY = clamp(data.rotY, -Math.PI * 4, Math.PI * 4);
+  if (data.scale != null) d.scale = clamp(data.scale, 0.15, 4);
+  if (data.layer === 'vegetacao' || data.layer === 'estrutura' || data.layer === 'decoracao' || data.layer === 'efeito') {
+    d.layer = data.layer;
+  }
+  writeTransform(idx);
+  applyDecorationVisibility();
+  postDecorations(data.commit !== false);
 }
-canvas.addEventListener('pointerup', endDrag);
-canvas.addEventListener('pointercancel', endDrag);
 
-function rotateSelected(delta) {
-  if (selectedIndex < 0) return;
-  const d = decorations[selectedIndex];
-  if (!d) return;
-  d.rotY = (Number(d.rotY) || 0) + delta;
-  const mesh = decoMeshes[selectedIndex];
-  if (mesh) mesh.rotation.y = d.rotY;
-  postDecorations();
-}
-
-function setSelectedRotY(rotY) {
-  if (selectedIndex < 0) return;
-  const d = decorations[selectedIndex];
-  if (!d) return;
-  d.rotY = Number(rotY) || 0;
-  const mesh = decoMeshes[selectedIndex];
-  if (mesh) mesh.rotation.y = d.rotY;
-  postDecorations();
+async function applyEditorState(data) {
+  abortGesture();
+  if (data.epoch != null) editorEpoch = Number(data.epoch) || editorEpoch;
+  const sceneCfg = data.scene || {};
+  applyThemeColors(sceneCfg);
+  const propsKind = sceneCfg.props || lastPropsKind || 'ruins';
+  const density = Math.max(0.5, Math.min(2, Number(sceneCfg.propDensity) || lastDensity || 1));
+  const variant = 'variant' in sceneCfg ? (sceneCfg.variant || '') : lastVariant;
+  if (propsKind !== lastPropsKind || density !== lastDensity || variant !== lastVariant) {
+    await rebuildZone(lastZoneId, propsKind, density, variant);
+  }
+  if (Array.isArray(data.decorations)) {
+    decorations = data.decorations.slice(0, MAX_DECOS).map((row) => ensureEditorId({ ...row }));
+    if (decorations.length) await preloadDecorationPacks(decorations);
+    selectedIndex = indexById(data.selectedId);
+    rebuildDecorations();
+  }
+  if (data.scene && 'decorationMode' in data.scene) {
+    decorationMode = data.scene.decorationMode === 'overlay' || data.scene.decorationMode === 'off'
+      ? data.scene.decorationMode
+      : null;
+  }
+  applyDecorationVisibility();
+  postSelection();
 }
 
 window.addEventListener('keydown', (event) => {
+  if (typingTarget(event)) return;
+  const mod = event.metaKey || event.ctrlKey;
+  if (mod && event.key.toLowerCase() === 'z') {
+    event.preventDefault();
+    if (!event.repeat) postShortcut(event.shiftKey ? 'redo' : 'undo');
+    return;
+  }
+  if (mod && event.key.toLowerCase() === 'y') {
+    event.preventDefault();
+    if (!event.repeat) postShortcut('redo');
+    return;
+  }
+  if (mod && event.key.toLowerCase() === 'd') {
+    event.preventDefault();
+    if (!event.repeat) duplicateAt(selectedIndex);
+    return;
+  }
   if (event.key === 'Delete' || event.key === 'Backspace') {
     event.preventDefault();
     removeSelected();
+    return;
   }
   if (event.key === 'Escape') {
-    selectedIndex = -1;
-    brushArmed = false;
-    setTool('navigate');
-    rebuildDecorations();
-    postSelection();
+    if (gesture) cancelGesture();
+    else {
+      selectedIndex = -1;
+      brushArmed = false;
+      clearPreview();
+      refreshGizmo();
+      updateHint();
+      postSelection();
+    }
+    return;
   }
   if (event.key === 'q' || event.key === 'Q') {
     event.preventDefault();
-    rotateSelected(-Math.PI / 12);
+    rotateSelected(-1);
+    return;
   }
   if (event.key === 'e' || event.key === 'E') {
     event.preventDefault();
-    rotateSelected(Math.PI / 12);
+    rotateSelected(1);
+    return;
+  }
+  if (event.key === 'g' || event.key === 'G') {
+    if (mod) return;
+    gridOn = !gridOn;
+    if (grid) grid.visible = gridOn;
+    window.parent?.postMessage(
+      { type: 'jogo-idle:map-editor-prefs', grid: gridOn, epoch: editorEpoch },
+      window.location.origin,
+    );
+    return;
+  }
+  if (event.key === 'f' || event.key === 'F') {
+    if (event.shiftKey) focusScene();
+    else focusSelection();
+    return;
   }
   if (event.key === '1') setTool('navigate');
   if (event.key === '2') setTool('select');
   if (event.key === '3') setTool('place');
+  if (event.key === '4') setTool('move');
+  if (event.key === '5') setTool('rotate');
+  if (event.key === '6') setTool('scale');
 });
 
 window.addEventListener('message', (event) => {
   if (event.origin !== window.location.origin) return;
   const data = event.data;
   if (data?.type === 'jogo-idle:map-editor-command') {
+    if (data.epoch != null && editorEpoch && Number(data.epoch) !== editorEpoch) return;
     if (data.command === 'delete-selected') removeSelected();
+    if (data.command === 'delete-id') removeAt(indexById(data.editorId));
+    if (data.command === 'duplicate-selected') duplicateAt(selectedIndex);
+    if (data.command === 'duplicate-id') duplicateAt(indexById(data.editorId));
     if (data.command === 'bake-biome') void bakeBiome();
-    if (data.command === 'clear-selection') {
-      selectedIndex = -1;
-      rebuildDecorations();
-      postSelection();
-    }
+    if (data.command === 'clear-selection') selectDecoration(-1);
     if (data.command === 'set-tool') setTool(data.tool);
     if (data.command === 'arm-brush') {
       if (data.brush) {
@@ -602,12 +1067,43 @@ window.addEventListener('message', (event) => {
       }
       brushArmed = true;
       setTool('place');
+      void showPropPreview(brush.pack, brush.key, brush.scale);
     }
     if (data.command === 'disarm-brush') {
       brushArmed = false;
+      clearPreview();
       updateHint();
     }
-    if (data.command === 'set-rotY') setSelectedRotY(data.rotY);
+    if (data.command === 'nudge-rot') rotateSelected(Number(data.direction) < 0 ? -1 : 1);
+    if (data.command === 'set-rotY') patchSelected({ rotY: data.rotY, editorId: data.editorId });
+    if (data.command === 'select-index') selectDecoration(Number(data.index));
+    if (data.command === 'select-id') selectDecoration(indexById(data.editorId));
+    if (data.command === 'set-layer') patchSelected({ editorId: data.editorId, layer: data.layer, commit: true });
+    if (data.command === 'set-layer-view') {
+      hiddenLayers.clear();
+      lockedLayers.clear();
+      for (const id of Array.isArray(data.hidden) ? data.hidden : []) hiddenLayers.add(id);
+      for (const id of Array.isArray(data.locked) ? data.locked : []) lockedLayers.add(id);
+      applyDecorationVisibility();
+    }
+    if (data.command === 'patch-selected') patchSelected(data);
+    if (data.command === 'apply-editor-state') void applyEditorState(data);
+    if (data.command === 'set-grid') {
+      gridOn = Boolean(data.enabled);
+      if (data.step) posStep = Number(data.step) || posStep;
+      rebuildGrid();
+      if (grid) grid.visible = gridOn;
+    }
+    if (data.command === 'set-snap') {
+      snapEnabled = Boolean(data.enabled);
+      if (data.posStep) posStep = Number(data.posStep) || posStep;
+      if (data.rotStep) rotStepDeg = Number(data.rotStep) || rotStepDeg;
+      if (data.scaleStep) scaleStep = Number(data.scaleStep) || scaleStep;
+      rebuildGrid();
+      updateHint();
+    }
+    if (data.command === 'focus-selection') focusSelection();
+    if (data.command === 'focus-scene') focusScene();
     if (data.command === 'snap-play-camera') snapToPlayCamera();
     if (data.command === 'toggle-play-camera') setShowPlayCamera(!showPlayCamera);
     if (data.command === 'set-play-camera') setShowPlayCamera(Boolean(data.enabled));
@@ -620,9 +1116,18 @@ window.addEventListener('message', (event) => {
 function loop() {
   requestAnimationFrame(loop);
   if (showPlayCamera) ensurePlayCameraHelpers();
+  const mesh = selectedIndex >= 0 ? decoMeshes[selectedIndex] : null;
+  if (mesh && mesh.visible) {
+    selectionBox.setFromObject(mesh);
+    selectionBox.visible = true;
+  } else {
+    selectionBox.visible = false;
+  }
+  gizmo.update(camera);
   controls.update();
   renderer.render(scene, camera);
 }
+
 loop();
 updateHint();
 

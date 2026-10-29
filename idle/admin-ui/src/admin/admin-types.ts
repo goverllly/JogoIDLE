@@ -17,6 +17,12 @@ export type AdminCatalogItem = {
   custom?: boolean;
   overridden?: boolean;
   previews?: Record<string, Record<string, number>>;
+  /** Imagem já existente do template. Não é modelo 3D. */
+  art?: string | null;
+  announce?: boolean;
+  refineTargets?: string[];
+  requiresAscension?: string | null;
+  skillElementBonus?: Record<string, number>;
 };
 
 export type AdminMonsterVisualOption = {
@@ -65,6 +71,9 @@ export type AdminActiveCharacter = {
   userName?: string;
   userEmail?: string | null;
   lastSeenAt?: string | null;
+  ascension?: string | null;
+  classification?: string | null;
+  unspentPoints?: number;
 };
 
 export type TemplateDraft = {
@@ -222,37 +231,60 @@ export type AdminTabId =
   | "logs"
   | "admins";
 
+export type AdminNavGroupId =
+  | "inicio"
+  | "mundo"
+  | "catalogo"
+  | "jogadores"
+  | "liveops"
+  | "laboratorio"
+  | "interface"
+  | "sistema";
+
 export type AdminTabDef = {
   id: AdminTabId;
   label: string;
   section: "manage" | "tools";
+  group: AdminNavGroupId;
   disabled?: boolean;
   title?: string;
 };
 
+export const ADMIN_NAV_GROUPS: readonly { id: AdminNavGroupId; label: string }[] = [
+  { id: "inicio", label: "Início" },
+  { id: "mundo", label: "Mundo" },
+  { id: "catalogo", label: "Catálogo" },
+  { id: "jogadores", label: "Jogadores" },
+  { id: "liveops", label: "Live Ops" },
+  { id: "laboratorio", label: "Laboratório" },
+  { id: "interface", label: "Interface" },
+  { id: "sistema", label: "Sistema" },
+];
+
 export const ADMIN_TABS: readonly AdminTabDef[] = [
-  { id: "overview", label: "Visão Geral", section: "manage" },
-  { id: "items", label: "Itens", section: "manage" },
-  { id: "zones", label: "Zonas", section: "manage" },
-  { id: "map", label: "Mapa", section: "manage" },
-  { id: "hud", label: "Editor de HUD", section: "tools" },
-  { id: "monsters", label: "Monstros", section: "manage" },
-  { id: "loot", label: "Loot & Drops", section: "manage" },
-  { id: "economy", label: "Economia", section: "manage" },
-  { id: "season", label: "Temporada", section: "manage" },
-  { id: "characters", label: "Personagens", section: "manage" },
-  { id: "simulate", label: "Simulador", section: "manage" },
-  { id: "settings", label: "Configurações", section: "manage" },
-  { id: "engagement", label: "Engajamento", section: "manage" },
+  { id: "overview", label: "Visão Geral", section: "manage", group: "inicio" },
+  { id: "zones", label: "Zonas", section: "manage", group: "mundo" },
+  { id: "map", label: "Mapa", section: "manage", group: "mundo" },
+  { id: "monsters", label: "Monstros", section: "manage", group: "mundo" },
+  { id: "items", label: "Itens", section: "manage", group: "catalogo" },
+  { id: "loot", label: "Loot & Drops", section: "manage", group: "catalogo" },
+  { id: "characters", label: "Personagens", section: "manage", group: "jogadores" },
+  { id: "economy", label: "Economia", section: "manage", group: "liveops" },
+  { id: "season", label: "Temporada", section: "manage", group: "liveops" },
+  { id: "engagement", label: "Engajamento", section: "manage", group: "liveops" },
+  { id: "simulate", label: "Simulador", section: "manage", group: "laboratorio" },
+  { id: "hud", label: "Editor de HUD", section: "tools", group: "interface" },
+  { id: "settings", label: "Configurações", section: "manage", group: "sistema" },
+  { id: "logs", label: "Logs do Sistema", section: "tools", group: "sistema" },
+  { id: "admins", label: "Usuários Admin", section: "tools", group: "sistema" },
   {
     id: "backup",
     label: "Backup / Restore",
     section: "tools",
+    group: "sistema",
     disabled: true,
     title: "Disponível na Fase 4 (versionamento)",
   },
-  { id: "logs", label: "Logs do Sistema", section: "tools" },
-  { id: "admins", label: "Usuários Admin", section: "tools" },
 ];
 
 export const ADMIN_TAB_TITLES: Record<string, { title: string; subtitle: string }> = {
@@ -278,23 +310,23 @@ export const ADMIN_TAB_TITLES: Record<string, { title: string; subtitle: string 
   },
   monsters: {
     title: "Monstros",
-    subtitle: "Mobs e bosses por zona — catálogo global na Fase 2.",
+    subtitle: "Mobs e boss da zona selecionada no Mundo.",
   },
   loot: {
     title: "Loot & Drops",
-    subtitle: "Pool por tier e % de zona — loot tables por monstro na Fase 2.",
+    subtitle: "Como o drop funciona. A chance global é editada em Live Ops.",
   },
   economy: {
-    title: "Economia",
-    subtitle: "Drop global, TTK, mercador e eventos.",
+    title: "Live Ops",
+    subtitle: "Único editor de drop, TTK, refinador, mercador e evento de farm.",
   },
   season: {
     title: "Temporada",
-    subtitle: "Temporada OPEN e encerramento com soft-reset.",
+    subtitle: "Temporada aberta. O reset de temporada não está habilitado neste standalone.",
   },
   characters: {
-    title: "Personagens",
-    subtitle: "Concessões e manutenção de personagens ativos.",
+    title: "Jogadores",
+    subtitle: "Personagens ativos e ações administrativas confirmadas.",
   },
   simulate: {
     title: "Simulador",
@@ -302,7 +334,7 @@ export const ADMIN_TAB_TITLES: Record<string, { title: string; subtitle: string 
   },
   settings: {
     title: "Configurações",
-    subtitle: "Balanceamento global e visão do runtime.",
+    subtitle: "Manutenção do jogo. TTK e refinador ficam em Live Ops.",
   },
   engagement: {
     title: "Engajamento",

@@ -10,7 +10,8 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "props:index": "npm --prefix idle run props:index"
   },
   "dependencies": {
     "phaser": "^4.2.1",

@@ -1,28 +1,27 @@
+import { StudioEmpty } from "./studio/studio-ui";
 
-import { StudioBadge, StudioCard } from "./studio/studio-ui";
-
-type AdminAdminsPanelProps = {
-  emails: string[];
-};
-
-export function AdminAdminsPanel({ emails }: AdminAdminsPanelProps) {
+export function AdminAdminsPanel({ emails }: { emails: string[] }) {
   return (
-    <StudioCard>
-      <h3 className="studio-2-section-title">Allowlist administrativa</h3>
-      <p className="mb-3 text-[0.78rem] text-[var(--studio-muted)]">
-        Acesso ao Studio e às rotas <code>/api/jogo-idle/admin/*</code> é validado no
-        servidor via e-mail. Inclui a lista do repositório e o CSV da env{" "}
-        <code>JOGO_IDLE_ADMIN_EMAILS</code>. CRUD de admins pela UI: fora do escopo da
-        Fase 1.
-      </p>
-      <ul className="space-y-2">
-        {emails.map((email) => (
-          <li key={email} className="flex items-center gap-2 text-sm">
-            <StudioBadge tone="ok">admin</StudioBadge>
-            <span>{email}</span>
-          </li>
-        ))}
-      </ul>
-    </StudioCard>
+    <div className="ops">
+      <header className="ops-head">
+        <div>
+          <p className="ed-kicker">Sistema</p>
+          <h2>Administradores</h2>
+        </div>
+      </header>
+      <section className="ops-panel">
+        <div className="ops-panel__head">
+          <h3>Allowlist</h3>
+          <p>Somente leitura. O acesso é a lista do repositório mais JOGO_IDLE_ADMIN_EMAILS. Não há cadastro de administradores nesta interface.</p>
+        </div>
+        {emails.length === 0 ? <StudioEmpty>Nenhum e-mail na allowlist.</StudioEmpty> : (
+          <ul className="ops-activity">
+            {emails.map((email) => (
+              <li key={email}><strong>{email}</strong><span>admin</span></li>
+            ))}
+          </ul>
+        )}
+      </section>
+    </div>
   );
 }

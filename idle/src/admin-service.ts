@@ -45,7 +45,7 @@ import {
   upsertTemplate,
 } from "../lib/jogo-idle/game/items";
 import { monsterVisualMeta, sanitizeMonsterVisualId } from "../lib/jogo-idle/game/monster-visuals";
-import { sanitizeZoneScene } from "../lib/jogo-idle/game/zone-scene";
+import { decorationCountOverflow, MAX_ZONE_DECORATIONS, sanitizeZoneScene } from "../lib/jogo-idle/game/zone-scene";
 import { simulateFarmFight } from "../lib/jogo-idle/admin-simulate";
 import { listJogoIdleAdminEmails, isJogoIdleAdmin } from "../lib/jogo-idle/admin";
 import { adminAuthAls } from "./auth/admin-context.ts";
@@ -368,6 +368,13 @@ export async function adminResetCatalogItem(email, templateId) {
 export async function adminUpdateConfig(email, input) {
   assertIdleAdmin(email);
   await ensureCatalogLoaded();
+  if (decorationCountOverflow(input.zone?.scene)) {
+    const error = new Error(
+      `A zona aceita no máximo ${MAX_ZONE_DECORATIONS} decorações. Nada foi gravado e nenhum objeto foi descartado.`,
+    );
+    (error as { status?: number }).status = 400;
+    throw error;
+  }
   if (input.dropChance != null) setDropChance(input.dropChance, { persist: false });
   if (input.bagUpgradePrice != null) setBagUpgradePrice(input.bagUpgradePrice, { persist: false });
   if (input.refinerPrice != null) setRefinerPrice(input.refinerPrice, { persist: false });

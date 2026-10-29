@@ -1,19 +1,22 @@
 /** Studio de Criação 2.0 — Classe → Aparência → Confirmar */
 import { DEFAULT_LOOK } from "./appearance.js";
+import { CLASS_HALLS, normalizeClassId } from "./class-halls.js";
 import { applyCsrfHeaders, rejectIfFailed } from "./http.js";
 
-const CLASS_GLYPH = {
-  GUERREIRO: "⚔",
-  BARBARO: "🪓",
-  MAGO: "✦",
-  ARQUEIRO: "🏹",
+const CLASS_ICON = {
+  GUERREIRO: "/jogo-idle/assets/classes/guerreiro.png",
+  BARBARO: "/jogo-idle/assets/classes/barbaro.png",
+  MAGO: "/jogo-idle/assets/classes/mago.png",
+  ARQUEIRO: "/jogo-idle/assets/classes/arqueiro.png",
 };
+
+const requestedClass = normalizeClassId(new URLSearchParams(location.search).get("class") || "GUERREIRO");
 
 const state = {
   step: 1,
   classes: [],
   cosmetics: null,
-  classId: "GUERREIRO",
+  classId: requestedClass,
   name: "",
   appearance: { ...DEFAULT_LOOK, helmet: false },
   previewReady: false,
@@ -45,6 +48,10 @@ const els = {
   footerMsg: document.getElementById("footer-msg"),
   err: document.getElementById("err"),
 };
+
+if (els.frame) {
+  els.frame.src = `/jogo-idle/preview.html?hall=1&class=${encodeURIComponent(state.classId)}`;
+}
 
 function partsFor(classId) {
   return state.cosmetics?.parts?.[classId] || {};
@@ -114,8 +121,14 @@ function renderClasses() {
   els.classGrid.innerHTML = list
     .map((cls) => {
       const on = cls.id === state.classId ? " is-on" : "";
-      return `<button type="button" class="studio-class-card${on}" data-class="${cls.id}">
-        <span class="studio-class-card__name">${CLASS_GLYPH[cls.id] || "◆"} ${escapeHtml(cls.name)}</span>
+      const hall = CLASS_HALLS[cls.id] || CLASS_HALLS.GUERREIRO;
+      const icon = CLASS_ICON[cls.id] || hall.crest;
+      const mark = icon
+        ? `<img class="studio-class-card__icon" src="${icon}" alt="" />`
+        : `<span class="studio-class-card__icon studio-class-card__icon--fallback" aria-hidden="true">◆</span>`;
+      return `<button type="button" class="studio-class-card${on}" data-class="${cls.id}" style="--class-accent:${hall.accent};--class-glow:${hall.glow}">
+        ${mark}
+        <span class="studio-class-card__name">${escapeHtml(cls.name)}</span>
         <span class="studio-class-card__desc">${escapeHtml(cls.description || "")}</span>
       </button>`;
     })
@@ -368,7 +381,8 @@ async function boot() {
   if (!res.ok) throw new Error(meta.error || "Falha ao carregar meta");
   state.classes = meta.classes || [];
   state.cosmetics = meta.cosmetics || null;
-  if (state.classes[0]) state.classId = state.classes[0].id;
+  const known = state.classes.some((cls) => cls.id === requestedClass);
+  state.classId = known ? requestedClass : state.classes[0]?.id || "GUERREIRO";
   const d = state.cosmetics?.studioDefaults;
   if (d) state.appearance = { ...DEFAULT_LOOK, ...d, helmet: false };
   renderClasses();

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import {
   HUD_COMPONENTS,
   buildHudLayerTree,
@@ -27,11 +27,12 @@ import {
 import {
   StudioBadge,
   StudioBtn,
+  StudioEmpty,
   StudioField,
   StudioFormSection,
-  StudioToolbar,
-  StudioToolBtn,
+  StudioModal,
 } from "./studio/studio-ui";
+import { StudioIcon } from "./studio/studio-icons";
 
 const MSG_V = 1;
 const VIEWPORT_PRESETS = [
@@ -48,8 +49,20 @@ type AdminHudBuilderProps = {
   working: boolean;
   idleFetch: IdleFetch;
   onMessage: (message: string | null) => void;
-  run: (action: () => Promise<void>) => Promise<void>;
+  run: (action: () => Promise<void>) => Promise<boolean>;
+  onStatus?: (status: { dirty: boolean }) => void;
 };
+
+export type AdminHudHandle = {
+  save: () => Promise<boolean>;
+  discard: () => Promise<void>;
+};
+
+type HudAsk =
+  | { kind: "conflict" }
+  | { kind: "publish" }
+  | { kind: "restore-default" }
+  | { kind: "restore-revision"; revision: number };
 
 function emptyDraft(): HudLayoutDocument {
   return {
@@ -70,7 +83,10 @@ function emptyDraft(): HudLayoutDocument {
   };
 }
 
-export function AdminHudBuilder({ working, idleFetch, onMessage, run }: AdminHudBuilderProps) {
+export const AdminHudBuilder = forwardRef<AdminHudHandle, AdminHudBuilderProps>(function AdminHudBuilder(
+  { working, idleFetch, onMessage, run, onStatus },
+  ref,
+) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const draftRef = useRef<HudLayoutDocument>(emptyDraft());
   const baselineRef = useRef("");
@@ -97,6 +113,17 @@ export function AdminHudBuilder({ working, idleFetch, onMessage, run }: AdminHud
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   const [past, setPast] = useState<EditableHudSlice[]>([]);
   const [future, setFuture] = useState<EditableHudSlice[]>([]);
+  const [layersOpen, setLayersOpen] = useState(true);
+  const [inspectorOpen, setInspectorOpen] = useState(true);
+  const [zoom, setZoom] = useState<number | null>(null);
+  const [fitScale, setFitScale] = useState(0.45);
+  const [ask, setAsk] = useState<HudAsk | null>(null);
+  const askResolveRef = useRef<((ok: boolean) => void) | null>(null);
+  const canvasRef = useRef<HTMLDivElement>(null);
+  const apiRef = useRef<{ save: () => Promise<boolean>; discard: () => Promise<void> }>({
+    save: async () => false,
+    discard: async () => undefined,
+  });
 
   const preset = VIEWPORT_PRESETS.find((p) => p.id === presetId) || VIEWPORT_PRESETS[0];
   const breakpoint: HudBp = preset.breakpoint;
@@ -175,7 +202,7 @@ export function AdminHudBuilder({ working, idleFetch, onMessage, run }: AdminHud
       });
       // ready may arrive before session is known — allow first ready without session
       let data: Record<string, unknown>;
-      if (!trusted.ok) {
+      if (trusted.ok === false) {
         const raw = event.data;
         if (
           trusted.reason === "session" &&
@@ -189,9 +216,11 @@ export function AdminHudBuilder({ working, idleFetch, onMessage, run }: AdminHud
         } else {
           return;
         }
-      } else {
+      } else if (trusted.ok === true) {
         data = trusted.data;
         if (trusted.seq > 0) lastBridgeSeqRef.current = trusted.seq;
+      } else {
+        return;
       }
 
       if (data.type === "jogo-idle:hud-builder-ready") {
@@ -321,7 +350,7 @@ export function AdminHudBuilder({ working, idleFetch, onMessage, run }: AdminHud
   }
 
   async function onSaveDraft() {
-    await run(async () => {
+    const ok = await run(async () => {
       try {
         const data = await idleFetch("/api/jogo-idle/admin/hud-layout/draft", {
           method: "PUT",
@@ -337,29 +366,18 @@ export function AdminHudBuilder({ working, idleFetch, onMessage, run }: AdminHud
       } catch (err) {
         const msg = String((err as Error)?.message || err);
         if (/409|HUD_DRAFT_CONFLICT|conflito/i.test(msg)) {
-          const reload = window.confirm(
-            "Conflito de rascunho (outro admin salvou). Recarregar a versão do servidor? (Cancelar mantém sua edição local suja.)",
-          );
+          const reload = await confirmAsk({ kind: "conflict" });
           if (reload) await loadDraft();
           throw err;
         }
         throw err;
       }
     });
+    return ok && !isEditableDirty(draftRef.current, baselineRef.current);
   }
 
-  async function onPublish() {
-    if (dirty) {
-      onMessage("Salve o rascunho antes de publicar.");
-      return;
-    }
-    if (
-      !window.confirm(
-        `Publicar a HUD atual para todos os jogadores?\nRevisão publicada esperada: ${publishedRevision ?? 0}\nRascunho: ${draft.draftRevision ?? 0}`,
-      )
-    ) {
-      return;
-    }
+  async function doPublish() {
+    setAsk(null);
     await run(async () => {
       const data = await idleFetch("/api/jogo-idle/admin/hud-layout/publish", {
         method: "POST",
@@ -378,9 +396,16 @@ export function AdminHudBuilder({ working, idleFetch, onMessage, run }: AdminHud
     });
   }
 
-  async function onRestoreDefault() {
-    if (!window.confirm("Restaurar o rascunho ao layout padrão (sem overrides)? O publicado não muda."))
+  function requestPublish() {
+    if (dirty) {
+      onMessage("Salve o rascunho antes de publicar.");
       return;
+    }
+    setAsk({ kind: "publish" });
+  }
+
+  async function doRestoreDefault() {
+    setAsk(null);
     await run(async () => {
       pushHistory(editableSlice(draftRef.current));
       const data = await idleFetch("/api/jogo-idle/admin/hud-layout/restore", {
@@ -396,14 +421,8 @@ export function AdminHudBuilder({ working, idleFetch, onMessage, run }: AdminHud
     });
   }
 
-  async function onRestoreRevision(revision: number) {
-    if (
-      !window.confirm(
-        `Restaurar a rev ${revision} no rascunho? O layout publicado permanece até você publicar de novo.`,
-      )
-    ) {
-      return;
-    }
+  async function doRestoreRevision(revision: number) {
+    setAsk(null);
     await run(async () => {
       pushHistory(editableSlice(draftRef.current));
       const data = await idleFetch("/api/jogo-idle/admin/hud-layout/restore", {
@@ -417,6 +436,20 @@ export function AdminHudBuilder({ working, idleFetch, onMessage, run }: AdminHud
       applyServerDraft(next);
       onMessage(data.message || `Rascunho restaurado da rev ${revision}`);
     });
+  }
+
+  function confirmAsk(next: HudAsk) {
+    return new Promise<boolean>((resolve) => {
+      askResolveRef.current = resolve;
+      setAsk(next);
+    });
+  }
+
+  function settleAsk(ok: boolean) {
+    const resolve = askResolveRef.current;
+    askResolveRef.current = null;
+    setAsk(null);
+    resolve?.(ok);
   }
 
   useEffect(() => {
@@ -436,6 +469,7 @@ export function AdminHudBuilder({ working, idleFetch, onMessage, run }: AdminHud
         return;
       }
       if (meta && e.key.toLowerCase() === "z") {
+        if (typing) return;
         e.preventDefault();
         if (e.shiftKey) redo();
         else undo();
@@ -528,6 +562,42 @@ export function AdminHudBuilder({ working, idleFetch, onMessage, run }: AdminHud
     };
   }, [breakpoint, dirty, layoutMode, markDirtyFromDoc, mode, postToHud, selectedId, working]);
 
+  useEffect(() => {
+    onStatus?.({ dirty });
+  }, [dirty, onStatus]);
+
+  useEffect(() => {
+    const narrow = window.matchMedia("(max-width: 1100px)");
+    if (narrow.matches) {
+      setLayersOpen(false);
+      setInspectorOpen(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    const el = canvasRef.current;
+    if (!el) return;
+    const measure = () => {
+      const pad = 36;
+      const next = Math.min((el.clientWidth - pad) / preset.w, (el.clientHeight - pad) / preset.h);
+      if (!Number.isFinite(next)) return;
+      setFitScale(Math.max(0.2, Math.min(1, next)));
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [preset.w, preset.h, layersOpen, inspectorOpen]);
+
+  apiRef.current.save = onSaveDraft;
+  apiRef.current.discard = async () => {
+    await loadDraft();
+  };
+  useImperativeHandle(ref, () => ({
+    save: () => apiRef.current.save(),
+    discard: () => apiRef.current.discard(),
+  }), []);
+
   const tree = useMemo(() => buildHudLayerTree(), []);
   const selected = selectedId ? getHudComponent(selectedId) : null;
   const props = selectedId ? resolvedProps(draft, selectedId, breakpoint) : {};
@@ -576,194 +646,118 @@ export function AdminHudBuilder({ working, idleFetch, onMessage, run }: AdminHud
     patchSelected({ [key]: trimmed } as HudStyleProps);
   }
 
-  const scale = Math.min(1, 1100 / preset.w);
+  const scale = zoom == null ? fitScale : zoom;
+
+  const phaseLabel = working ? "Salvando" : dirty ? "Não salvo" : "Salvo";
 
   return (
-    <div className="studio-2-hud">
-      <StudioToolbar>
-        <strong className="text-sm text-[var(--studio-ink)]">{draft.name}</strong>
-        <StudioBadge tone={dirty ? "warn" : "ok"}>
-          {dirty ? "Não salvo" : draft.status === "draft" ? "Rascunho" : draft.status}
-        </StudioBadge>
-        {publishedRevision != null ? (
-          <span className="text-[0.65rem] text-[var(--studio-muted)]">
-            Publicado rev {publishedRevision}
-          </span>
-        ) : (
-          <span className="text-[0.65rem] text-[var(--studio-muted)]">Nada publicado</span>
-        )}
-        <div className="mx-1 h-5 w-px bg-[var(--studio-line)]" aria-hidden />
-        <select
-          className="studio-2-select max-w-[140px]"
-          value={presetId}
-          onChange={(e) => setPresetId(e.target.value)}
-          aria-label="Resolução"
-        >
-          {VIEWPORT_PRESETS.map((p) => (
-            <option key={p.id} value={p.id}>
-              {p.label}
-            </option>
-          ))}
-        </select>
-        <StudioToolBtn
-          active={layoutMode === "organized"}
-          onClick={() => setLayoutMode("organized")}
-          title="Layout inteligente — reordenar no fluxo"
-        >
-          Organizado
-        </StudioToolBtn>
-        <StudioToolBtn
-          active={layoutMode === "free"}
-          onClick={() => setLayoutMode("free")}
-          title="Posicionamento absoluto livre"
-        >
-          Livre
-        </StudioToolBtn>
-        <StudioToolBtn
-          active={snapEnabled}
-          onClick={() => setSnapEnabled((v) => !v)}
-          title="Snap na grade e bordas"
-        >
-          Snap
-        </StudioToolBtn>
-        <select
-          className="studio-2-select max-w-[72px]"
-          value={snapGrid}
-          onChange={(e) => setSnapGrid(Number(e.target.value) || 8)}
-          aria-label="Grade"
-          title="Tamanho da grade"
-        >
-          <option value={4}>4px</option>
-          <option value={8}>8px</option>
-          <option value={16}>16px</option>
-        </select>
-        <StudioToolBtn active={mode === "edit"} onClick={() => setMode("edit")} title="Editar">
-          Editar
-        </StudioToolBtn>
-        <StudioToolBtn
-          active={mode === "preview"}
-          onClick={() => setMode("preview")}
-          title="Pré-visualizar"
-        >
-          Pré-visualizar
-        </StudioToolBtn>
-        <StudioToolBtn disabled={!past.length} onClick={undo} title="Desfazer (⌘Z)">
-          Desfazer
-        </StudioToolBtn>
-        <StudioToolBtn disabled={!future.length} onClick={redo} title="Refazer (⌘⇧Z)">
-          Refazer
-        </StudioToolBtn>
-        <div className="ml-auto flex flex-wrap gap-1.5">
-          <StudioBtn type="button" disabled={working} onClick={() => void onRestoreDefault()}>
-            Restaurar
+    <div className={`hud ${layersOpen ? "" : "is-layers-closed"} ${inspectorOpen ? "" : "is-inspector-closed"}`}>
+      <header className="hud-top">
+        <div>
+          <p className="ed-kicker">Interface</p>
+          <h2>{draft.name || "HUD"}</h2>
+        </div>
+        <StudioBadge tone={dirty ? "warn" : "ok"}>{phaseLabel}</StudioBadge>
+        <span className="hud-pub">
+          {publishedRevision != null ? `Publicado · rev ${publishedRevision}` : "Nada publicado"}
+          {dirty ? "" : ` · rascunho ${draft.draftRevision ?? 0}`}
+        </span>
+        <div className="hud-top__actions">
+          <StudioBtn type="button" title={layersOpen ? "Recolher componentes" : "Mostrar componentes"} onClick={() => setLayersOpen((v) => !v)}>
+            Componentes
+          </StudioBtn>
+          <StudioBtn type="button" title={inspectorOpen ? "Recolher inspetor" : "Mostrar inspetor"} onClick={() => setInspectorOpen((v) => !v)}>
+            Inspetor
+          </StudioBtn>
+          <StudioBtn type="button" disabled={working} onClick={() => setAsk({ kind: "restore-default" })}>
+            Restaurar padrão
+          </StudioBtn>
+          <StudioBtn variant={dirty ? "gold" : "default"} type="button" disabled={working || !dirty} onClick={() => void onSaveDraft()}>
+            Salvar rascunho
           </StudioBtn>
           <StudioBtn
-            variant="gold"
-            type="button"
-            disabled={working || !dirty}
-            onClick={() => void onSaveDraft()}
-          >
-            Salvar Rascunho
-          </StudioBtn>
-          <StudioBtn
+            variant={!dirty ? "gold" : "default"}
             type="button"
             disabled={working || dirty}
-            title={dirty ? "Salve o rascunho antes de publicar" : "Publicar para jogadores"}
-            onClick={() => void onPublish()}
+            title={dirty ? "Salve o rascunho antes de publicar" : "Publicar para os jogadores"}
+            onClick={requestPublish}
           >
             Publicar
           </StudioBtn>
         </div>
-      </StudioToolbar>
+      </header>
 
-      <div className="studio-2-hud__body">
-        <aside className="studio-2-hud__layers">
-          <div className="studio-2-hud__layers-head">
-            <span className="studio-2-label">Componentes</span>
-            <input
-              className="studio-2-input"
-              placeholder="Buscar…"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-            />
-          </div>
-          <ul className="studio-2-hud__tree">
-            {filteredTree.map((root) => {
-              const isCollapsed = collapsed[root.id];
-              return (
-                <li key={root.id}>
-                  <button
-                    type="button"
-                    className={`studio-2-hud__node ${selectedId === root.id ? "is-selected" : ""}`}
-                    onClick={() => selectComponent(root.id)}
-                  >
-                    <span
-                      className="studio-2-hud__twisty"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setCollapsed((c) => ({ ...c, [root.id]: !c[root.id] }));
-                      }}
-                    >
-                      {root.children.length ? (isCollapsed ? "▸" : "▾") : "·"}
-                    </span>
-                    {root.label}
-                  </button>
-                  {!isCollapsed
-                    ? root.children.map((child) => (
-                        <button
-                          key={child.id}
-                          type="button"
-                          className={`studio-2-hud__node studio-2-hud__node--child ${
-                            selectedId === child.id ? "is-selected" : ""
-                          }`}
-                          onClick={() => selectComponent(child.id)}
-                        >
-                          {child.label}
+      <div className="hud-body">
+        <aside className="hud-side">
+          {layersOpen ? (
+            <>
+              <div className="hud-side__head">
+                <span>Componentes</span>
+                <input className="studio-2-input" placeholder="Buscar" aria-label="Buscar componente" value={query} onChange={(e) => setQuery(e.target.value)} />
+              </div>
+              {filteredTree.length === 0 ? <StudioEmpty>Nenhum componente com essa busca.</StudioEmpty> : (
+                <ul className="hud-tree">
+                  {filteredTree.map((root) => {
+                    const isCollapsed = collapsed[root.id];
+                    return (
+                      <li key={root.id}>
+                        <button type="button" className={`hud-node ${selectedId === root.id ? "is-selected" : ""}`} onClick={() => selectComponent(root.id)}>
+                          <span
+                            className={`hud-twisty ${isCollapsed ? "is-collapsed" : ""}`}
+                            role="button"
+                            aria-label={isCollapsed ? "Expandir" : "Recolher"}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setCollapsed((c) => ({ ...c, [root.id]: !c[root.id] }));
+                            }}
+                          >
+                            {root.children.length ? <StudioIcon name="chevron" /> : null}
+                          </span>
+                          {root.label}
                         </button>
-                      ))
-                    : null}
-                </li>
-              );
-            })}
-          </ul>
-          <p className="mt-2 text-[0.62rem] text-[var(--studio-muted)]">
-            {HUD_COMPONENTS.length} componentes · Fase 2
-          </p>
+                        {!isCollapsed
+                          ? root.children.map((child) => (
+                              <button
+                                key={child.id}
+                                type="button"
+                                className={`hud-node is-child ${selectedId === child.id ? "is-selected" : ""}`}
+                                onClick={() => selectComponent(child.id)}
+                              >
+                                {child.label}
+                              </button>
+                            ))
+                          : null}
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+              <p className="ed-note">{HUD_COMPONENTS.length} componentes</p>
+            </>
+          ) : (
+            <button type="button" className="hud-rail" onClick={() => setLayersOpen(true)}>Componentes</button>
+          )}
         </aside>
 
-        <div className="studio-2-hud__canvas">
-          <div
-            className="studio-2-hud__frame"
-            style={{
-              width: preset.w * scale,
-              height: preset.h * scale,
-            }}
-          >
+        <div className="hud-stage" ref={canvasRef}>
+          <div className="hud-frame" style={{ width: preset.w * scale, height: preset.h * scale }}>
             <iframe
               ref={iframeRef}
               title="HUD Builder — pré-visualização"
-              src={`/jogo-idle/play.html?hudBuilder=1`}
-              className="studio-2-hud__iframe"
-              style={{
-                width: preset.w,
-                height: preset.h,
-                transform: `scale(${scale})`,
-                transformOrigin: "top left",
-              }}
+              src="/jogo-idle/play.html?hudBuilder=1"
+              className="hud-iframe"
+              style={{ width: preset.w, height: preset.h, transform: `scale(${scale})`, transformOrigin: "top left" }}
             />
           </div>
-          {!ready ? (
-            <p className="studio-2-hud__loading">Carregando HUD…</p>
-          ) : (
-            <p className="studio-2-hud__hint">
-              Arraste painéis · 8 alças de resize · ESC cancela · Snap {snapEnabled ? "on" : "off"} ·
-              Escala {Math.round(scale * 100)}%
-            </p>
-          )}
+          <p className="hud-hint">
+            {ready ? `${preset.label} · breakpoint ${breakpoint} · zoom ${Math.round(scale * 100)}% · o zoom não grava posição` : "Carregando HUD…"}
+          </p>
         </div>
 
-        <aside className="studio-2-hud__inspector">
-          <StudioFormSection title="Revisões">
+        <aside className="hud-side hud-inspector">
+          {inspectorOpen ? (
+            <>
+          <StudioFormSection title="Revisões" defaultOpen={false}>
             <p className="mb-2 text-[0.65rem] text-[var(--studio-muted)]">
               Publicado: rev {publishedRevision ?? "—"} · Rascunho: {draft.draftRevision ?? 0}
               {dirty ? " · alterações não salvas" : ""}
@@ -778,7 +772,7 @@ export function AdminHudBuilder({ working, idleFetch, onMessage, run }: AdminHud
                     <StudioBtn
                       type="button"
                       disabled={working}
-                      onClick={() => void onRestoreRevision(h.revision)}
+                      onClick={() => setAsk({ kind: "restore-revision", revision: h.revision })}
                     >
                       Restaurar
                     </StudioBtn>
@@ -789,7 +783,7 @@ export function AdminHudBuilder({ working, idleFetch, onMessage, run }: AdminHud
               <p className="mb-2 text-[0.65rem] text-[var(--studio-muted)]">Sem histórico ainda.</p>
             )}
           </StudioFormSection>
-          <StudioFormSection title="Tokens visuais">
+          <StudioFormSection title="Tokens visuais" defaultOpen={false}>
             <StudioField label={`Preenchimento raridade (${draft.tokens?.slotRarityFillMix ?? DEFAULT_SLOT_RARITY_FILL_MIX}%)`}>
               <input
                 className="studio-2-input"
@@ -821,7 +815,7 @@ export function AdminHudBuilder({ working, idleFetch, onMessage, run }: AdminHud
               Intensidade do fundo colorido do slot conforme a raridade (0–60%).
             </p>
           </StudioFormSection>
-          <StudioFormSection title="Transições e Animações">
+          <StudioFormSection title="Transições e Animações" defaultOpen={false}>
             {(() => {
               const intro = {
                 ...DEFAULT_HUD_INTRO_TOKENS,
@@ -998,12 +992,111 @@ export function AdminHudBuilder({ working, idleFetch, onMessage, run }: AdminHud
               </StudioFormSection>
             </>
           ) : (
-            <p className="text-[0.75rem] text-[var(--studio-muted)]">
-              Selecione um componente. Arraste para mover; use as alças para redimensionar.
-            </p>
+            <p className="ed-note">Selecione um componente. Arraste para mover e use as alças para redimensionar.</p>
+          )}
+            </>
+          ) : (
+            <button type="button" className="hud-rail" onClick={() => setInspectorOpen(true)}>Inspetor</button>
           )}
         </aside>
       </div>
+
+      <footer className="hud-bar">
+        <div className="hud-bar__group">
+        <label>
+          Resolução
+          <select className="studio-2-select" value={presetId} aria-label="Resolução do preview" onChange={(e) => setPresetId(e.target.value)}>
+            {VIEWPORT_PRESETS.map((p) => (
+              <option key={p.id} value={p.id}>{p.label}</option>
+            ))}
+          </select>
+        </label>
+        <label>
+          Zoom
+          <select
+            className="studio-2-select"
+            aria-label="Zoom da visualização"
+            value={zoom == null ? "fit" : String(zoom)}
+            onChange={(e) => setZoom(e.target.value === "fit" ? null : Number(e.target.value))}
+          >
+            <option value="fit">Enquadrar</option>
+            <option value="0.5">50%</option>
+            <option value="0.75">75%</option>
+            <option value="1">100%</option>
+          </select>
+        </label>
+        <StudioBtn type="button" title="A escala só muda a visualização" onClick={() => setZoom(null)}>Enquadrar</StudioBtn>
+        </div>
+        <div className="hud-bar__group">
+        <StudioBtn type="button" className={layoutMode === "organized" ? "is-on" : ""} title="Reordenar no fluxo" onClick={() => setLayoutMode("organized")}>Organizado</StudioBtn>
+        <StudioBtn type="button" className={layoutMode === "free" ? "is-on" : ""} title="Posição absoluta" onClick={() => setLayoutMode("free")}>Livre</StudioBtn>
+        </div>
+        <div className="hud-bar__group">
+        <StudioBtn type="button" className={snapEnabled ? "is-on" : ""} title="Snap na grade e nas bordas" onClick={() => setSnapEnabled((v) => !v)}>Snap</StudioBtn>
+        <label>
+          Grade
+          <select className="studio-2-select" aria-label="Tamanho da grade" value={snapGrid} onChange={(e) => setSnapGrid(Number(e.target.value) || 8)}>
+            <option value={4}>4px</option>
+            <option value={8}>8px</option>
+            <option value={16}>16px</option>
+          </select>
+        </label>
+        </div>
+        <div className="hud-bar__group">
+        <StudioBtn type="button" className={mode === "edit" ? "is-on" : ""} onClick={() => setMode("edit")}>Editar</StudioBtn>
+        <StudioBtn type="button" className={mode === "preview" ? "is-on" : ""} onClick={() => setMode("preview")}>Pré-visualizar</StudioBtn>
+        </div>
+        <div className="hud-bar__group">
+        <StudioBtn type="button" disabled={!past.length} title="Desfazer (Ctrl ou Cmd Z)" onClick={undo}>Desfazer</StudioBtn>
+        <StudioBtn type="button" disabled={!future.length} title="Refazer (Ctrl ou Cmd Shift Z)" onClick={redo}>Refazer</StudioBtn>
+        </div>
+      </footer>
+
+      <StudioModal
+        open={ask != null}
+        title={
+          ask?.kind === "publish" ? "Publicar HUD" :
+          ask?.kind === "conflict" ? "Conflito de rascunho" :
+          ask?.kind === "restore-default" ? "Restaurar layout padrão" :
+          "Restaurar revisão"
+        }
+        description={
+          ask?.kind === "publish"
+            ? `Os jogadores passam a ver este rascunho. Revisão publicada esperada: ${publishedRevision ?? 0}. Rascunho: ${draft.draftRevision ?? 0}.`
+            : ask?.kind === "conflict"
+              ? "Outro administrador salvou o rascunho. Recarregar substitui a edição local pela versão do servidor."
+              : ask?.kind === "restore-default"
+                ? "O rascunho volta ao layout sem overrides. O layout publicado permanece até uma nova publicação."
+                : ask?.kind === "restore-revision"
+                  ? `A revisão ${ask.revision} entra no rascunho. O layout publicado permanece até você publicar de novo.`
+                  : undefined
+        }
+        busy={working}
+        dismissable={!working}
+        onClose={() => {
+          if (working) return;
+          if (ask?.kind === "conflict") settleAsk(false);
+          else setAsk(null);
+        }}
+        footer={
+          <>
+            <StudioBtn type="button" disabled={working} onClick={() => (ask?.kind === "conflict" ? settleAsk(false) : setAsk(null))}>Cancelar</StudioBtn>
+            <StudioBtn
+              variant={ask?.kind === "restore-default" || ask?.kind === "restore-revision" ? "danger" : "gold"}
+              type="button"
+              loading={working}
+              onClick={() => {
+                if (ask?.kind === "conflict") settleAsk(true);
+                else if (ask?.kind === "publish") void doPublish();
+                else if (ask?.kind === "restore-default") void doRestoreDefault();
+                else if (ask?.kind === "restore-revision") void doRestoreRevision(ask.revision);
+              }}
+            >
+              {ask?.kind === "conflict" ? "Recarregar servidor" : ask?.kind === "publish" ? "Publicar" : "Restaurar"}
+            </StudioBtn>
+          </>
+        }
+      />
     </div>
   );
-}
+});

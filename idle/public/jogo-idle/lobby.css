@@ -47,11 +47,11 @@ body.lobby-page {
   z-index: 1;
   max-width: 1440px;
   margin: 0 auto;
-  padding: 16px 16px 40px;
+  padding: 12px 14px 16px;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 /* ——— Top bar ——— */
@@ -123,11 +123,11 @@ body.lobby-page {
 /* ——— Grid ——— */
 .idle-lobby-grid {
   display: grid;
-  grid-template-columns: minmax(280px, 34%) minmax(0, 1fr);
-  gap: 0.85rem;
+  grid-template-columns: minmax(0, 1.5fr) minmax(280px, 1fr);
+  gap: 12px;
   flex: 1 1 auto;
   min-height: 0;
-  align-items: start;
+  align-items: stretch;
 }
 
 .idle-lobby-panel {
@@ -142,12 +142,16 @@ body.lobby-page {
   overflow: hidden;
 }
 
-.idle-lobby-panel-head {
+.lobby-page .idle-lobby-panel-head {
   display: flex;
   align-items: flex-start;
-  gap: 0.65rem;
-  padding: 0.85rem 1rem 0.55rem;
+  gap: 0.45rem;
+  padding: 0.55rem 0.85rem 0.35rem;
   flex-shrink: 0;
+}
+
+.lobby-page .hall-title::after {
+  margin-top: 0.2rem;
 }
 
 .idle-lobby-panel-ico {
@@ -183,8 +187,8 @@ body.lobby-page {
 .idle-lobby-panel__body {
   flex: 1 1 auto;
   min-height: 0;
-  overflow: auto;
-  padding: 0 0.85rem 0.85rem;
+  overflow: visible;
+  padding: 0 0.7rem 0.65rem;
 }
 
 /* Preview — coluna compacta */
@@ -194,13 +198,14 @@ body.lobby-page {
 
 .idle-lobby-preview__stage {
   position: relative;
-  flex: 0 0 auto;
-  height: clamp(420px, 48vh, 530px);
-  margin: 0 0.75rem 0.75rem;
+  flex: 1 1 auto;
+  height: auto;
+  min-height: clamp(320px, 42vh, 520px);
+  margin: 0 0.75rem 0.7rem;
   border-radius: 0.55rem;
   overflow: hidden;
   border: 1px solid rgba(201, 160, 90, 0.45);
-  background: #1a2624;
+  background: #0a1522;
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.35);
 }
 
@@ -210,7 +215,7 @@ body.lobby-page {
   width: 100%;
   height: 100%;
   border: 0;
-  background: #0a1522;
+  background: transparent;
 }
 
 .idle-lobby-preview__hint {
@@ -232,20 +237,22 @@ body.lobby-page {
 
 /* Character list */
 .idle-char-card {
-  display: grid;
-  grid-template-columns: 2.6rem minmax(0, 1fr) auto;
-  gap: 0.55rem;
+  display: flex;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
   width: 100%;
-  padding: 0.65rem 0.7rem;
-  text-align: left;
+  min-width: 0;
+  padding: 0.55rem 0.45rem;
+  text-align: center;
   border-radius: 0.55rem;
   border: 1px solid rgba(22, 71, 106, 0.7);
   background: linear-gradient(180deg, #0a1624 0%, #071018 100%);
   color: var(--idle-ink);
   cursor: pointer;
   font: inherit;
-  margin-bottom: 0.45rem;
+  margin-bottom: 0;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
@@ -260,15 +267,18 @@ body.lobby-page {
 }
 
 .idle-char-card__avatar {
-  width: 2.55rem;
-  height: 2.55rem;
-  border-radius: 50%;
+  width: 2.6rem;
+  height: 2.6rem;
   display: grid;
   place-items: center;
-  border: 2px solid rgba(244, 181, 43, 0.4);
-  background: radial-gradient(circle at 40% 30%, #1a3348, #061323 70%);
   color: var(--idle-accent);
   font-size: 1rem;
+  flex: none;
+}
+.idle-char-card__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .idle-char-card__name {
@@ -276,9 +286,10 @@ body.lobby-page {
   font-size: 0.92rem;
   color: #f3f7fb;
   display: block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  min-width: 0;
+  overflow: visible;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .idle-char-card--active .idle-char-card__name {
@@ -286,25 +297,26 @@ body.lobby-page {
 }
 
 .idle-char-card__meta {
-  font-size: 0.72rem;
+  font-size: 0.78rem;
   color: var(--idle-muted);
-  margin-top: 0.1rem;
+  margin-top: 0.12rem;
   display: block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  min-width: 0;
+  overflow: visible;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .idle-char-card__lv {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.12rem 0.45rem;
-  border-radius: 999px;
-  border: 1px solid rgba(140, 170, 200, 0.35);
-  background: rgba(8, 20, 34, 0.85);
-  font-size: 0.68rem;
+  display: block;
+  margin-top: 0.2rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: 0.78rem;
   font-weight: 700;
   color: #c5d6e6;
+  white-space: normal;
 }
 
 .idle-char-card__badge {
@@ -348,8 +360,8 @@ body.lobby-page {
   flex-wrap: wrap;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 0.75rem;
-  padding: 0.85rem 1rem 0.5rem;
+  gap: 0.45rem 0.65rem;
+  padding: 0.55rem 0.75rem 0.35rem;
 }
 
 .idle-detail-head h3 {
@@ -386,19 +398,25 @@ body.lobby-page {
   background: linear-gradient(180deg, #ffd56a 0%, #f4b52b 48%, #d99a27 100%);
   border-color: #d99a27;
   color: #061323;
-  min-height: 2.6rem;
-  padding: 0.55rem 1rem;
+  min-height: 2.15rem;
+  padding: 0.4rem 0.85rem;
 }
 
 .idle-btn-delete {
   background: transparent;
   border-color: rgba(239, 154, 154, 0.7);
   color: #ffcdd2;
-  min-height: 2.6rem;
+  min-height: 2.15rem;
+  padding: 0.4rem 0.85rem;
 }
 
 .idle-btn-delete:hover {
   background: rgba(198, 40, 40, 0.28);
+}
+
+.lobby-page .idle-detail-actions .hall-btn {
+  min-height: 2.15rem;
+  padding: 0.4rem 0.85rem;
 }
 
 .idle-btn-create {
@@ -412,9 +430,9 @@ body.lobby-page {
   background: linear-gradient(180deg, #ffd56a 0%, #f4b52b 48%, #d99a27 100%);
   border-color: #d99a27;
   color: #061323;
-  padding: 0.75rem 0.9rem;
-  margin-top: 0.35rem;
-  min-height: 2.9rem;
+  padding: 0.48rem 0.9rem;
+  margin-top: 0;
+  min-height: 0;
   font-family: var(--font-display);
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -433,15 +451,15 @@ body.lobby-page {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0.4rem;
-  margin-bottom: 0.55rem;
+  margin-bottom: 0.4rem;
 }
 
 .idle-attr-tile {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.2rem;
-  padding: 0.55rem 0.35rem;
+  gap: 0.12rem;
+  padding: 0.35rem 0.28rem;
   border-radius: 0.5rem;
   border: 1px solid rgba(22, 71, 106, 0.7);
   background: linear-gradient(180deg, #0a1624 0%, #071018 100%);
@@ -479,15 +497,15 @@ body.lobby-page {
 .idle-stat-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.45rem;
-  margin-bottom: 0.55rem;
+  gap: 0.4rem;
+  margin-bottom: 0.4rem;
 }
 
 .idle-stat-tile {
   display: flex;
   align-items: flex-start;
-  gap: 0.55rem;
-  padding: 0.65rem 0.7rem;
+  gap: 0.45rem;
+  padding: 0.45rem 0.55rem;
   border-radius: 0.5rem;
   border: 1px solid rgba(22, 71, 106, 0.7);
   background: linear-gradient(180deg, #0a1624 0%, #071018 100%);
@@ -532,8 +550,8 @@ body.lobby-page {
 .idle-gold-bar {
   display: flex;
   align-items: center;
-  gap: 0.55rem;
-  padding: 0.7rem 0.8rem;
+  gap: 0.45rem;
+  padding: 0.45rem 0.65rem;
   border-radius: 0.5rem;
   border: 1px solid rgba(244, 181, 43, 0.35);
   background: linear-gradient(90deg, rgba(244, 181, 43, 0.12), rgba(6, 19, 35, 0.9));
@@ -678,21 +696,42 @@ body.lobby-page {
   margin: 0.5rem 0 0;
 }
 
+.idle-lobby-hall {
+  container-type: inline-size;
+  container-name: hero-hall;
+}
+
 .idle-lobby-hall__body {
   display: flex;
   flex-direction: column;
-  gap: 0.85rem;
-  padding: 0 0.85rem 0.95rem;
+  gap: 0.55rem;
+  padding: 0 0.75rem 0.7rem;
 }
 
 .idle-slot-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.65rem;
+  gap: 8px;
+  min-width: 0;
+}
+
+@container hero-hall (max-width: 34rem) {
+  .idle-slot-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@container hero-hall (max-width: 22rem) {
+  .idle-slot-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .idle-slot {
-  min-height: 7.5rem;
+  min-height: 0;
+  min-width: 0;
+  height: 100%;
+  box-sizing: border-box;
   border-radius: 0.6rem;
   border: 1px solid rgba(22, 71, 106, 0.8);
   background: linear-gradient(180deg, rgba(10, 22, 36, 0.92), rgba(6, 16, 28, 0.96));
@@ -702,57 +741,82 @@ body.lobby-page {
 .idle-slot--empty {
   display: flex;
   flex-direction: column;
+  align-items: center;
   justify-content: center;
-  gap: 0.25rem;
-  padding: 0.85rem 0.8rem;
-  text-align: left;
+  gap: 0.3rem;
+  padding: 0.65rem 0.55rem;
+  text-align: center;
+  text-decoration: none;
+  color: inherit;
+}
+
+a.idle-slot--empty {
+  cursor: pointer;
+}
+
+a.idle-slot--empty:hover {
+  border-color: rgba(244, 181, 43, 0.55);
+  box-shadow: 0 0 12px rgba(244, 181, 43, 0.16);
 }
 
 .idle-slot__mark {
-  color: rgba(244, 181, 43, 0.7);
-  font-size: 0.8rem;
+  color: rgba(244, 181, 43, 0.85);
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  line-height: 1;
 }
 
 .idle-slot__title {
   font-family: var(--font-display);
-  font-size: 0.78rem;
-  letter-spacing: 0.04em;
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
   color: #f3f7fb;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .idle-slot__hint {
   color: var(--idle-muted);
   font-size: 0.75rem;
   line-height: 1.35;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .idle-char-card.idle-slot {
-  display: grid;
-  grid-template-columns: 2.6rem minmax(0, 1fr) auto;
-  gap: 0.55rem;
+  display: flex;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
   width: 100%;
   margin: 0;
-  padding: 0.75rem 0.7rem;
-  text-align: left;
+  padding: 0.55rem 0.45rem;
+  text-align: center;
   cursor: pointer;
   transition: border-color 0.18s ease, box-shadow 0.18s ease;
 }
 
 .idle-char-card__copy {
   min-width: 0;
+  width: 100%;
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
 .idle-char-card__ascent {
-  display: inline-block;
+  display: block;
+  max-width: 100%;
   margin-top: 0.2rem;
-  font-size: 0.62rem;
+  font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--idle-accent-bright);
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .idle-lobby-hall .idle-lobby-side-card {
@@ -761,11 +825,33 @@ body.lobby-page {
   background: rgba(6, 16, 28, 0.45);
 }
 
-.idle-lobby-create__note {
-  margin: 0 0 0.85rem;
-  color: var(--idle-muted);
-  font-size: 0.88rem;
-  line-height: 1.4;
+.idle-lobby-create {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding: 0.1rem 0.75rem 0.7rem;
+}
+
+.class-rail {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.idle-lobby-create .class-card small {
+  display: block;
+  overflow: visible;
+  -webkit-line-clamp: unset;
+  line-clamp: unset;
+  -webkit-box-orient: unset;
+}
+
+.idle-lobby-create .hall-btn--gold {
+  align-self: stretch;
+  width: 100%;
+  min-width: 0;
+  padding-top: 0.48rem;
+  padding-bottom: 0.48rem;
 }
 
 .idle-lobby-hall.is-empty .idle-lobby-create {
@@ -799,22 +885,28 @@ body.lobby-page {
     grid-template-columns: 1fr;
   }
   .idle-lobby-preview__stage {
-    height: clamp(280px, 42vh, 420px);
+    min-height: clamp(280px, 40vh, 420px);
+    height: auto;
   }
 }
 
 @media (max-width: 768px) {
-  .idle-slot-grid {
-    grid-template-columns: 1fr;
+  .class-rail {
+    grid-template-columns: 1fr 1fr;
   }
   .idle-lobby-preview__stage {
-    height: 280px;
+    min-height: 280px;
+    height: auto;
   }
 }
 
 @media (max-width: 390px) {
+  .class-rail {
+    grid-template-columns: 1fr;
+  }
   .idle-lobby-preview__stage {
-    height: 240px;
+    min-height: 260px;
+    height: auto;
   }
   .idle-detail-actions {
     width: 100%;
@@ -834,10 +926,68 @@ body.lobby-page {
   to { opacity: 1; transform: none; }
 }
 
+.lobby-confirm {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+}
+
+.lobby-confirm[hidden] {
+  display: none;
+}
+
+.lobby-confirm__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(4, 10, 18, 0.72);
+}
+
+.lobby-confirm__panel {
+  z-index: 1;
+  width: min(26rem, 100%);
+  padding-bottom: 0.95rem;
+  animation: lobby-confirm-in 0.18s ease-out;
+}
+
+.lobby-confirm__msg {
+  margin: 0.15rem 1rem 0.35rem;
+  font-size: 1.02rem;
+  line-height: 1.45;
+  color: var(--idle-ink);
+}
+
+.lobby-confirm__meta {
+  margin: 0 1rem 1rem;
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+  color: var(--idle-muted);
+}
+
+.lobby-confirm__actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.55rem;
+  padding: 0 0.9rem;
+}
+
+.lobby-confirm__actions .hall-btn {
+  min-height: 2.35rem;
+  width: 100%;
+}
+
+@keyframes lobby-confirm-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .idle-char-card,
   .idle-btn,
-  .idle-lobby-panel {
+  .idle-lobby-panel,
+  .lobby-confirm__panel {
     transition: none;
     animation: none;
   }

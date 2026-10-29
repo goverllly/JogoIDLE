@@ -13,6 +13,7 @@
     "admin:install": "npm install --prefix admin-ui",
     "admin:dev": "npm run dev --prefix admin-ui",
     "admin:build": "npm run build --prefix admin-ui",
+    "props:index": "node scripts/props-index.mjs",
     "postinstall": "npm run admin:install"
   },
   "dependencies": {

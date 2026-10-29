@@ -79,7 +79,7 @@ export default function App() {
 
   if (error && !ready) {
     return (
-      <div className="p-6 max-w-xl mx-auto">
+      <div className="h-full overflow-auto p-6 max-w-xl mx-auto">
         <Alert variant="destructive">
           <AlertDescription>
             {error}
@@ -95,21 +95,11 @@ export default function App() {
   }
 
   if (!ready) {
-    return <div className="p-8 text-muted-foreground">Carregando Admin Studio…</div>;
+    return <div className="h-full overflow-auto p-8 text-muted-foreground">Carregando Admin Studio…</div>;
   }
 
   return (
-    <div className="min-h-screen">
-      <div className="flex items-center justify-between gap-3 px-4 py-3 border-b border-border/60 bg-card/40">
-        <div>
-          <div className="text-sm text-muted-foreground">Jogo IDLE · standalone</div>
-          <h1 className="text-lg font-semibold tracking-wide text-primary">Admin Studio</h1>
-        </div>
-        <a className="text-sm text-muted-foreground hover:text-foreground" href="/jogo-idle/lobby.html">
-          ← Lobby
-        </a>
-      </div>
-      <JogoIdleAdmin
+    <JogoIdleAdmin
         catalog={catalog}
         catalogMeta={catalogMeta}
         activeCharacters={activeCharacters}
@@ -130,6 +120,5 @@ export default function App() {
         maintenance={maintenance}
         onMaintenanceChange={setMaintenance}
       />
-    </div>
   );
 }

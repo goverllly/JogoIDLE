@@ -5,6 +5,9 @@
  */
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { ensurePropCatalog, placeableEntry, searchPlaceables } from './prop-catalog.js';
+
+export { ensurePropCatalog, placeableEntry, searchPlaceables };
 
 /** Biblioteca KayKit completa (v2.0); dungeon/halloween/forest preferem kaykit/ com fallback em props/. */
 const DUNGEON_DIR = '/jogo-idle/assets/kaykit/dungeon/';
@@ -487,6 +490,51 @@ function getGltf(dir, file) {
   return resolved.get(dir + file) || null;
 }
 
+function authorizedPropUrl(url) {
+  return typeof url === 'string'
+    && url.startsWith('/jogo-idle/assets/')
+    && !url.includes('..')
+    && !url.includes('\\');
+}
+
+function loadUrl(url, packId, key) {
+  if (!authorizedPropUrl(url)) {
+    console.warn('[jogo-idle] url de prop recusada', url);
+    return Promise.resolve(null);
+  }
+  if (resolved.has(url)) return Promise.resolve(resolved.get(url));
+  if (inflight.has(url)) return inflight.get(url);
+  const loader = new GLTFLoader();
+  const job = loader
+    .loadAsync(url)
+    .then((gltf) => {
+      tagGltf(gltf, packId, key);
+      resolved.set(url, gltf);
+      inflight.delete(url);
+      return gltf;
+    })
+    .catch((err) => {
+      console.warn('[jogo-idle] falha ao carregar prop', packId, key, url, err);
+      resolved.set(url, null);
+      inflight.delete(url);
+      return null;
+    });
+  inflight.set(url, job);
+  return job;
+}
+
+function preloadOne(packId, key) {
+  const pack = PACKS[packId];
+  const file = pack?.files?.[key];
+  if (file) return loadFile(pack.dir, file);
+  const entry = placeableEntry(packId, key);
+  if (!entry?.url) {
+    console.warn('[jogo-idle] prop fora do manifesto', packId, key);
+    return Promise.resolve(null);
+  }
+  return loadUrl(entry.url, packId, key);
+}
+
 function tagGltf(gltf, pack, key) {
   if (gltf) gltf.__kaykit = { pack, key };
   return gltf;
@@ -505,6 +553,7 @@ function cloneProp(gltf, { scale = 1, y = 0, rotY = 0, tint } = {}) {
     o.castShadow = true;
     o.receiveShadow = true;
     o.frustumCulled = false;
+    o.userData.sharedGeometry = true;
     if (o.material) {
       o.material = o.material.clone();
       if (tint != null) o.material.color.multiply(new THREE.Color(tint));
@@ -1306,12 +1355,16 @@ export function kayKitResolvedCount() {
   return ok;
 }
 
-/** Catálogo de props disponíveis para o editor de mapa admin. */
+/** Catálogo de props. Depois do manifesto carregado, inclui todo placeable, não só o PACKS histórico. */
 export function listKayKitPalette() {
   /** @type {Record<string, string[]>} */
   const out = {};
   for (const [packId, pack] of Object.entries(PACKS)) {
     out[packId] = Object.keys(pack.files);
+  }
+  for (const asset of searchPlaceables()) {
+    if (!out[asset.pack]) out[asset.pack] = [];
+    if (!out[asset.pack].includes(asset.key)) out[asset.pack].push(asset.key);
   }
   return out;
 }
@@ -1320,15 +1373,123 @@ export function listKayKitPropKinds() {
   return Object.keys(KIND_PACKS);
 }
 
+function resolveDecorationGltf(packId, key) {
+  const pack = PACKS[packId];
+  const file = pack?.files?.[key];
+  let gltf = file ? tagGltf(getGltf(pack.dir, file), packId, key) : null;
+  let defaultScale = 1;
+  if (!gltf?.scene) {
+    const entry = placeableEntry(packId, key);
+    if (entry?.url) {
+      gltf = resolved.get(entry.url) || null;
+      if (typeof entry.defaultScale === 'number') defaultScale = entry.defaultScale;
+    }
+  }
+  return { gltf, defaultScale };
+}
+
+function instanceCompatible(gltf) {
+  let meshes = 0;
+  let ok = true;
+  gltf.scene.traverse((node) => {
+    if (!node.isMesh) return;
+    meshes += 1;
+    if (node.isSkinnedMesh || Array.isArray(node.material) || !node.geometry) ok = false;
+    if (node.morphTargetInfluences?.length) ok = false;
+  });
+  return ok && meshes > 0;
+}
+
+const _instanceDummy = new THREE.Object3D();
+const _instanceFinal = new THREE.Matrix4();
+
+/**
+ * Desenha a lista manual no jogo.
+ * Repetidos compatíveis viram InstancedMesh (uma malha por parte do GLTF).
+ * O editor continua com um objeto por peça, para seleção e gizmo.
+ * Geometria permanece a do cache. Material com tint é clone; sem tint, é o do cache.
+ */
+export function appendManualDecorations(parent, decorations) {
+  const group = new THREE.Group();
+  group.name = 'manual-decorations';
+  const buckets = new Map();
+  for (const deco of decorations || []) {
+    if (!deco?.pack || !deco?.key) continue;
+    const tintKey = deco.tint == null || deco.tint === '' ? '' : String(deco.tint);
+    const id = `${deco.pack}/${deco.key}/${tintKey}`;
+    if (!buckets.has(id)) buckets.set(id, []);
+    buckets.get(id).push(deco);
+  }
+  for (const list of buckets.values()) {
+    const first = list[0];
+    const { gltf, defaultScale } = resolveDecorationGltf(first.pack, first.key);
+    if (list.length < 2 || !gltf?.scene || !instanceCompatible(gltf)) {
+      for (const deco of list) {
+        const obj = spawnKayKitDecoration(deco.pack, deco.key, deco);
+        if (obj) group.add(obj);
+      }
+      continue;
+    }
+    const probe = gltf.scene.clone(true);
+    probe.position.set(0, 0, 0);
+    probe.rotation.set(0, 0, 0);
+    probe.scale.set(1, 1, 1);
+    probe.updateMatrixWorld(true);
+    const rootInv = new THREE.Matrix4().copy(probe.matrixWorld).invert();
+    const parts = [];
+    probe.traverse((node) => {
+      if (!node.isMesh) return;
+      parts.push({
+        geometry: node.geometry,
+        material: node.material,
+        local: new THREE.Matrix4().multiplyMatrices(rootInv, node.matrixWorld),
+      });
+    });
+    if (!parts.length) {
+      for (const deco of list) {
+        const obj = spawnKayKitDecoration(deco.pack, deco.key, deco);
+        if (obj) group.add(obj);
+      }
+      continue;
+    }
+    const tint = first.tint == null || first.tint === '' ? null : Number(first.tint);
+    for (const part of parts) {
+      let material = part.material;
+      let sharedMaterial = true;
+      if (tint != null && Number.isFinite(tint) && material?.color) {
+        material = material.clone();
+        material.color.multiply(new THREE.Color(tint));
+        sharedMaterial = false;
+      }
+      const inst = new THREE.InstancedMesh(part.geometry, material, list.length);
+      inst.userData.sharedGeometry = true;
+      inst.userData.sharedMaterial = sharedMaterial;
+      inst.castShadow = true;
+      inst.receiveShadow = true;
+      inst.frustumCulled = false;
+      list.forEach((deco, index) => {
+        const scale = deco.scale ?? defaultScale;
+        _instanceDummy.position.set(Number(deco.x) || 0, Number(deco.y) || 0, Number(deco.z) || 0);
+        _instanceDummy.rotation.set(0, Number(deco.rotY) || 0, 0);
+        _instanceDummy.scale.setScalar(scale);
+        _instanceDummy.updateMatrix();
+        _instanceFinal.multiplyMatrices(_instanceDummy.matrix, part.local);
+        inst.setMatrixAt(index, _instanceFinal);
+      });
+      inst.instanceMatrix.needsUpdate = true;
+      group.add(inst);
+    }
+  }
+  if (group.children.length) parent.add(group);
+  return group;
+}
+
 /** Coloca um prop avulso (decoração do editor) no mundo. */
 export function spawnKayKitDecoration(packId, key, opts = {}) {
-  const pack = PACKS[packId];
-  if (!pack) return null;
-  const file = pack.files[key];
-  if (!file) return null;
-  const gltf = getGltf(pack.dir, file);
+  const { gltf, defaultScale } = resolveDecorationGltf(packId, key);
+  if (!gltf?.scene) return null;
   const obj = cloneProp(gltf, {
-    scale: opts.scale ?? 1,
+    scale: opts.scale ?? defaultScale,
     y: opts.y ?? 0,
     rotY: opts.rotY ?? 0,
     tint: opts.tint,
@@ -1339,11 +1500,15 @@ export function spawnKayKitDecoration(packId, key, opts = {}) {
   return obj;
 }
 
-/** Garante preload dos packs usados pelas decorações. */
+/** Garante preload só dos props citados. Sem key, mantém o preload do pack histórico. */
 export function preloadDecorationPacks(decorations = []) {
-  const packs = new Set();
-  for (const d of decorations) {
-    if (d?.pack) packs.add(d.pack);
-  }
-  return Promise.all([...packs].map((id) => preloadPack(id))).then(() => true);
+  return ensurePropCatalog().then(() => {
+    const jobs = [];
+    for (const d of decorations) {
+      if (!d?.pack) continue;
+      if (d.key) jobs.push(preloadOne(d.pack, d.key));
+      else jobs.push(preloadPack(d.pack));
+    }
+    return Promise.all(jobs).then(() => true);
+  });
 }

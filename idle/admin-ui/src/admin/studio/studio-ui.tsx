@@ -1,6 +1,8 @@
 
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import { cn } from "@/lib/utils";
+
+export { StudioModal } from "./studio-modal";
 
 export function StudioCard({
   label,
@@ -80,9 +82,12 @@ export function StudioBtn({
   children,
   variant = "default",
   className,
+  loading = false,
+  disabled,
   ...props
 }: React.ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: "default" | "gold" | "danger";
+  loading?: boolean;
 }) {
   return (
     <button
@@ -91,10 +96,14 @@ export function StudioBtn({
         "studio-2-btn",
         variant === "gold" && "studio-2-btn--gold",
         variant === "danger" && "studio-2-btn--danger",
+        loading && "is-loading",
         className,
       )}
+      disabled={disabled || loading}
+      aria-busy={loading || undefined}
       {...props}
     >
+      {loading ? <span className="studio-3-spinner" aria-hidden /> : null}
       {children}
     </button>
   );
@@ -121,15 +130,20 @@ export function StudioFormSection({
   title,
   children,
   className,
+  defaultOpen = true,
 }: {
   title: string;
   children: ReactNode;
   className?: string;
+  defaultOpen?: boolean;
 }) {
+  const [open, setOpen] = useState(defaultOpen);
   return (
-    <section className={cn("studio-2-form-section", className)}>
-      <h4 className="studio-2-form-section__title">{title}</h4>
-      <div className="studio-2-form-section__body">{children}</div>
+    <section className={cn("studio-2-form-section", className, open ? "is-open" : "is-closed")}>
+      <button type="button" className="studio-2-form-section__title" aria-expanded={open} onClick={() => setOpen((value) => !value)}>
+        {title}
+      </button>
+      {open ? <div className="studio-2-form-section__body">{children}</div> : null}
     </section>
   );
 }

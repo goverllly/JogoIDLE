@@ -12,6 +12,7 @@
     />
     <link rel="stylesheet" href="/jogo-idle/styles/hud.css" />
     <link rel="stylesheet" href="/jogo-idle/lobby.css" />
+    <link rel="stylesheet" href="/jogo-idle/styles/hall-frame.css" />
   </head>
   <body class="lobby-page">
     <div class="lobby-bg" aria-hidden="true"></div>
@@ -27,14 +28,9 @@
       </header>
 
       <div class="idle-lobby-grid">
-        <!-- Prévia 3D -->
-        <section class="idle-lobby-panel idle-lobby-preview">
+        <section class="hall-frame idle-lobby-panel idle-lobby-preview">
           <div class="idle-lobby-panel-head">
-            <div class="idle-lobby-panel-ico" aria-hidden="true">◇</div>
-            <div>
-              <h2 class="idle-lobby-panel-title">Prévia do personagem</h2>
-              <p class="idle-lobby-panel-desc">Visual 3D da classe e aparência selecionadas.</p>
-            </div>
+            <h2 class="hall-title idle-lobby-panel-title">Salão da classe</h2>
           </div>
           <div class="idle-lobby-preview__stage">
             <iframe
@@ -45,13 +41,14 @@
             ></iframe>
             <span class="idle-lobby-preview__hint">Arraste para girar · Roda para zoom</span>
           </div>
+          <span class="hall-frame__bl" aria-hidden="true"></span>
+          <span class="hall-frame__br" aria-hidden="true"></span>
         </section>
 
-        <section class="idle-lobby-panel idle-lobby-hall is-empty" id="hero-hall">
+        <section class="hall-frame idle-lobby-panel idle-lobby-hall is-empty" id="hero-hall">
           <div class="idle-lobby-panel-head">
-            <div class="idle-lobby-panel-ico" aria-hidden="true">☰</div>
             <div>
-              <h2 class="idle-lobby-panel-title">Seus personagens</h2>
+              <h2 class="hall-title idle-lobby-panel-title">Seus personagens</h2>
               <p class="idle-lobby-panel-desc" id="slots-label">0/3 slots</p>
             </div>
           </div>
@@ -67,8 +64,8 @@
                 <p id="detail-meta">—</p>
               </div>
               <div class="idle-detail-actions">
-                <button type="button" class="idle-btn idle-btn-play" id="btn-play">Jogar</button>
-                <button type="button" class="idle-btn idle-btn-delete" id="btn-delete">Excluir</button>
+                <button type="button" class="hall-btn hall-btn--gold idle-btn idle-btn-play" id="btn-play">Jogar</button>
+                <button type="button" class="hall-btn hall-btn--danger idle-btn idle-btn-delete" id="btn-delete">Excluir</button>
               </div>
             </div>
             <div class="idle-lobby-panel__body">
@@ -83,37 +80,60 @@
               <p class="lobby-err" id="detail-err" hidden></p>
             </div>
           </section>
-
-          <section class="idle-lobby-side-card idle-lobby-create" id="create-panel">
-            <div class="idle-lobby-panel-head">
-              <div class="idle-lobby-panel-ico" aria-hidden="true">＋</div>
-              <div>
-                <h2 class="idle-lobby-panel-title">Novo personagem</h2>
-                <p class="idle-lobby-panel-desc">Abra o Estúdio 3D para definir a aparência definitiva.</p>
-              </div>
-            </div>
-            <div class="idle-lobby-panel__body">
-              <p class="idle-lobby-create__note">
-                Guerreiro, Bárbaro, Mago e Arqueiro são escolhidos no estúdio. Classe, cores, capa e elmo não podem ser alterados depois.
-              </p>
-              <a class="idle-btn idle-btn-create" id="btn-studio" href="/jogo-idle/criar.html">
-                Abrir Estúdio de Criação
-              </a>
-              <p class="lobby-err" id="create-err" hidden></p>
-            </div>
-          </section>
           </div>
+          <span class="hall-frame__bl" aria-hidden="true"></span>
+          <span class="hall-frame__br" aria-hidden="true"></span>
         </section>
       </div>
+
+      <section class="hall-frame idle-lobby-create" id="create-panel">
+        <div class="idle-lobby-panel-head">
+          <div>
+            <h2 class="hall-title idle-lobby-panel-title">Novo personagem</h2>
+            <p class="idle-lobby-panel-desc">Escolha a classe. Cores, capa e elmo ficam definitivos no estúdio.</p>
+          </div>
+        </div>
+        <div class="class-rail" id="class-rail"></div>
+        <a class="hall-btn hall-btn--gold idle-btn idle-btn-create" id="btn-studio" href="/jogo-idle/criar.html">
+          Abrir Estúdio de Criação
+        </a>
+        <p class="lobby-err" id="create-err" hidden></p>
+        <span class="hall-frame__bl" aria-hidden="true"></span>
+        <span class="hall-frame__br" aria-hidden="true"></span>
+      </section>
+    </div>
+
+    <div class="lobby-confirm" id="delete-confirm" hidden>
+      <div class="lobby-confirm__backdrop" data-act="cancel"></div>
+      <section
+        class="hall-frame lobby-confirm__panel"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="delete-confirm-title"
+        aria-describedby="delete-confirm-msg"
+      >
+        <div class="idle-lobby-panel-head">
+          <h2 class="hall-title idle-lobby-panel-title" id="delete-confirm-title">Excluir personagem</h2>
+        </div>
+        <p class="lobby-confirm__msg" id="delete-confirm-msg"></p>
+        <p class="lobby-confirm__meta" id="delete-confirm-meta"></p>
+        <div class="lobby-confirm__actions">
+          <button type="button" class="hall-btn hall-btn--ghost" data-act="cancel">Cancelar</button>
+          <button type="button" class="hall-btn hall-btn--danger" data-act="ok" id="delete-confirm-ok">Excluir</button>
+        </div>
+        <span class="hall-frame__bl" aria-hidden="true"></span>
+        <span class="hall-frame__br" aria-hidden="true"></span>
+      </section>
     </div>
 
     <script type="module">
       import { applyCsrfHeaders, rejectIfFailed } from "./http.js";
-      const CLASS_GLYPH = {
-        GUERREIRO: "⚔",
-        BARBARO: "🪓",
-        MAGO: "✦",
-        ARQUEIRO: "🏹",
+      import { CLASS_HALLS } from "./class-halls.js";
+      const CLASS_ICON = {
+        GUERREIRO: "/jogo-idle/assets/classes/guerreiro.png",
+        BARBARO: "/jogo-idle/assets/classes/barbaro.png",
+        MAGO: "/jogo-idle/assets/classes/mago.png",
+        ARQUEIRO: "/jogo-idle/assets/classes/arqueiro.png",
       };
 
       const DEFAULT_APPEARANCE = {
@@ -234,29 +254,38 @@
           const c = state.characters[i];
           if (!c) {
             const first = state.characters.length === 0 && i === 0;
+            const open = state.characters.length < max;
+            const hint = first
+              ? "Abra o estúdio para começar a jornada."
+              : "Você ainda pode criar outro personagem.";
+            const tag = open ? "a" : "div";
+            const href = open ? ' href="/jogo-idle/criar.html"' : "";
             cards.push(`
-              <div class="idle-slot idle-slot--empty">
-                <span class="idle-slot__mark" aria-hidden="true">✦</span>
-                <span class="idle-slot__title">${first ? "Lugar do primeiro aventureiro" : "Espaço disponível"}</span>
-                <span class="idle-slot__hint">${first ? "Abra o estúdio para começar a jornada." : "Você ainda pode criar outro personagem."}</span>
-              </div>`);
+              <${tag} class="idle-slot idle-slot--empty"${href}>
+                <span class="idle-slot__mark" aria-hidden="true">+</span>
+                <span class="idle-slot__title">Espaço disponível</span>
+                <span class="idle-slot__hint">${hint}</span>
+              </${tag}>`);
             continue;
           }
           const active = c.id === state.selectedId;
-          const glyph = CLASS_GLYPH[c.classId] || "◆";
+          const icon = CLASS_ICON[c.classId];
+          const avatar = icon
+            ? `<img src="${icon}" alt="" />`
+            : "◆";
           const farm = c.farmZoneId ? `<span class="idle-char-card__badge">Em farm</span>` : "";
           const ascent = ascentLabel(c);
           const ascentHtml = ascent ? `<span class="idle-char-card__ascent">${escapeHtml(ascent)}</span>` : "";
           cards.push(`
             <button type="button" class="idle-char-card idle-slot${active ? " idle-char-card--active" : ""}" data-id="${c.id}" aria-pressed="${active ? "true" : "false"}">
-              <span class="idle-char-card__avatar" aria-hidden="true">${glyph}</span>
+              <span class="idle-char-card__avatar" aria-hidden="true">${avatar}</span>
               <span class="idle-char-card__copy">
                 <span class="idle-char-card__name">${escapeHtml(c.name)}</span>
                 <span class="idle-char-card__meta">${escapeHtml(classLabel(c.classId))}</span>
+                <span class="idle-char-card__lv">Lv. ${c.level || 1}</span>
                 ${ascentHtml}
                 ${farm}
               </span>
-              <span class="idle-char-card__lv">Lv. ${c.level || 1}</span>
             </button>`);
         }
         els.list.innerHTML = cards.join("");
@@ -351,6 +380,30 @@
           </div>`;
       }
 
+      function renderClassRail(full) {
+        const rail = document.getElementById("class-rail");
+        if (!rail) return;
+        const list = state.classes.length
+          ? state.classes
+          : Object.keys(CLASS_HALLS).map((id) => ({ id, name: id, description: "" }));
+        rail.innerHTML = list
+          .map((cls) => {
+            const hall = CLASS_HALLS[cls.id] || CLASS_HALLS.GUERREIRO;
+            const locked = full ? " is-locked" : "";
+            const tag = full ? "span" : "a";
+            const href = full ? "" : ` href="/jogo-idle/criar.html?class=${encodeURIComponent(cls.id)}"`;
+            return `<${tag} class="class-card${locked}"${href} style="--class-accent:${hall.accent};--class-glow:${hall.glow}">
+              <img src="${hall.crest}" alt="" />
+              <span><strong>${escapeHtml(cls.name)}</strong><small>${escapeHtml(cls.description || "")}</small></span>
+            </${tag}>`;
+          })
+          .join("");
+        const target = selectedCharacter()?.classId || list[0]?.id || "GUERREIRO";
+        if (els.btnStudio && !full) {
+          els.btnStudio.href = `/jogo-idle/criar.html?class=${encodeURIComponent(target)}`;
+        }
+      }
+
       function selectCharacter(id) {
         state.selectedId = id;
         renderList();
@@ -396,6 +449,7 @@
         syncPreviewFromSelection();
 
         const full = state.characters.length >= state.maxCharacters;
+        renderClassRail(full);
         if (els.btnStudio) {
           els.btnStudio.style.pointerEvents = full ? "none" : "auto";
           els.btnStudio.setAttribute("aria-disabled", full ? "true" : "false");
@@ -417,10 +471,67 @@
         }
       });
 
+      function askDelete(character) {
+        const root = document.getElementById("delete-confirm");
+        const msg = document.getElementById("delete-confirm-msg");
+        const meta = document.getElementById("delete-confirm-meta");
+        const okBtn = document.getElementById("delete-confirm-ok");
+        msg.textContent = `Excluir "${character.name}"? Esta ação não pode ser desfeita.`;
+        const ascent = ascentLabel(character);
+        meta.textContent = ascent
+          ? `Lv. ${character.level || 1} · ${classLabel(character.classId)} · ${ascent}`
+          : `Lv. ${character.level || 1} · ${classLabel(character.classId)}`;
+        root.hidden = false;
+
+        return new Promise((resolve) => {
+          const previously = document.activeElement;
+          okBtn?.focus();
+
+          const finish = (value) => {
+            root.hidden = true;
+            root.removeEventListener("click", onClick);
+            document.removeEventListener("keydown", onKey);
+            resolve(value);
+            if (previously instanceof HTMLElement) previously.focus();
+          };
+
+          const onClick = (event) => {
+            const act = event.target.closest("[data-act]")?.dataset.act;
+            if (act === "ok") finish(true);
+            if (act === "cancel") finish(false);
+          };
+
+          const onKey = (event) => {
+            if (event.key === "Escape") {
+              event.preventDefault();
+              finish(false);
+            } else if (event.key === "Enter") {
+              event.preventDefault();
+              finish(true);
+            } else if (event.key === "Tab") {
+              const buttons = [...root.querySelectorAll("button")];
+              if (!buttons.length) return;
+              const first = buttons[0];
+              const last = buttons[buttons.length - 1];
+              if (event.shiftKey && document.activeElement === first) {
+                event.preventDefault();
+                last.focus();
+              } else if (!event.shiftKey && document.activeElement === last) {
+                event.preventDefault();
+                first.focus();
+              }
+            }
+          };
+
+          root.addEventListener("click", onClick);
+          document.addEventListener("keydown", onKey);
+        });
+      }
+
       els.btnDelete.addEventListener("click", async () => {
         const c = selectedCharacter();
         if (!c) return;
-        if (!confirm(`Excluir "${c.name}"? Esta ação não pode ser desfeita.`)) return;
+        if (!(await askDelete(c))) return;
         setErr(els.detailErr, "");
         try {
           await api(`/api/jogo-idle/characters/${c.id}`, { method: "DELETE" });

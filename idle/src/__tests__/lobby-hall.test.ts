@@ -31,7 +31,8 @@ describe("lobby — salão de heróis", () => {
     assert.match(lobby, /Guerreiro, Bárbaro, Mago e Arqueiro/);
     assert.match(lobby, /id="btn-play"/);
     assert.match(lobby, /id="btn-delete"/);
-    assert.match(lobby, /confirm\(/);
+    assert.match(lobby, /id="delete-confirm"/);
+    assert.equal(lobby.includes("confirm("), false);
   });
 
   it("reusa poucos props KayKit e Kenney já presentes no jogo", () => {

@@ -1,397 +1,369 @@
-
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
-import type {
-  AdminMonsterVisualOption,
-  AdminZone,
-  MonsterDraftRow,
-} from "./admin-types";
+import type { AdminMonsterVisualOption, AdminZone, MonsterDraftRow } from "./admin-types";
 import { AdminPreviewFrame } from "./studio/admin-preview-frame";
 import { useAdminPreviewBridge } from "./studio/use-admin-preview-bridge";
-import {
-  StudioBadge,
-  StudioBtn,
-  StudioCatalog,
-  StudioEmpty,
-  StudioField,
-  StudioFormSection,
-  StudioInspector,
-  StudioTabs,
-} from "./studio/studio-ui";
+import { StudioBtn, StudioEmpty, StudioField, StudioModal, StudioTabs } from "./studio/studio-ui";
+import type { MonsterPhase, useMonsterDraft } from "./use-monster-draft";
+
+type MonsterApi = ReturnType<typeof useMonsterDraft>;
 
 type AdminMonstersPanelProps = {
   zones: AdminZone[];
   zoneId: string;
-  monsterDrafts: MonsterDraftRow[];
-  bossDraft: MonsterDraftRow | null;
-  bossOverridden: boolean;
-  bossWaveSize: string;
-  bossWaveSizeOverridden: boolean;
+  monsterApi: MonsterApi;
   monsterVisuals?: AdminMonsterVisualOption[];
   working: boolean;
-  onZoneChange: (id: string) => void;
-  onMonsterDraftsChange: (
-    updater: (prev: MonsterDraftRow[]) => MonsterDraftRow[],
-  ) => void;
-  onBossDraftChange: (updater: (prev: MonsterDraftRow) => MonsterDraftRow) => void;
-  onBossWaveSizeChange: (value: string) => void;
-  onSaveMonsters: (event: FormEvent) => void;
-  onResetBoss: () => void;
-  onResetBossWaveSize: () => void;
+  error: string | null;
 };
 
 const DEFAULT_VISUALS: AdminMonsterVisualOption[] = [
-  { id: "skeleton_minion", label: "Skeleton Minion" },
-  { id: "skeleton_rogue", label: "Skeleton Rogue" },
-  { id: "skeleton_warrior", label: "Skeleton Warrior" },
-  { id: "skeleton_mage", label: "Skeleton Mage" },
+  { id: "skeleton_minion", label: "Esqueleto Minion" },
+  { id: "skeleton_rogue", label: "Esqueleto Rogue" },
+  { id: "skeleton_warrior", label: "Esqueleto Guerreiro" },
+  { id: "skeleton_mage", label: "Esqueleto Mago" },
 ];
 
-const MOB_TABS = [
+const TABS = [
   { id: "geral", label: "Geral" },
   { id: "atributos", label: "Atributos" },
-  { id: "spawn", label: "Spawn" },
-  { id: "habilidades", label: "Habilidades" },
-  { id: "drops", label: "Drops" },
-  { id: "balance", label: "Balanceamento" },
+  { id: "onda", label: "Onda" },
 ];
 
-type CatalogEntry = {
-  id: string;
-  zoneId: string;
-  zoneName: string;
-  kind: "mob" | "boss";
-  index: number;
-  name: string;
-  level: number;
-  visualId?: string | null;
-};
+const STATS: Array<{ key: keyof MonsterDraftRow; label: string }> = [
+  { key: "level", label: "Nível" },
+  { key: "hp", label: "HP" },
+  { key: "attack", label: "Ataque" },
+  { key: "defense", label: "Defesa" },
+  { key: "xp", label: "XP" },
+  { key: "gold", label: "Ouro" },
+];
 
-function slugKey(name: string, index: number, isBoss: boolean) {
-  const slug = String(name || (isBoss ? "boss" : "mob"))
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "_")
-    .replace(/^_|_$/g, "")
-    .slice(0, 40);
-  return isBoss ? `boss:${slug || "boss"}` : `mob:${index}:${slug || "mob"}`;
-}
+const PHASE_LABEL: Record<MonsterPhase, string> = {
+  saved: "Salvo",
+  dirty: "Não salvo",
+  saving: "Salvando",
+  error: "Erro",
+};
 
 export function AdminMonstersPanel({
   zones,
   zoneId,
-  monsterDrafts,
-  bossDraft,
-  bossOverridden,
-  bossWaveSize,
-  bossWaveSizeOverridden,
+  monsterApi,
   monsterVisuals,
   working,
-  onZoneChange,
-  onMonsterDraftsChange,
-  onBossDraftChange,
-  onBossWaveSizeChange,
-  onSaveMonsters,
-  onResetBoss,
-  onResetBossWaveSize,
+  error,
 }: AdminMonstersPanelProps) {
-  const autoWave = Math.max(2, (monsterDrafts.length || 2) * 2);
+  const {
+    drafts,
+    setDrafts,
+    boss,
+    setBoss,
+    wave,
+    setWave,
+    bossOverridden,
+    waveOverridden,
+    selectedKey,
+    setSelectedKey,
+    dirty,
+    phase,
+    ready,
+    zoneGate,
+    setZoneGate,
+    requestZone,
+    confirmZoneDiscard,
+    save,
+    saveAndSwitchZone,
+    resetBoss,
+    resetWave,
+  } = monsterApi;
+
   const visuals = monsterVisuals?.length ? monsterVisuals : DEFAULT_VISUALS;
+  const zone = zones.find((row) => row.id === zoneId) || null;
   const [query, setQuery] = useState("");
-  const [filterZone, setFilterZone] = useState("all");
-  const [selectedId, setSelectedId] = useState("");
   const [tab, setTab] = useState("geral");
+  const [resetAsk, setResetAsk] = useState<null | "boss" | "wave">(null);
+  const [modalTried, setModalTried] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
-  const { ready, showMonster } = useAdminPreviewBridge(iframeRef);
+  const { ready: previewReady, showMonster, framePreview } = useAdminPreviewBridge(iframeRef);
+  const autoWave = Math.max(2, (drafts.length || 2) * 2);
 
-  const catalog = useMemo(() => {
-    const rows: CatalogEntry[] = [];
-    for (const z of zones) {
-      (z.monsters || []).forEach((m, index) => {
-        const key = slugKey(m.name, index, false);
-        rows.push({
-          id: `creature:${z.id}:${key}`,
-          zoneId: z.id,
-          zoneName: z.name,
-          kind: "mob",
-          index,
-          name: m.name,
-          level: m.level,
-          visualId: m.visualId,
-        });
+  const allEntries = useMemo(() => {
+    const rows: Array<{ id: string; kind: "mob" | "boss"; index: number; name: string; level: string; visualId: string }> = [];
+    if (boss) {
+      rows.push({
+        id: "boss",
+        kind: "boss",
+        index: -1,
+        name: boss.name,
+        level: boss.level,
+        visualId: boss.visualId,
       });
-      if (z.boss) {
-        const key = slugKey(z.boss.name, -1, true);
-        rows.push({
-          id: `creature:${z.id}:${key}`,
-          zoneId: z.id,
-          zoneName: z.name,
-          kind: "boss",
-          index: -1,
-          name: z.boss.name,
-          level: z.boss.level,
-          visualId: z.boss.visualId,
-        });
-      }
     }
+    drafts.forEach((mob, index) => {
+      rows.push({
+        id: `mob:${index}`,
+        kind: "mob",
+        index,
+        name: mob.name,
+        level: mob.level,
+        visualId: mob.visualId,
+      });
+    });
     return rows;
-  }, [zones]);
+  }, [boss, drafts]);
 
-  const filtered = useMemo(() => {
+  const entries = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return catalog.filter((c) => {
-      if (filterZone !== "all" && c.zoneId !== filterZone) return false;
-      if (!q) return true;
-      return (
-        c.name.toLowerCase().includes(q) ||
-        c.zoneName.toLowerCase().includes(q) ||
-        c.id.includes(q)
-      );
-    });
-  }, [catalog, query, filterZone]);
+    if (!q) return allEntries;
+    return allEntries.filter((row) => row.name.toLowerCase().includes(q) || row.visualId.toLowerCase().includes(q));
+  }, [allEntries, query]);
 
-  const selectedEntry = catalog.find((c) => c.id === selectedId) || null;
+  const selected = allEntries.find((row) => row.id === selectedKey) || null;
+  const active: MonsterDraftRow | null =
+    selected?.kind === "boss" ? boss : selected ? drafts[selected.index] || null : null;
 
   useEffect(() => {
-    if (!selectedId && filtered[0]) {
-      setSelectedId(filtered[0].id);
-    }
-  }, [filtered, selectedId]);
-
-  useEffect(() => {
-    if (!selectedEntry) return;
-    if (selectedEntry.zoneId !== zoneId) {
-      onZoneChange(selectedEntry.zoneId);
-    }
-  }, [selectedEntry?.id, selectedEntry?.zoneId, zoneId, onZoneChange]);
-
-  const selectedKind = selectedEntry?.kind || "mob";
-  const selectedIndex = selectedEntry?.index ?? 0;
-
-  const activeRow: MonsterDraftRow | null =
-    selectedKind === "boss"
-      ? bossDraft
-      : monsterDrafts[selectedIndex] || monsterDrafts[0] || null;
-
-  useEffect(() => {
-    if (!ready || !activeRow) return;
+    if (!previewReady || !active) return;
     showMonster({
-      visualId: activeRow.visualId || "skeleton_minion",
-      name: activeRow.name || "Monstro",
+      visualId: active.visualId || "skeleton_minion",
+      name: active.name || "Monstro",
     });
-  }, [ready, activeRow?.visualId, activeRow?.name, showMonster, activeRow]);
+  }, [previewReady, active?.visualId, active?.name, showMonster]);
 
   function updateActive(key: keyof MonsterDraftRow, value: string) {
-    if (selectedKind === "boss") {
-      onBossDraftChange((prev) => ({ ...prev, [key]: value }));
+    if (!selected) return;
+    if (selected.kind === "boss") {
+      setBoss((prev) => (prev ? { ...prev, [key]: value } : prev));
       return;
     }
-    onMonsterDraftsChange((prev) =>
-      prev.map((row, i) => (i === selectedIndex ? { ...row, [key]: value } : row)),
-    );
+    setDrafts((prev) => prev.map((row, index) => (index === selected.index ? { ...row, [key]: value } : row)));
   }
 
+  async function onSubmit(event: FormEvent) {
+    event.preventDefault();
+    await save();
+  }
+
+  async function confirmReset() {
+    if (!resetAsk) return;
+    setModalTried(true);
+    const ok = resetAsk === "boss" ? await resetBoss() : await resetWave();
+    if (ok) {
+      setResetAsk(null);
+      setModalTried(false);
+    }
+  }
+
+  const zoneName = zoneGate ? zones.find((row) => row.id === zoneGate)?.name || zoneGate : "";
+  const visualLabel = visuals.find((visual) => visual.id === active?.visualId)?.label || active?.visualId || "—";
+
   return (
-    <form className="studio-2-split-3" onSubmit={onSaveMonsters}>
-      <StudioCatalog
-        head={
-          <>
-            <div className="flex items-center justify-between gap-2">
-              <strong className="text-sm">Monstros</strong>
-              <StudioBadge>{filtered.length}</StudioBadge>
-            </div>
-            <input
-              className="studio-2-input"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Buscar nome / zona"
-            />
-            <select
-              className="studio-2-select"
-              value={filterZone}
-              onChange={(e) => setFilterZone(e.target.value)}
-            >
-              <option value="all">Todas as zonas</option>
-              {zones.map((z) => (
-                <option key={z.id} value={z.id}>
-                  {z.name}
-                </option>
+    <div className="ed">
+      <header className="ed-top">
+        <div className="ed-top__title">
+          <p className="ed-kicker">Editor de monstros</p>
+          <h2>{zone?.name || "Zona"}</h2>
+        </div>
+        <div className="ed-top__actions">
+          <StudioBtn variant="gold" type="submit" form="monster-editor" disabled={working || !ready}>
+            Salvar zona
+          </StudioBtn>
+        </div>
+      </header>
+
+      <aside className="ed-catalog">
+        <div className="ed-catalog__head">
+          <div className="ed-catalog__count">
+            <strong>Criaturas</strong>
+            <span>{query.trim() ? `${entries.length} de ${allEntries.length}` : allEntries.length}</span>
+          </div>
+          <label className="ed-note">
+            Zona do Mundo
+            <select className="studio-2-select" value={zoneId} onChange={(event) => requestZone(event.target.value)}>
+              {zones.map((row) => (
+                <option key={row.id} value={row.id}>{row.name}</option>
               ))}
             </select>
-          </>
-        }
-      >
-        {filtered.length === 0 ? (
-          <StudioEmpty>Nenhum monstro</StudioEmpty>
-        ) : (
-          filtered.map((c) => (
-            <button
-              key={c.id}
-              type="button"
-              className={cn("studio-2-catalog__row", selectedId === c.id && "is-selected")}
-              onClick={() => setSelectedId(c.id)}
-            >
-              <span className="min-w-0 flex-1">
-                <span className="block truncate text-sm font-semibold">
-                  {c.kind === "boss" ? "Boss · " : ""}
-                  {c.name}
-                </span>
-                <span className="block truncate text-[0.62rem] text-[var(--studio-muted)]">
-                  {c.zoneName} · Lv {c.level}
-                </span>
-              </span>
-              {c.kind === "boss" ? <StudioBadge tone="warn">boss</StudioBadge> : null}
-            </button>
-          ))
-        )}
-      </StudioCatalog>
-
-      <div className="studio-2-editor-pane">
-        <div className="studio-2-editor-pane__head">
-          <div>
-            <h3 className="studio-2-section-title mb-0">
-              {activeRow?.name || "Monstro"}
-            </h3>
-            <p className="text-[0.65rem] text-[var(--studio-muted)]">
-              {selectedEntry?.id || "—"} · zona ativa {zoneId}
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-1.5">
-            {bossWaveSizeOverridden ? (
-              <StudioBtn type="button" onClick={onResetBossWaveSize}>
-                Reset onda
-              </StudioBtn>
-            ) : null}
-            {bossOverridden ? (
-              <StudioBtn type="button" onClick={onResetBoss}>
-                Reset boss
-              </StudioBtn>
-            ) : null}
-            <StudioBtn variant="gold" disabled={working} type="submit">
-              {working ? "Salvando…" : "Salvar zona"}
-            </StudioBtn>
-          </div>
+          </label>
+          <input
+            className="studio-2-input"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Buscar nesta zona"
+          />
         </div>
+        {entries.length === 0 ? (
+          <StudioEmpty>{drafts.length || boss ? "Nenhuma criatura com essa busca." : "Esta zona não tem monstros."}</StudioEmpty>
+        ) : (
+          <div className="ed-list">
+            {entries.map((row) => (
+              <button
+                key={row.id}
+                type="button"
+                className={cn("ed-row", row.kind === "boss" && "is-boss", selectedKey === row.id && "is-selected")}
+                aria-selected={selectedKey === row.id}
+                onClick={() => setSelectedKey(row.id)}
+              >
+                <span className={cn("ed-mark", row.kind === "boss" && "is-boss")}>
+                  {row.kind === "boss" ? "B" : String(row.index + 1)}
+                </span>
+                <span className="ed-row__text">
+                  <span className="ed-row__name">{row.name || (row.kind === "boss" ? "Boss" : "Monstro")}</span>
+                  <span className="ed-row__meta">
+                    {row.kind === "boss" ? "Boss" : "Comum"} · Nv {row.level || "—"} · {row.visualId}
+                  </span>
+                </span>
+                {row.kind === "boss" && bossOverridden ? <em className="ed-flag">override</em> : null}
+              </button>
+            ))}
+          </div>
+        )}
+      </aside>
 
-        <StudioTabs tabs={MOB_TABS} active={tab} onChange={setTab} />
-
-        {!activeRow ? (
-          <StudioEmpty>Selecione um monstro no catálogo.</StudioEmpty>
+      <form id="monster-editor" className="ed-main" onSubmit={(event) => void onSubmit(event)}>
+        <StudioTabs tabs={TABS} active={tab} onChange={setTab} />
+        {!active ? (
+          <StudioEmpty>Selecione uma criatura da zona.</StudioEmpty>
         ) : (
           <>
+            <p className="ed-idline">
+              {selected?.kind === "boss" ? "Boss desta zona" : `Monstro ${((selected?.index ?? 0) + 1)} de ${drafts.length}`}
+              {selected?.kind === "boss" && bossOverridden ? " · override gravado" : ""}
+            </p>
             {tab === "geral" ? (
-              <StudioFormSection title="Identidade">
+              <div className="ed-section">
+                <h3>Geral</h3>
                 <StudioField label="Nome">
-                  <input
-                    className="studio-2-input"
-                    value={activeRow.name}
-                    onChange={(e) => updateActive("name", e.target.value)}
-                  />
+                  <input className="studio-2-input" value={active.name} onChange={(event) => updateActive("name", event.target.value)} />
                 </StudioField>
-                <StudioField label="Modelo 3D">
-                  <div className="grid grid-cols-2 gap-1">
-                    {visuals.map((v) => (
-                      <button
-                        key={v.id}
-                        type="button"
-                        className={cn(
-                          "studio-2-wb__prop",
-                          activeRow.visualId === v.id && "is-armed",
-                        )}
-                        onClick={() => updateActive("visualId", v.id)}
-                      >
-                        {v.label}
-                      </button>
-                    ))}
-                  </div>
-                </StudioField>
-              </StudioFormSection>
+                <p className="ed-note">Modelos aceitos pelo jogo. Árvores e props de cenário não são criaturas.</p>
+                <div className="ed-models">
+                  {visuals.map((visual) => (
+                    <button
+                      key={visual.id}
+                      type="button"
+                      className={cn("ed-model", active.visualId === visual.id && "is-on")}
+                      onClick={() => updateActive("visualId", visual.id)}
+                    >
+                      <strong>{visual.label}</strong>
+                      <span>{visual.id}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
             ) : null}
-
             {tab === "atributos" ? (
-              <StudioFormSection title="Combate">
-                <div className="grid gap-2 sm:grid-cols-2">
-                  {(
-                    [
-                      ["level", "Nível"],
-                      ["hp", "HP"],
-                      ["attack", "Ataque"],
-                      ["defense", "Defesa"],
-                      ["xp", "XP"],
-                      ["gold", "Gold"],
-                    ] as const
-                  ).map(([key, label]) => (
-                    <StudioField key={key} label={label}>
+              <div className="ed-section">
+                <h3>Atributos</h3>
+                <div className="ed-fields">
+                  {STATS.map((stat) => (
+                    <StudioField key={stat.key} label={stat.label}>
                       <input
                         className="studio-2-input"
-                        value={activeRow[key]}
-                        onChange={(e) => updateActive(key, e.target.value)}
+                        inputMode="numeric"
+                        value={active[stat.key]}
+                        onChange={(event) => updateActive(stat.key, event.target.value)}
                       />
                     </StudioField>
                   ))}
                 </div>
-              </StudioFormSection>
+                <p className="ed-note">HP, ataque, defesa, XP e ouro são gravados como override da criatura. O encontro continua sendo a lista da zona, sem posição no mapa.</p>
+              </div>
             ) : null}
-
-            {tab === "spawn" ? (
-              <StudioFormSection title="Spawn / onda">
-                <StudioField label="Kills até o boss">
+            {tab === "onda" ? (
+              <div className="ed-section">
+                <h3>Onda</h3>
+                <StudioField label="Abates até o boss">
                   <input
-                    className="studio-2-input w-28"
-                    value={bossWaveSize}
-                    onChange={(e) => onBossWaveSizeChange(e.target.value)}
+                    className="studio-2-input"
+                    inputMode="numeric"
+                    value={wave}
+                    onChange={(event) => setWave(event.target.value)}
                   />
                 </StudioField>
-                <p className="text-[0.68rem] text-[var(--studio-muted)]">
-                  {bossWaveSizeOverridden ? "Override ativo" : `Padrão ≈ ${autoWave}`}. Lista de
-                  mobs da zona = pool de spawn aleatório.
+                <p className="ed-note">
+                  {waveOverridden ? "Esta zona tem override de onda." : `Sem override, o padrão fica em torno de ${autoWave}.`}
+                  {" "}O valor aceito vai de 1 a 200. Vale para a zona inteira.
                 </p>
-              </StudioFormSection>
-            ) : null}
-
-            {tab === "habilidades" ? (
-              <StudioFormSection title="Habilidades">
-                <p className="text-[0.78rem] text-[var(--studio-muted)]">
-                  O motor atual não possui skills configuráveis por monstro. Skills de combate
-                  existem só no herói. Catálogo de habilidades de mob: Fase 2+.
-                </p>
-              </StudioFormSection>
-            ) : null}
-
-            {tab === "drops" ? (
-              <StudioFormSection title="Drops">
-                <p className="text-[0.78rem] text-[var(--studio-muted)]">
-                  Recompensas usam pool global por <strong>tier da zona</strong> × chance de drop
-                  da zona/boss. Loot tables por monstro: Fase 2. Use o módulo Loot & Drops ou o
-                  Simulador.
-                </p>
-              </StudioFormSection>
-            ) : null}
-
-            {tab === "balance" ? (
-              <StudioFormSection title="Balanceamento">
-                <p className="text-[0.78rem] text-[var(--studio-muted)]">
-                  Overrides de HP/ATK/etc. neste formulário. TTK global (hits mob/boss) fica em
-                  Configurações / Economia. Simulador estima TTK sem gravar dados.
-                </p>
-              </StudioFormSection>
+                <div className="ed-foot__actions">
+                  <StudioBtn type="button" disabled={!waveOverridden || working} onClick={() => { setModalTried(false); setResetAsk("wave"); }}>
+                    Restaurar onda
+                  </StudioBtn>
+                  <StudioBtn type="button" disabled={!bossOverridden || working} onClick={() => { setModalTried(false); setResetAsk("boss"); }}>
+                    Restaurar boss
+                  </StudioBtn>
+                </div>
+              </div>
             ) : null}
           </>
         )}
-      </div>
+      </form>
 
-      <StudioInspector title="Preview 3D">
-        <div className="min-h-[240px]">
-          <AdminPreviewFrame iframeRef={iframeRef} ready={ready} title="Preview do monstro" className="h-[260px]" />
+      <aside className="ed-preview">
+        <div className="ed-preview__stage">
+          <AdminPreviewFrame iframeRef={iframeRef} ready={previewReady} title="Preview do monstro" className="ed-preview__frame" />
         </div>
-        <dl className="space-y-1 text-[0.75rem]">
-          <div className="flex justify-between gap-2"><dt className="text-[var(--studio-muted)]">HP</dt><dd>{activeRow?.hp || "—"}</dd></div>
-          <div className="flex justify-between gap-2"><dt className="text-[var(--studio-muted)]">ATK</dt><dd>{activeRow?.attack || "—"}</dd></div>
-          <div className="flex justify-between gap-2"><dt className="text-[var(--studio-muted)]">DEF</dt><dd>{activeRow?.defense || "—"}</dd></div>
-          <div className="flex justify-between gap-2"><dt className="text-[var(--studio-muted)]">XP</dt><dd>{activeRow?.xp || "—"}</dd></div>
-          <div className="flex justify-between gap-2"><dt className="text-[var(--studio-muted)]">Gold</dt><dd>{activeRow?.gold || "—"}</dd></div>
-          <div className="flex justify-between gap-2"><dt className="text-[var(--studio-muted)]">Visual</dt><dd className="truncate">{activeRow?.visualId || "—"}</dd></div>
-        </dl>
-      </StudioInspector>
-    </form>
+        <div className="ed-preview__meta">
+          <h3>{active?.name || "Criatura"}</h3>
+          <StudioBtn type="button" onClick={framePreview}>Enquadrar modelo</StudioBtn>
+          <p>
+            {selected?.kind === "boss" ? "Boss" : "Monstro comum"} · modelo <code>{active?.visualId || "—"}</code>
+            {visualLabel !== active?.visualId ? ` (${visualLabel})` : ""}. Arraste para girar e use a roda para aproximar.
+          </p>
+          <dl>
+            <div><dt>HP</dt><dd>{active?.hp || "—"}</dd></div>
+            <div><dt>ATK</dt><dd>{active?.attack || "—"}</dd></div>
+            <div><dt>DEF</dt><dd>{active?.defense || "—"}</dd></div>
+            <div><dt>XP</dt><dd>{active?.xp || "—"}</dd></div>
+            <div><dt>Ouro</dt><dd>{active?.gold || "—"}</dd></div>
+          </dl>
+        </div>
+      </aside>
+
+      <footer className="ed-foot">
+        <span className={cn("ed-phase", `is-${phase}`)}>{PHASE_LABEL[phase]}</span>
+        <span className="ed-foot__hint">
+          Salvar envia os monstros, o boss e a onda desta zona. A cena 3D, o nível e o drop da zona ficam de fora.
+        </span>
+      </footer>
+
+      <StudioModal
+        open={zoneGate != null}
+        title="Trocar de zona"
+        description={`${zone?.name || "A zona atual"} tem alterações de monstros que ainda não foram salvas. Abrir ${zoneName} sem salvar descarta esse rascunho.`}
+        busy={working}
+        error={modalTried ? error : null}
+        onClose={() => !working && setZoneGate(null)}
+        footer={
+          <>
+            <StudioBtn type="button" disabled={working} onClick={() => setZoneGate(null)}>Cancelar</StudioBtn>
+            <StudioBtn type="button" disabled={working} onClick={confirmZoneDiscard}>Descartar e trocar</StudioBtn>
+            <StudioBtn variant="gold" type="button" loading={working} onClick={() => { setModalTried(true); void saveAndSwitchZone(); }}>
+              Salvar e trocar
+            </StudioBtn>
+          </>
+        }
+      />
+
+      <StudioModal
+        open={resetAsk != null}
+        title={resetAsk === "boss" ? "Restaurar boss" : "Restaurar onda"}
+        description={
+          resetAsk === "boss"
+            ? `O boss de ${zone?.name || "esta zona"} perde o override e volta ao derivado do jogo. Os monstros comuns e a cena não são apagados.`
+            : `A onda de ${zone?.name || "esta zona"} volta ao padrão, perto de ${autoWave} abates. Os monstros e o boss permanecem.`
+        }
+        busy={working}
+        error={modalTried ? error : null}
+        onClose={() => !working && setResetAsk(null)}
+        footer={
+          <>
+            <StudioBtn type="button" disabled={working} onClick={() => setResetAsk(null)}>Cancelar</StudioBtn>
+            <StudioBtn variant="danger" type="button" loading={working} onClick={() => void confirmReset()}>Restaurar</StudioBtn>
+          </>
+        }
+      />
+    </div>
   );
 }

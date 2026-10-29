@@ -436,12 +436,20 @@
 }
 
 .studio-2-form-section__title {
+  display: flex;
+  width: 100%;
   margin: 0 0 0.45rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+  text-align: left;
   color: var(--studio-gold);
+  cursor: pointer;
 }
 
 .studio-2-form-section__body {

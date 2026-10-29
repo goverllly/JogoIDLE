@@ -267,7 +267,10 @@ body.play-stage {
 }
 
 .play-stage .stage__left {
-  overflow: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  /* a moldura fica no card; quem rola é o corpo */
+  overflow: hidden !important;
   /* mesma largura da mochila */
   width: var(--side-panel-w) !important;
   min-width: 0 !important;
@@ -408,6 +411,7 @@ body.play-stage {
 .play-stage .panel-toggle-row {
   display: flex;
   align-items: center;
+  flex-shrink: 0;
   gap: 0.45rem;
   margin-bottom: 0.35rem;
 }
@@ -467,19 +471,45 @@ body.play-stage {
   padding: 0.45rem 0.55rem !important;
 }
 
+.play-stage .card--rail[data-collapsed='true'] {
+  flex: 0 0 auto !important;
+  height: auto !important;
+  max-height: none !important;
+}
+
 .play-stage .card--rail[data-collapsed='true'] .panel-body--rail,
 .play-stage .card--bag[data-collapsed='true'] .panel-body--bag,
 .play-stage .card--log[data-collapsed='true'] .panel-body--log {
   display: none !important;
 }
 
-.play-stage .card--rail {
+.play-stage .stage__left > .card.card--rail {
+  flex: 1 1 auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 0 !important;
+  height: auto !important;
+  max-height: 100% !important;
+  box-sizing: border-box !important;
   padding: var(--wood-pad) !important;
-  overflow: auto;
-  scrollbar-width: none !important;
-  -ms-overflow-style: none !important;
+  /* a moldura (::after) não pode rolar com o conteúdo */
+  overflow: hidden !important;
 }
 
+.play-stage .panel-body--rail {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+  /* folga para a última linha não entrar debaixo dos cantos */
+  padding-bottom: 0.85rem !important;
+  scroll-padding-bottom: 0.65rem;
+}
+
+.play-stage .panel-body--rail::-webkit-scrollbar,
 .play-stage .card--rail::-webkit-scrollbar {
   width: 0 !important;
   height: 0 !important;

@@ -4,6 +4,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { clone as cloneSkinned } from 'three/addons/utils/SkeletonUtils.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { SKINS, ARMORS, METALS, CAPES, CLASS_PARTS, DEFAULT_LOOK } from './appearance.js';
+import { hallImageCandidates, hallProfile, normalizeClassId } from './class-halls.js';
 
 const MODEL_DIR = '/jogo-idle/assets/models/';
 const HERO_HEIGHT = 1.9;
@@ -133,19 +134,21 @@ function createActor(gltf, { hide = [], height }) {
 const previewParams = new URLSearchParams(location.search);
 const clearStage = previewParams.has("clear");
 const hallStage = !clearStage && previewParams.has("hall");
+const paintedHall = hallStage;
 const renderer = new THREE.WebGLRenderer({
   antialias: true,
-  alpha: clearStage,
+  alpha: clearStage || paintedHall,
   powerPreference: "high-performance",
 });
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.15;
-renderer.shadowMap.enabled = true;
+renderer.toneMappingExposure = 1.12;
+renderer.shadowMap.enabled = !paintedHall;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-if (clearStage) renderer.setClearColor(0x000000, 0);
-root.prepend(renderer.domElement);
+if (clearStage || paintedHall) renderer.setClearColor(0x000000, 0);
+const statusAnchor = document.getElementById('status');
+root.insertBefore(renderer.domElement, statusAnchor);
 
 const scene = new THREE.Scene();
 if (clearStage) {
@@ -157,22 +160,22 @@ if (clearStage) {
   scene.fog = new THREE.Fog(0x0b1020, 8, 18);
 }
 
-const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 40);
+const camera = new THREE.PerspectiveCamera(hallStage ? 30 : 32, 1, 0.1, 40);
 
 const CAM_TARGET = clearStage
   ? { x: 0.05, y: 0.88, z: 0 }
   : hallStage
-    ? { x: 0, y: 0.96, z: 0 }
+    ? { x: 0, y: 0.86, z: 0 }
     : { x: 0, y: 1.0, z: 0 };
 const CAM_FRONT = clearStage
   ? { x: 0.05, y: 1.32, z: 3.95 }
   : hallStage
-    ? { x: 0.18, y: 1.28, z: 5.45 }
+    ? { x: 0.04, y: 1.16, z: 4.15 }
     : { x: 0, y: 1.55, z: 4.2 };
 const CAM_BACK = clearStage
   ? { x: 0.05, y: 1.32, z: -3.95 }
   : hallStage
-    ? { x: 0.18, y: 1.28, z: -5.45 }
+    ? { x: 0.04, y: 1.16, z: -4.15 }
     : { x: 0, y: 1.55, z: -4.2 };
 
 camera.position.set(CAM_FRONT.x, CAM_FRONT.y, CAM_FRONT.z);
@@ -182,8 +185,8 @@ controls.target.set(CAM_TARGET.x, CAM_TARGET.y, CAM_TARGET.z);
 controls.enableDamping = true;
 controls.dampingFactor = 0.08;
 controls.enablePan = false;
-controls.minDistance = hallStage ? 3.5 : 2.4;
-controls.maxDistance = hallStage ? 7.6 : 6.5;
+controls.minDistance = hallStage ? 2.85 : 2.4;
+controls.maxDistance = hallStage ? 6.2 : 6.5;
 controls.minPolarAngle = 0.35;
 controls.maxPolarAngle = Math.PI / 2 - 0.08;
 controls.update();
@@ -206,31 +209,21 @@ sun.shadow.camera.far = 20;
 scene.add(sun);
 const fill = new THREE.AmbientLight(hallStage ? 0x3d4a38 : 0x405070, hallStage ? 0.28 : 0.35);
 scene.add(fill);
-const hallTorches = [];
+const rimLight = new THREE.DirectionalLight(0x8eb6c8, 0.4);
+rimLight.position.set(-2.2, 2.4, 3.1);
+scene.add(rimLight);
+const warmPoint = new THREE.PointLight(0xffb45a, 0, 6.5, 2);
+warmPoint.position.set(-0.85, 1.35, 0.85);
+const coolPoint = new THREE.PointLight(0xffb45a, 0, 6.5, 2);
+coolPoint.position.set(0.9, 1.2, 0.7);
+scene.add(warmPoint, coolPoint);
 if (hallStage) {
-  hemi.color.set(0x9eb4c0);
-  hemi.groundColor.set(0x3c4a32);
-  hemi.intensity = 0.58;
-  sun.color.set(0xffe0a8);
-  sun.intensity = 1.05;
-  scene.background = new THREE.Color(0x1a2624);
-  scene.fog = new THREE.Fog(0x24302c, 6.5, 15);
-  document.documentElement.style.background = "#1a2624";
-  document.body.style.background = "#1a2624";
+  scene.background = null;
+  scene.fog = null;
+  document.documentElement.style.background = "transparent";
+  document.body.style.background = "transparent";
   document.body.classList.add("preview-hall");
-  const left = new THREE.PointLight(0xff9a3c, 2.4, 5.2, 2);
-  left.position.set(-1.05, 1.15, -0.2);
-  const right = new THREE.PointLight(0xff9a3c, 2.1, 5.2, 2);
-  right.position.set(1.05, 1.15, -0.2);
-  const rim = new THREE.DirectionalLight(0x7ea8b8, 0.35);
-  rim.position.set(-2.4, 2.2, 3.2);
-  scene.add(left, right, rim);
-  hallTorches.push(left, right);
-  sun.shadow.camera.left = -5;
-  sun.shadow.camera.right = 5;
-  sun.shadow.camera.top = 5;
-  sun.shadow.camera.bottom = -5;
-  sun.shadow.camera.updateProjectionMatrix();
+  sun.castShadow = false;
 }
 
 const ground = new THREE.Mesh(
@@ -256,17 +249,160 @@ const ring = new THREE.Mesh(
 );
 ring.rotation.x = -Math.PI / 2;
 ring.position.y = 0.02;
-if (clearStage) {
+if (clearStage || hallStage) {
   ground.visible = false;
   ring.visible = false;
 }
 scene.add(ring);
+
+const contact = new THREE.Mesh(
+  new THREE.CircleGeometry(0.46, 40),
+  new THREE.MeshBasicMaterial({
+    color: 0x05060a,
+    transparent: true,
+    opacity: 0.42,
+    depthWrite: false,
+  }),
+);
+contact.rotation.x = -Math.PI / 2;
+contact.position.y = 0.015;
+contact.visible = hallStage;
+scene.add(contact);
+
+const PARTICLE_COUNT = 20;
+const particlePositions = new Float32Array(PARTICLE_COUNT * 3);
+const particleSeeds = new Float32Array(PARTICLE_COUNT);
+for (let i = 0; i < PARTICLE_COUNT; i += 1) particleSeeds[i] = Math.random();
+const particleGeo = new THREE.BufferGeometry();
+particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+const particleMat = new THREE.PointsMaterial({
+  color: 0xffb45a,
+  size: 0.045,
+  transparent: true,
+  opacity: 0.8,
+  depthWrite: false,
+  sizeAttenuation: true,
+});
+const particles = new THREE.Points(particleGeo, particleMat);
+particles.visible = false;
+scene.add(particles);
+let particleKind = 'embers';
+
+function seedParticle(i, kind) {
+  const side = i % 2 === 0 ? -1 : 1;
+  particlePositions[i * 3] = side * (0.62 + particleSeeds[i] * 0.85);
+  particlePositions[i * 3 + 1] = kind === 'leaves' ? 0.35 + particleSeeds[i] * 1.45 : particleSeeds[(i + 3) % PARTICLE_COUNT] * 1.5;
+  particlePositions[i * 3 + 2] = (particleSeeds[(i + 7) % PARTICLE_COUNT] - 0.5) * 0.9;
+}
+
+function applyClassLight(profile) {
+  const light = profile.light;
+  hemi.color.setHex(light.hemi);
+  hemi.groundColor.setHex(light.ground);
+  hemi.intensity = 0.72;
+  sun.color.setHex(light.sun);
+  sun.intensity = 1.25;
+  fill.color.setHex(light.fill);
+  fill.intensity = 0.22;
+  rimLight.color.setHex(light.rim);
+  rimLight.intensity = 0.38;
+  warmPoint.color.setHex(light.point);
+  coolPoint.color.setHex(light.point);
+  warmPoint.intensity = 1.15;
+  coolPoint.intensity = 0.72;
+  particleMat.color.setHex(light.point);
+  particleKind = profile.particle;
+  particleMat.size = profile.particle === 'sparks' ? 0.03 : profile.particle === 'leaves' ? 0.055 : 0.042;
+  for (let i = 0; i < PARTICLE_COUNT; i += 1) seedParticle(i, particleKind);
+  particleGeo.attributes.position.needsUpdate = true;
+  const layers = document.querySelectorAll('.hall-layer');
+  layers.forEach((layer) => {
+    layer.style.backgroundPosition = profile.backdrop || 'center 68%';
+  });
+}
+
+const hallLayers = [document.getElementById('hall-a'), document.getElementById('hall-b')];
+let hallFront = 0;
+let hallUrl = '';
+let hallToken = 0;
+let fallbackStarted = false;
+
+function loadImage(url) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(url);
+    img.onerror = () => reject(new Error(url));
+    img.src = url;
+  });
+}
+
+function showHallImage(url, profile) {
+  if (!hallLayers[0] || url === hallUrl) return;
+  hallUrl = url;
+  const next = hallLayers[1 - hallFront];
+  const prev = hallLayers[hallFront];
+  next.style.backgroundImage = `url("${url}")`;
+  next.style.backgroundPosition = profile.backdrop || 'center 68%';
+  if (reduceMotion) {
+    next.style.transition = 'none';
+    prev.style.transition = 'none';
+  }
+  next.style.opacity = '1';
+  prev.style.opacity = '0';
+  hallFront = 1 - hallFront;
+  ground.visible = false;
+  ring.visible = false;
+  contact.visible = true;
+  particles.visible = hallStage && !reduceMotion;
+  scene.background = null;
+  scene.fog = null;
+  renderer.setClearColor(0x000000, 0);
+}
+
+function useGeometryHall() {
+  if (fallbackStarted) return;
+  fallbackStarted = true;
+  hallLayers.forEach((layer) => {
+    if (layer) layer.style.opacity = '0';
+  });
+  scene.background = new THREE.Color(0x1a2624);
+  scene.fog = new THREE.Fog(0x24302c, 6.5, 15);
+  renderer.setClearColor(0x1a2624, 1);
+  ground.visible = true;
+  ring.visible = true;
+  contact.visible = false;
+  particles.visible = false;
+  document.body.style.background = '#1a2624';
+  void buildHall();
+}
+
+function applyPaintedHall(classId) {
+  if (!hallStage) return;
+  const id = normalizeClassId(classId);
+  const profile = hallProfile(id);
+  applyClassLight(profile);
+  const urls = hallImageCandidates(id);
+  const currentSlug = profile.slug;
+  if (hallUrl.includes(`/${currentSlug}.`)) return;
+  const token = ++hallToken;
+  loadImage(urls[0])
+    .catch(() => loadImage(urls[1]))
+    .then((url) => {
+      if (token !== hallToken) return;
+      showHallImage(url, profile);
+    })
+    .catch(() => {
+      if (token !== hallToken) return;
+      useGeometryHall();
+    });
+}
 
 let hero = null;
 let heroClass = null;
 let pending = { classId: 'GUERREIRO', appearance: { ...DEFAULT_LOOK } };
 let loadToken = 0;
 const clock = new THREE.Clock();
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 function resize() {
   const w = root.clientWidth || 1;
@@ -285,6 +421,7 @@ async function setHero(classId, appearance) {
   const id = HEROES[rawId] ? rawId : 'GUERREIRO';
   const look = { ...DEFAULT_LOOK, ...(appearance && typeof appearance === 'object' ? appearance : {}) };
   pending = { classId: id, appearance: look };
+  if (hallStage) applyPaintedHall(id);
 
   if (heroClass === id && hero) {
     hero.applyLook(look, id);
@@ -303,11 +440,10 @@ async function setHero(classId, appearance) {
       hero.dispose();
       hero = null;
     }
-    hero = createActor(gltf, { hide: cfg.gear, height: HERO_HEIGHT });
+    hero = createActor(gltf, { hide: cfg.gear, height: hallStage ? 1.72 : HERO_HEIGHT });
     heroClass = id;
-    // clear: leve deslocamento + yaw menor para centrar no pedestal da arte.
-    hero.holder.position.set(clearStage ? 0.06 : 0, 0, 0);
-    hero.holder.rotation.y = Math.PI * (clearStage ? 0.05 : 0.15);
+    hero.holder.position.set(clearStage ? 0.06 : 0, 0, hallStage ? 0.08 : 0);
+    hero.holder.rotation.y = Math.PI * (clearStage ? 0.05 : 0.08);
     scene.add(hero.holder);
     // Aplica o look mais recente (pode ter mudado durante o load).
     const latest = pending.classId === id ? pending.appearance : look;
@@ -346,17 +482,39 @@ resize();
 
 announceReady();
 
-const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+function tickParticles(dt) {
+  if (!particles.visible) return;
+  const t = clock.elapsedTime;
+  for (let i = 0; i < PARTICLE_COUNT; i += 1) {
+    const y = i * 3 + 1;
+    const x = i * 3;
+    if (particleKind === 'leaves') {
+      particlePositions[y] -= dt * (0.12 + particleSeeds[i] * 0.18);
+      particlePositions[x] += Math.sin(t * 1.4 + i) * dt * 0.08;
+      if (particlePositions[y] < 0.05) seedParticle(i, particleKind);
+    } else if (particleKind === 'magic') {
+      particlePositions[y] += dt * (0.08 + particleSeeds[i] * 0.12);
+      particlePositions[x] += Math.sin(t * 0.8 + i) * dt * 0.05;
+      if (particlePositions[y] > 1.7) seedParticle(i, particleKind);
+    } else {
+      const rise = particleKind === 'sparks' ? 0.55 : 0.28;
+      particlePositions[y] += dt * (rise + particleSeeds[i] * 0.25);
+      if (particlePositions[y] > 1.65) seedParticle(i, particleKind);
+    }
+  }
+  particleGeo.attributes.position.needsUpdate = true;
+  if (!reduceMotion) {
+    const n = Math.sin(t * 2.4);
+    warmPoint.intensity = 1.05 + n * 0.12;
+    coolPoint.intensity = 0.68 - n * 0.08;
+  }
+}
 
 function tick() {
   const dt = Math.min(0.05, clock.getDelta());
   controls.update();
   hero?.update(dt);
-  if (hallStage && !reduceMotion && hallTorches.length) {
-    const n = Math.sin(clock.elapsedTime * 3.1);
-    hallTorches[0].intensity = 2.25 + n * 0.18;
-    hallTorches[1].intensity = 2.05 - n * 0.14;
-  }
+  tickParticles(dt);
   renderer.render(scene, camera);
   requestAnimationFrame(tick);
 }
@@ -403,9 +561,14 @@ async function buildHall() {
 }
 
 if (hallStage) {
-  statusEl.hidden = false;
-  statusEl.textContent = "O salão espera um aventureiro.";
-  void buildHall();
+  const initial = normalizeClassId(previewParams.get('class') || 'GUERREIRO');
+  applyPaintedHall(initial);
+  if (previewParams.get('class')) {
+    void setHero(initial, pending.appearance);
+  } else {
+    statusEl.hidden = false;
+    statusEl.textContent = 'O salão espera um aventureiro.';
+  }
 } else {
   void setHero(pending.classId, pending.appearance);
 }
