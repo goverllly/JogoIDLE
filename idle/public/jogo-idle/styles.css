@@ -134,6 +134,32 @@ h3 {
   display: none !important;
 }
 
+/* Arena 3D-only: nunca mostrar sprites SVG / camadas 2D */
+.arena--3d-only .arena__far,
+.arena--3d-only .arena__particles,
+.arena--3d-only .arena__ground,
+.arena--3d-only .fighter {
+  display: none !important;
+}
+
+.arena--3d-only {
+  background: #0d0b09;
+}
+
+.arena__3d-error {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding: 1.5rem;
+  text-align: center;
+  color: #f0d9a8;
+  background: rgba(8, 6, 4, 0.82);
+  font: 600 0.95rem/1.4 system-ui, sans-serif;
+}
+
 .panel-toggle,
 .log-toggle {
   display: flex;
